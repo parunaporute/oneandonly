@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini 物語ジェネレーター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="model-selector">
+            <label for="model-select">使用するモデル:</label>
+            <select id="model-select" disabled>
+                <option value="">モデルを読み込み中...</option>
+            </select>
+            <button id="update-models-button" title="モデルリストを再取得します" disabled>リスト更新</button>
+
+            <div id="model-description" class="model-description"></div>
+            <div class="pricing-link">
+                <a href="https://ai.google.dev/pricing" target="_blank" rel="noopener noreferrer">料金情報はこちら (公式)</a>
+            </div>
+        </div>
+        <div id="story-history" class="story-history">
+        </div>
+        <div class="input-area">
+            <textarea id="user-input" placeholder="次の行動や質問を入力..."></textarea>
+            <button id="send-button" disabled>送信</button>
+            <div id="loading" class="loading" style="display: none;">生成中...</div>
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
