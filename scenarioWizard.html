@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>新しいシナリオ作成ウィザード</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+
+<body>
+    <div class="application-bar">
+        <button id="back-to-menu">
+            <div class="iconmoon icon-home3"></div>戻る
+        </button>
+        <button id="open-tutorial-list-button">
+            <div class="iconmoon icon-book"></div>取説
+        </button>
+        <button id="save-load-button">
+            <div class="iconmoon icon-address"></div>続き
+        </button>
+        <button id="change-bg-button">
+            <div class="iconmoon icon-picture"></div>背景
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>シナリオ作成ウィザード</h1>
+
+        <div id="wizard-step0" style="display:block;">
+            <h2>ステップ0：パーティを選択</h2>
+            <p style="margin-bottom:1rem;">パーティを選択するか、「パーティなし」を選んでください。</p>
+            <div id="wizard-party-list" style="margin-bottom:20px;">
+                <div class="loading">パーティ情報読込中...</div>
+            </div>
+            <div class="l-flexbox"> <button id="go-wizard-step1-btn">次へ</button> </div>
+        </div>
+
+        <div id="wizard-step1" style="display:none;">
+            <div class="l-flexbox"><button id="back-to-step0-button">戻る</button></div>
+            <h2>ステップ1：ジャンルを選択</h2>
+            <p style="font-size:0.9em; margin-bottom:10px;">ジャンルの軸を選択するか、自由入力してください。</p>
+            <div class="chips-container" id="wiz-genre-choice" style="margin-bottom:20px;">
+                <div class="chip" id="choice-axis">選択して入力</div>
+                <div class="chip" id="choice-free">自由入力</div>
+            </div>
+            <div id="axis-input-group" style="display:none; opacity:0.2; pointer-events:none;">
+                <div style="margin-top:10px;"><strong>舞台（複数可）</strong><div id="wiz-stage-chips-container" class="chips-container"></div></div>
+                <div style="margin-top:10px;"><strong>テーマ（1つ）</strong><div id="wiz-theme-chips-container" class="chips-container"></div></div>
+                <div style="margin-top:10px;"><strong>雰囲気（1つ）</strong><div id="wiz-mood-chips-container" class="chips-container"></div></div>
+                <div style="margin-top:30px;"><p id="wiz-genre-result-text" style="border: 1px solid; padding: 10px; background-color: #434343;">（未設定）</p></div>
+            </div>
+            <div id="free-input-group" style="display:none; margin-top:10px; opacity:0.2; pointer-events:none;">
+                <input type="text" id="free-genre-input" placeholder="例：クトゥルフ神話、学園異能バトル など" style="width: 100%;">
+            </div>
+            <div class="l-flexbox"><button id="go-step2-btn">次へ</button></div>
+        </div>
+
+        <div id="wizard-step2" style="display:none;">
+            <div class="l-flexbox"><button id="back-to-step1-button">戻る</button></div>
+            <h2>ステップ2：シナリオタイプを選択</h2>
+            <p>選択したパーティ： <span id="selected-party-display" style="font-weight:bold; color:#2196F3;">(未選択)</span></p>
+            <p style="margin-bottom: 1rem;">選択したジャンル： <span id="selected-genre-display" style="font-weight:bold; color:#2196F3;">（未選択）</span></p>
+            <div class="l-flexbox">
+                <button id="type-objective-btn">目的達成型</button>
+                <button id="type-exploration-btn">探索型</button>
+            </div>
+            <p style="margin-top:10px; font-size: 0.9em;">※目的達成型：明確なクリア条件が設定されます。<br>※探索型：自由な探索と発見が中心になります。</p>
+        </div>
+
+        <div id="wizard-step3" style="display:none;">
+             <div class="l-flexbox"><button id="back-to-step2-button">戻る</button></div>
+            <h2>ステップ3：シナリオ確認</h2>
+            <p>以下の内容でシナリオを開始します。</p>
+            <div id="scenario-summary" style="border:1px solid #ccc; padding:15px; margin-bottom:20px; background-color: rgba(0,0,0,0.2); max-height: 40vh; overflow-y: auto; white-space: pre-wrap; text-align: left;">
+                 <div class="loading">シナリオ情報生成中...</div>
+            </div>
+            <div class="c-flexbox">
+                <button id="start-scenario-button" class="important">このシナリオで始める</button> </div>
+        </div>
+
+    </div><div id="confirm-scenario-modal" class="modal">
+        <div class="modal-content" style="max-width:500px;">
+            <h3>シナリオ生成の確認</h3>
+            <p id="confirm-party-text">パーティ: (未選択)</p>
+            <p id="confirm-genre-type-text" style="white-space:pre-wrap;"></p>
+            <p>この条件でシナリオをAI生成します。よろしいですか？<br><small>(API呼び出しが発生します)</small></p>
+            <div class="c-flexbox">
+                <button id="confirm-scenario-ok">OK</button>
+                <button id="confirm-scenario-cancel">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-modal" class="modal">
+        <div class="modal-content">
+            <p>AIが応答を生成しています...</p>
+            <div class="loading" style="width: 50px; height: 50px; border-width: 5px; margin: 10px auto;"></div> <button id="cancel-request-button" style="margin-top: 10px; background-color: #aaa;">キャンセル(試行)</button>
+        </div>
+    </div>
+
+    <div id="wizard-other-input-modal" class="modal">
+        <div class="modal-content" style="max-width:400px;">
+            <h2 id="wizard-other-input-modal-category">「その他」を追加</h2>
+            <textarea id="wizard-other-input-text" rows="3" placeholder="新しく追加する候補名" style="margin-bottom: 10px;"></textarea>
+            <div class="c-flexbox" style="gap: 5px;">
+                <button id="wizard-other-generate-btn" title="AIに新しい候補を生成させます">候補を生成(AI)</button>
+                <button id="wizard-other-ok-btn">OK</button>
+                <button id="wizard-other-cancel-btn" style="background-color: #6c757d;">キャンセル</button>
+            </div>
+            <p style="font-size:0.8em; color:#aaa; margin-top:10px;">※「生成」ボタンを押すとAIが新しい案を提案します。</p>
+        </div>
+    </div>
+
+    <div id="wizard-delete-confirm-modal" class="modal">
+        <div class="modal-content" style="max-width: 350px;">
+            <p>このカスタム候補を削除しますか？</p>
+            <div class="c-flexbox">
+                <button id="wizard-delete-confirm-ok" style="background-color: #dc3545;">削除する</button>
+                <button id="wizard-delete-confirm-cancel">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/common.js"></script>
+    <script type="module" src="js/multiModal.js"></script>
+    <script type="module" src="js/indexedDB.js"></script>
+    <script type="module" src="js/geminiApiClient.js"></script>
+    <script type="module" src="js/stabilityApiClient.js"></script>
+    <script type="module" src="js/background.js"></script>
+    <script type="module" src="js/tutorialData.js"></script>
+    <script type="module" src="js/tutorialManager.js"></script>
+    <script type="module" src="js/universalSaveLoad.js"></script>
+    <script type="module" src="js/scenarioWizard.js"></script>
+
+</body>
+</html>
