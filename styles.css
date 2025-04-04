@@ -1,1421 +1,1514 @@
 /* styles.css */
 
 @font-face {
-    font-family: 'icomoon';
-    src: url('fonts/icomoon.eot?b');
-    src: url('fonts/icomoon.eot?b') format('embedded-opentype'),
-        url('fonts/icomoon.ttf?b') format('truetype'), url('fonts/icomoon.woff?b') format('woff'),
-        url('fonts/icomoon.svg?b') format('svg');
-    font-weight: normal;
-    font-style: normal;
-    font-display: block;
+  font-family: "icomoon";
+  src: url("fonts/icomoon.eot?adaa");
+  src:
+    url("fonts/icomoon.eot?adaa") format("embedded-opentype"),
+    url("fonts/icomoon.ttf?adaa") format("truetype"),
+    url("fonts/icomoon.woff?adaa") format("woff"),
+    url("fonts/icomoon.svg?adaa") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
 }
 
 .iconmoon {
-    font-family: 'icomoon' !important;
-    font-size: 1.2rem;
-}
-
-.icon-card:before {
-    content: '\e910';
-}
-.icon-card-case:before {
-    content: '\e912';
-}
-.icon-stop:before {
-    content: '\f04d';
-}
-.icon-flask:before {
-    content: '\f0c3';
+  font-family: "icomoon" !important;
+  font-size: 1.2rem;
 }
 .icon-dots-three-horizontal:before {
-    content: '\e900';
-}
-.icon-save:before {
-    content: '\e904';
-}
-.icon-uninstall:before {
-    content: '\e911';
-}
-.icon-address:before {
-    content: '\e905';
-}
-.icon-chat:before {
-    content: '\e906';
-}
-.icon-credit-card:before {
-    content: '\e907';
-}
-.icon-documents:before {
-    content: '\e908';
-}
-.icon-flag1:before {
-    content: '\e909';
-}
-.icon-game-controller:before {
-    content: '\e90a';
-}
-.icon-info-with-circle:before {
-    content: '\e90b';
-}
-.icon-info:before {
-    content: '\e90c';
-}
-.icon-mail:before {
-    content: '\e90d';
-}
-.icon-tag:before {
-    content: '\e90e';
-}
-.icon-typing:before {
-    content: '\e90f';
-}
-.icon-search:before {
-    content: '\e007';
-}
-.icon-clipboard:before {
-    content: '\e008';
-}
-.icon-newspaper:before {
-    content: '\e009';
-}
-.icon-book-open:before {
-    content: '\e00b';
-}
-.icon-browser:before {
-    content: '\e00c';
-}
-.icon-picture:before {
-    content: '\e00f';
-}
-.icon-edit:before {
-    content: '\e01c';
-}
-.icon-ribbon:before {
-    content: '\e01e';
-}
-.icon-streetsign:before {
-    content: '\e029';
-}
-.icon-gears:before {
-    content: '\e02b';
-}
-.icon-key:before {
-    content: '\e02c';
-}
-.icon-strategy:before {
-    content: '\e03b';
-}
-.icon-beaker:before {
-    content: '\e03c';
-}
-.icon-profile-male:before {
-    content: '\e040';
-}
-.icon-chat1:before {
-    content: '\e049';
-}
-.icon-target:before {
-    content: '\e04e';
+  content: "\e900";
+  /* 3つ並んだ水平ドットのアイコン（メニュー、オプションなど） */
 }
 .icon-home:before {
-    content: '\e901';
-}
-.icon-home2:before {
-    content: '\e903';
+  content: "\e901";
+  /* 家のアイコン（ホーム画面、メインページなど） */
 }
 .icon-home3:before {
-    content: '\e902';
+  content: "\e902";
+  /* 別デザインのホームアイコン（ホーム画面、トップページ） */
+}
+.icon-home2:before {
+  content: "\e903";
+  /* もう一つのホームアイコン（ホーム画面、トップページ） */
+}
+.icon-save:before {
+  content: "\e904";
+  /* 保存のアイコン（セーブ、書き込みなど） */
+}
+.icon-address:before {
+  content: "\e905";
+  /* 住所アイコン（所在地、アドレス情報など） */
+}
+.icon-chat:before {
+  content: "\e906";
+  /* チャットのアイコン（会話、メッセージ、チャット画面など） */
+}
+.icon-credit-card:before {
+  content: "\e907";
+  /* クレジットカードのアイコン（支払い、決済など） */
+}
+.icon-documents:before {
+  content: "\e908";
+  /* ドキュメントのアイコン（複数書類、ファイルなど） */
+}
+.icon-flag1:before {
+  content: "\e909";
+  /* フラグアイコン（マーク、注目など） */
+}
+.icon-game-controller:before {
+  content: "\e90a";
+  /* ゲームコントローラーのアイコン（ゲーム関連、エンターテインメントなど） */
+}
+.icon-info-with-circle:before {
+  content: "\e90b";
+  /* 丸枠付きの情報アイコン（ヘルプ、案内など） */
+}
+.icon-info:before {
+  content: "\e90c";
+  /* 情報アイコン（ヘルプ、詳細情報など） */
+}
+.icon-mail:before {
+  content: "\e90d";
+  /* メールのアイコン（メッセージ、連絡先など） */
+}
+.icon-tag:before {
+  content: "\e90e";
+  /* タグのアイコン（分類、ラベルなど） */
+}
+.icon-typing:before {
+  content: "\e90f";
+  /* 入力中のアイコン（チャット、テキスト入力など） */
+}
+.icon-search:before {
+  content: "\e007";
+  /* 検索のアイコン（サーチ、虫眼鏡など） */
+}
+.icon-clipboard:before {
+  content: "\e008";
+  /* クリップボードのアイコン（コピー、貼り付け、メモなど） */
+}
+.icon-newspaper:before {
+  content: "\e009";
+  /* 新聞のアイコン（ニュース、記事など） */
+}
+.icon-book-open:before {
+  content: "\e00b";
+  /* 開いている本のアイコン（テキスト、ドキュメント参照など） */
+}
+.icon-browser:before {
+  content: "\e00c";
+  /* ブラウザアイコン（ウェブ閲覧、ページなど） */
+}
+.icon-picture:before {
+  content: "\e00f";
+  /* 画像アイコン（写真、ギャラリーなど） */
+}
+.icon-edit:before {
+  content: "\e01c";
+  /* 編集のアイコン（ペンツール、修正など） */
+}
+.icon-ribbon:before {
+  content: "\e01e";
+  /* リボンアイコン（受賞、バッジ、飾りなど） */
+}
+.icon-streetsign:before {
+  content: "\e029";
+  /* 道路標識アイコン（道案内、方向など） */
+}
+.icon-gears:before {
+  content: "\e02b";
+  /* ギア（歯車）アイコン（設定、オプションなど） */
+}
+.icon-key:before {
+  content: "\e02c";
+  /* 鍵のアイコン（セキュリティ、ロックなど） */
+}
+.icon-strategy:before {
+  content: "\e03b";
+  /* 戦略アイコン（プランニング、戦略的思考など） */
+}
+.icon-beaker:before {
+  content: "\e03c";
+  /* ビーカーアイコン（実験、化学、テストなど） */
+}
+.icon-profile-male:before {
+  content: "\e040";
+  /* 男性プロフィールアイコン（ユーザー、人物など） */
+}
+.icon-chat1:before {
+  content: "\e049";
+  /* 別デザインのチャットアイコン（会話、メッセージなど） */
+}
+.icon-target:before {
+  content: "\e04e";
+  /* ターゲットアイコン（目標、的など） */
 }
 .icon-pacman:before {
-    content: '\e916';
+  content: "\e916";
+  /* パックマンアイコン（ゲーム、エンタメなど） */
 }
 .icon-book:before {
-    content: '\e91f';
+  content: "\e91f";
+  /* 本のアイコン（書籍、資料など） */
 }
 .icon-books:before {
-    content: '\e920';
+  content: "\e920";
+  /* 複数の本アイコン（ライブラリ、書籍集など） */
 }
 .icon-library:before {
-    content: '\e921';
+  content: "\e921";
+  /* 図書館アイコン（ライブラリ、保管場所など） */
 }
 .icon-folder-download:before {
-    content: '\e933';
+  content: "\e933";
+  /* ダウンロードフォルダアイコン（ファイル取得など） */
 }
 .icon-folder-upload:before {
-    content: '\e934';
+  content: "\e934";
+  /* アップロードフォルダアイコン（ファイル送信など） */
 }
 .icon-price-tag:before {
-    content: '\e935';
+  content: "\e935";
+  /* プライスタグアイコン（値札、価格情報など） */
 }
 .icon-price-tags:before {
-    content: '\e936';
+  content: "\e936";
+  /* プライスタグが複数のアイコン（複数の価格情報など） */
 }
 .icon-coin-dollar:before {
-    content: '\e93b';
+  content: "\e93b";
+  /* ドル硬貨のアイコン（通貨、金銭、経済など） */
 }
 .icon-floppy-disk:before {
-    content: '\e962';
+  content: "\e962";
+  /* フロッピーディスクのアイコン（セーブ、保存など） */
 }
 .icon-undo2:before {
-    content: '\e967';
+  content: "\e967";
+  /* 元に戻すアイコン（アンドゥ、巻き戻しなど） */
 }
 .icon-bubble:before {
-    content: '\e96b';
+  content: "\e96b";
+  /* 吹き出しアイコン（コメント、メッセージなど） */
 }
 .icon-bubbles:before {
-    content: '\e96c';
+  content: "\e96c";
+  /* 複数の吹き出しアイコン（会話、スレッドなど） */
 }
 .icon-bubbles2:before {
-    content: '\e96d';
+  content: "\e96d";
+  /* 別デザインの複数吹き出しアイコン（メッセージやチャットなど） */
 }
 .icon-user:before {
-    content: '\e971';
+  content: "\e971";
+  /* ユーザーアイコン（人物、アカウントなど） */
 }
 .icon-cog:before {
-    content: '\e994';
+  content: "\e994";
+  /* 歯車アイコン（設定、オプションなど） */
 }
 .icon-magic-wand:before {
-    content: '\e997';
+  content: "\e997";
+  /* 魔法の杖アイコン（特別な操作、エフェクトなど） */
 }
 .icon-trophy:before {
-    content: '\e99e';
+  content: "\e99e";
+  /* トロフィーのアイコン（受賞、実績、コンテストなど） */
 }
 .icon-gift:before {
-    content: '\e99f';
+  content: "\e99f";
+  /* ギフトアイコン（プレゼント、特典など） */
 }
 .icon-bin:before {
-    content: '\e9ac';
+  content: "\e9ac";
+  /* ゴミ箱アイコン（削除、破棄など） */
 }
 .icon-bin2:before {
-    content: '\e9ad';
+  content: "\e9ad";
+  /* 別デザインのゴミ箱アイコン（削除、破棄など） */
 }
 .icon-flag:before {
-    content: '\e9cc';
+  content: "\e9cc";
+  /* フラグアイコン（マーク、印など） */
 }
 .icon-star-full:before {
-    content: '\e9d9';
+  content: "\e9d9";
+  /* 星のアイコン（お気に入り、評価など） */
 }
 .icon-heart:before {
-    content: '\e9da';
+  content: "\e9da";
+  /* ハートアイコン（いいね、愛、好みなど） */
 }
 .icon-smile:before {
-    content: '\e9e1';
+  content: "\e9e1";
+  /* 笑顔アイコン（幸せ、嬉しいなど） */
 }
 .icon-sad:before {
-    content: '\e9e5';
+  content: "\e9e5";
+  /* 悲しい顔アイコン（落ち込み、悲哀など） */
 }
 .icon-confused:before {
-    content: '\e9f5';
+  content: "\e9f5";
+  /* 困惑した顔アイコン（混乱、不明など） */
 }
 .icon-neutral:before {
-    content: '\e9f7';
+  content: "\e9f7";
+  /* 無表情アイコン（特に感情なし、中立など） */
 }
 .icon-hipster:before {
-    content: '\e9f9';
+  content: "\e9f9";
+  /* ヒップスター風アイコン（おしゃれ、個性的など） */
 }
 .icon-cross:before {
-    content: '\ea0f';
+  content: "\ea0f";
+  /* バツ印のアイコン（閉じる、キャンセルなど） */
 }
 .icon-volume-high:before {
-    content: '\ea26';
+  content: "\ea26";
+  /* 音量大のアイコン（最大音量、音声出力など） */
 }
 .icon-volume-mute2:before {
-    content: '\ea2a';
+  content: "\ea2a";
+  /* 音量ミュートアイコン（無音、ミュートなど） */
 }
 .icon-arrow-right:before {
-    content: '\ea34';
+  content: "\ea34";
+  /* 右矢印アイコン（次へ、移動など） */
 }
 .icon-arrow-left:before {
-    content: '\ea38';
+  content: "\ea38";
+  /* 左矢印アイコン（戻る、移動など） */
 }
 .icon-sort-alpha-asc:before {
-    content: '\ea48';
+  content: "\ea48";
+  /* アルファベット昇順ソートのアイコン（A→Zの並びなど） */
 }
 .icon-sort-alpha-desc:before {
-    content: '\ea49';
+  content: "\ea49";
+  /* アルファベット降順ソートのアイコン（Z→Aの並びなど） */
 }
 .icon-sort-numeric-asc:before {
-    content: '\ea4a';
+  content: "\ea4a";
+  /* 数値昇順ソートのアイコン（小さい数→大きい数など） */
 }
 .icon-sort-numberic-desc:before {
-    content: '\ea4b';
+  content: "\ea4b";
+  /* 数値降順ソートのアイコン（大きい数→小さい数など） */
 }
 
+.icon-star-empty:before {
+  content: "\e9d7";
+}
+
+.icon-card-case:before {
+  content: "\e912";
+}
+.icon-card:before {
+  content: "\e910";
+}
 /* ベース */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #3d3d3d;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #3d3d3d;
 }
 
 .container {
-    position: relative;
-    box-sizing: border-box;
-    max-width: calc(100% - 40px);
-    margin: 80px auto 20px;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    color: #f0f0f0;
+  position: relative;
+  box-sizing: border-box;
+  max-width: calc(100% - 40px);
+  margin: 80px auto 20px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #f0f0f0;
 }
 
 .button-container {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
 }
 
 #warehouse-card-container {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
 h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
+  font-size: 1.5em;
+  margin-bottom: 10px;
 }
 
 .api-key-section {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 input,
 textarea {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 10px;
-    font-size: 1.5rem;
-    border: 1px solid #ccc;
-    background-color: #434343;
-    color: #f0f0f0;
-    margin-bottom: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  font-size: 1.5rem;
+  border: 1px solid #ccc;
+  background-color: #434343;
+  color: #f0f0f0;
+  margin-bottom: 10px;
 }
 
-input[type='checkbox'] {
-    width: initial;
-    margin: auto 10px auto 0;
-    padding: 0;
-    width: 2rem;
-    height: 2rem;
+input[type="checkbox"] {
+  width: initial;
+  margin: auto 10px auto 0;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
 }
 
 button {
-    text-shadow: 1px 1px 4px #000;
-    padding: 10px 10px;
-    background-color: #4caf50;
-    background-color: #5f4c38;
-    /*background-color: transparent;*/
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    min-height: 3rem;
-    min-width: 5.5rem;
-    box-sizing: border-box;
-    box-shadow: inset 0px 0px 8px 2px #161616;
-    border: 1px solid #876d51;
-    background-image: linear-gradient(0deg, #00000061, transparent);
+  text-shadow: 1px 1px 4px #000;
+  padding: 10px 10px;
+  background-color: #4caf50;
+  background-color: #5f4c38;
+  /*background-color: transparent;*/
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  min-height: 3rem;
+  min-width: 5.5rem;
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 8px 2px #161616;
+  border: 1px solid #876d51;
+  background-image: linear-gradient(0deg, #00000061, transparent);
 
-    /* box-shadow: inset 0px 0px 8px 2px #161616; */
-    /* border: 1px solid #fff; */
-    /* background-image: linear-gradient(87deg, #00000061, transparent); */
+  /* box-shadow: inset 0px 0px 8px 2px #161616; */
+  /* border: 1px solid #fff; */
+  /* background-image: linear-gradient(87deg, #00000061, transparent); */
 }
 
 .scene-dropdown-menu button {
-    background-color: transparent;
-    box-shadow: inset 0px 0px 8px 2px #161616;
-    border: 1px dashed #bbb;
-    color: #bbb;
-    border-radius: 0;
-    background-image: linear-gradient(87deg, #00000061, transparent);
+  background-color: transparent;
+  box-shadow: inset 0px 0px 8px 2px #161616;
+  border: 1px dashed #bbb;
+  color: #bbb;
+  border-radius: 0;
+  background-image: linear-gradient(87deg, #00000061, transparent);
 }
 .scene-dropdown-menu button:hover {
-    box-shadow: none;
-    border: 1px dashed #fff;
-    color: #fff;
-    border-radius: 0;
-    background-image: linear-gradient(87deg, #00000061, transparent);
+  box-shadow: none;
+  border: 1px dashed #fff;
+  color: #fff;
+  border-radius: 0;
+  background-image: linear-gradient(87deg, #00000061, transparent);
 }
 .scene-dropdown-menu button + button {
-    border-left: none;
+  border-left: none;
 }
 
 button:hover {
-    background-color: #45a049 !important;
-    border: 1px solid #45a049 !important;
+  background-color: #45a049 !important;
+  border: 1px solid #45a049 !important;
 }
 
 /* シーン履歴 */
 .scene-history {
-    max-height: 50vh;
-    overflow-y: auto;
-    border: none;
-    padding: 0;
-    background-color: transparent;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: 20px;
-    margin-right: -20px;
-    margin-left: -20px;
-    margin-top: -20px;
+  max-height: 50vh;
+  overflow-y: auto;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 20px;
+  margin-right: -20px;
+  margin-left: -20px;
+  margin-top: -20px;
 }
 
 #scenario-summary,
 .history-tile.summary {
-    font-size: 0.8rem;
-    font-family: serif;
-    background-color: #1111115e;
-    padding: 10px 20px;
-    align-items: flex-start;
+  font-size: 0.8rem;
+  font-family: serif;
+  background-color: #1111115e;
+  padding: 10px 20px;
+  align-items: flex-start;
 }
 
 .history-tile.summary.separator {
-    padding: 0;
-    border-bottom: 1px dashed #666;
+  padding: 0;
+  border-bottom: 1px dashed #666;
 }
 
 .history-tile.summary.title {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .history-tile {
-    position: relative;
-    box-sizing: border-box;
-    padding: 20px;
-    background-color: transparent;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    text-align: right;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: transparent;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  text-align: right;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .history-tile:nth-child(odd) {
-    background-color: #00000059;
+  background-color: #00000059;
 }
 
 .scene-text,
 .action-text,
 .scenario-text {
-    text-align: left;
-    font-family: serif;
-    line-height: 1.8em;
-    margin: 0;
-    padding: 0;
-    font-size: 22px;
-    letter-spacing: 0.1em;
-    border: 1px dashed transparent;
-    cursor: text;
+  text-align: left;
+  font-family: serif;
+  line-height: 1.8em;
+  margin: 0;
+  padding: 0;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  border: 1px dashed transparent;
+  cursor: text;
 }
 
 .action-text {
-    font-family: initial;
+  font-family: initial;
 }
 
 .history-tile .scene-text,
 .history-tile .action-text,
 .history-tile .scenario-text {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .history-tile .action-text {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .history-tile:last-child .action-text {
-    font-size: 1.4rem;
+  font-size: 1.4rem;
 }
 
 .scene-menu-button {
-    position: relative;
-    min-width: initial;
-    right: 0;
-    margin-bottom: 0px;
-    background-color: transparent;
-    border: 1px solid transparent;
-    color: #bbb;
-    width: initial !important;
-    border-radius: 20px;
-    min-height: initial;
-    max-height: initial;
-    text-shadow: none;
-    box-shadow: none;
-    background-image: none;
-    margin: 18px 2px;
-    padding: 3px 12px;
-    box-shadow: 0 0 0 2px #ffffff99;
+  position: relative;
+  min-width: initial;
+  right: 0;
+  margin-bottom: 0px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: #bbb;
+  width: initial !important;
+  border-radius: 20px;
+  min-height: initial;
+  max-height: initial;
+  text-shadow: none;
+  box-shadow: none;
+  background-image: none;
+  margin: 18px 2px;
+  padding: 3px 12px;
+  box-shadow: 0 0 0 2px #ffffff99;
 }
 .scene-menu-button:hover {
-    box-shadow: none;
-    color: #fff;
+  box-shadow: none;
+  color: #fff;
 }
 .delete-scene {
-    max-width: 10rem;
-    background-color: transparent;
-    border: 1px dashed #bbb;
-    color: #bbb;
-    width: 100%;
-    border-radius: 20px;
-    min-height: initial;
-    max-height: initial;
-    text-shadow: none;
-    box-shadow: none;
-    background-image: none;
+  max-width: 10rem;
+  background-color: transparent;
+  border: 1px dashed #bbb;
+  color: #bbb;
+  width: 100%;
+  border-radius: 20px;
+  min-height: initial;
+  max-height: initial;
+  text-shadow: none;
+  box-shadow: none;
+  background-image: none;
 }
 
 .delete-scene:hover {
-    background-color: #aaaaaa73;
-    color: #000;
-    border-color: #000;
+  background-color: #aaaaaa73;
+  color: #000;
+  border-color: #000;
 }
 
 .scene-text[contenteditable]:focus,
 .action-text[contenteditable]:focus,
 .scenario-text[contenteditable]:focus {
-    border: 1px dashed #4caf50;
-    outline: none;
+  border: 1px dashed #4caf50;
+  outline: none;
 }
 
 #story {
-    font-size: 1.4rem;
-    padding-bottom: 10px;
-    min-height: 60px;
+  font-size: 1.4rem;
+  padding-bottom: 10px;
+  min-height: 60px;
 }
 
 /* ▼ 0件時メッセージ */
 #no-scenarios-message {
-    display: none;
-    color: #ccc;
-    text-align: center;
-    margin-top: 20px;
+  display: none;
+  color: #ccc;
+  text-align: center;
+  margin-top: 20px;
 }
 
 /* ▼ モーダル（フェードイン／アウトで表示） */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* 背景の黒み */
-    background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 背景の黒み */
+  background-color: rgba(0, 0, 0, 0.8);
 
-    /* フレックスで中央寄せ */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  /* フレックスで中央寄せ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    /* ▼ フェードイン/アウトに使う */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    z-index: 9999;
+  /* ▼ フェードイン/アウトに使う */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
 }
 
 .modal.active {
-    opacity: 1;
-    pointer-events: auto;
-    flex-direction: column;
-    justify-content: center;
+  opacity: 1;
+  pointer-events: auto;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* モーダル内部 */
 .modal-content {
-    box-sizing: border-box;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: #f0f0f0;
-    padding: 0;
-    border-radius: 5px;
-    text-align: center;
-    max-height: 100vh;
-    overflow-y: auto;
-    width: 100%;
-    /* ふわっと拡大 */
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #f0f0f0;
+  padding: 0;
+  border-radius: 5px;
+  text-align: center;
+  max-height: 100vh;
+  overflow-y: auto;
+  width: 100%;
+  /* ふわっと拡大 */
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
 }
 
 .modal.active .modal-content {
-    transform: scale(1);
+  transform: scale(1);
 }
 
 .modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* カード関連 */
 #card-container,
 #party-modal-card-container,
 #warehouse-card-container {
-    margin-top: 10px;
-    box-sizing: border-box;
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
+  margin-top: 10px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
 }
 
 .card {
-    width: 100%;
-    aspect-ratio: 63 / 88;
-    perspective: 1000px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    position: relative;
-    max-width: 300px;
-    overflow: hidden;
+  width: 100%;
+  aspect-ratio: 63 / 88;
+  perspective: 1000px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  position: relative;
+  max-width: 300px;
+  overflow: hidden;
 }
 
 .card-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
 }
 
 .card.flipped .card-inner {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .card-front,
 .card-back {
-    color: #222;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 2%;
-    backface-visibility: hidden;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  color: #222;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 2%;
+  backface-visibility: hidden;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .card-front {
-    box-sizing: border-box;
-    padding: 3%;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  box-sizing: border-box;
+  padding: 3%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .card-front h3 {
-    padding: 0;
-    margin: 0;
-    font-size: 1rem;
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
 }
 
 .card-front .card-type {
-    position: absolute;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.85rem;
-    z-index: 2;
+  position: absolute;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  z-index: 2;
 }
 
 .card-front .card-image {
-    width: 100%;
-    height: 40%;
-    background: linear-gradient(135deg, #cccccc70, #eeeeee70);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(135deg, #cccccc70, #eeeeee70);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .card-front .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
 .card-front .gen-image-btn {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    padding: 4px 8px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    z-index: 2;
-    box-shadow: none;
-    background-image: none;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 2;
+  box-shadow: none;
+  background-image: none;
 }
 
 .gen-image-btn:disabled {
-    background-color: #999;
-    color: #ccc;
-    cursor: not-allowed;
-    opacity: 0.6;
+  background-color: #999;
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .card-front .card-info {
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-grow: 1;
-    overflow: auto;
-    background-color: rgba(255, 255, 255, 0.7);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+  overflow: auto;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .card-front .card-info p {
-    margin: 0;
-    font-size: 0.85rem;
+  margin: 0;
+  font-size: 0.85rem;
 }
 
 .card-front .card-info p:last-child {
-    padding: 0;
-    height: 100%;
-    font-size: 0.85rem;
-    align-items: center;
-    display: flex;
-    background-color: #eee;
-    margin-top: 10px;
+  padding: 0;
+  height: 100%;
+  font-size: 0.85rem;
+  align-items: center;
+  display: flex;
+  background-color: #eee;
+  margin-top: 10px;
 }
 
 .card-front .card-info p:last-child span {
-    transform: skew(-5deg);
-    display: flex;
-    padding: 10px;
+  transform: skew(-5deg);
+  display: flex;
+  padding: 10px;
 }
 
 .card-back {
-    box-sizing: border-box;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: #fff;
-    transform: rotateY(180deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    padding: 10px;
-    text-align: center;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  padding: 10px;
+  text-align: center;
 }
 
 @media (max-width: 600px) {
-    #card-container {
-        grid-template-columns: repeat(1, 1fr);
-    }
+  #card-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .bezel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    height: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 100;
-    border-radius: 2%;
-    padding: 3%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 100;
+  border-radius: 2%;
+  padding: 3%;
 }
 
 .bezel.rarity0 {
-    background: linear-gradient(145deg, #c0c0c0, #d3d3d3, #e0e0e0, #a9a9a9);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    background-clip: padding-box, border-box;
+  background: linear-gradient(145deg, #c0c0c0, #d3d3d3, #e0e0e0, #a9a9a9);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  background-clip: padding-box, border-box;
 }
 
 .bezel.rarity1 {
-    background: linear-gradient(145deg, #b87333, #da8a67, #e97451, #c35817);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    background-clip: padding-box, border-box;
+  background: linear-gradient(145deg, #b87333, #da8a67, #e97451, #c35817);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  background-clip: padding-box, border-box;
 }
 
 .bezel.rarity2 {
-    background: linear-gradient(145deg, #c0c0c0, #d3d3d3, #e0e0e0, #a9a9a9);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    background-clip: padding-box, border-box;
+  background: linear-gradient(145deg, #c0c0c0, #d3d3d3, #e0e0e0, #a9a9a9);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  background-clip: padding-box, border-box;
 }
 
 .bezel.rarity3 {
-    background: linear-gradient(145deg, #b69a00, #ffda64, #ffda6b, #d79000);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    background-clip: padding-box, border-box;
+  background: linear-gradient(145deg, #b69a00, #ffda64, #ffda6b, #d79000);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  background-clip: padding-box, border-box;
 }
 
 .bezel.rarity4 {
-    position: absolute;
-    background: linear-gradient(145deg, #d1d1d1, #aeb9ff, #c0c0c0, #ecebe8);
-    background-size: 400% 400%;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    background-clip: padding-box, border-box;
-    animation: platinum-shimmer 5s ease-in-out infinite;
+  position: absolute;
+  background: linear-gradient(145deg, #d1d1d1, #aeb9ff, #c0c0c0, #ecebe8);
+  background-size: 400% 400%;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  background-clip: padding-box, border-box;
+  animation: platinum-shimmer 5s ease-in-out infinite;
 }
 
 .bezel.rarity5 {
-    background: linear-gradient(145deg, #4b0082, #0000cd, #008080, #fff);
-    background-size: 150% 150%;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    background-clip: padding-box, border-box;
-    animation: jewel-glow 5s ease-in-out infinite;
+  background: linear-gradient(145deg, #4b0082, #0000cd, #008080, #fff);
+  background-size: 150% 150%;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  background-clip: padding-box, border-box;
+  animation: jewel-glow 5s ease-in-out infinite;
 }
 
 @keyframes platinum-shimmer {
-    0% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
 
-    50% {
-        background-position: 100% 50%;
-    }
+  50% {
+    background-position: 100% 50%;
+  }
 
-    100% {
-        background-position: 0% 50%;
-    }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes jewel-glow {
-    0% {
-        filter: brightness(1);
-        background-position: 0% 50%;
-    }
+  0% {
+    filter: brightness(1);
+    background-position: 0% 50%;
+  }
 
-    50% {
-        filter: brightness(1.2);
-        background-position: 100% 50%;
-    }
+  50% {
+    filter: brightness(1.2);
+    background-position: 100% 50%;
+  }
 
-    100% {
-        filter: brightness(1);
-        background-position: 0% 50%;
-    }
+  100% {
+    filter: brightness(1);
+    background-position: 0% 50%;
+  }
 }
 
 #party-card-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .card.selected .bezel {
-    outline: 10px solid #f44336;
-    outline-offset: -10px;
-    outline: 10px solid #f44336;
-    outline-offset: -10px;
-    background-image: none;
-    -webkit-mask-image: none;
-    background-color: #0000004d;
+  outline: 10px solid #f44336;
+  outline-offset: -10px;
+  outline: 10px solid #f44336;
+  outline-offset: -10px;
+  background-image: none;
+  -webkit-mask-image: none;
+  background-color: #0000004d;
 }
 
 .manipulate-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .warehouse-tab,
 .chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 30px;
-    background-color: rgba(227, 227, 227, 0.4);
-    color: #f0f0f0;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 30px;
+  background-color: rgba(227, 227, 227, 0.4);
+  color: #f0f0f0;
 
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.2s;
-    min-width: 6rem;
-    justify-content: center;
-    background-image: linear-gradient(0deg, #00000061, transparent);
-    border: 1px solid #999;
-    box-shadow: inset 0px 0px 8px 2px #161616;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+  min-width: 6rem;
+  justify-content: center;
+  background-image: linear-gradient(0deg, #00000061, transparent);
+  border: 1px solid #999;
+  box-shadow: inset 0px 0px 8px 2px #161616;
 }
 
 .chip-mini {
-    min-width: 6rem;
+  min-width: 6rem;
 }
 
 .chip-withimage {
-    min-width: initial;
-    border-radius: 2px;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    gap: 10px;
+  min-width: initial;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  gap: 10px;
 }
 
 .chip-withimage img {
-    height: 80px;
-    border-radius: 40px;
-    width: 80px;
-    object-fit: cover;
+  height: 80px;
+  border-radius: 40px;
+  width: 80px;
+  object-fit: cover;
 }
 
 .chip:hover {
-    border: 1px solid #00d14c;
-    background-color: #00d14c;
+  border: 1px solid #00d14c;
+  background-color: #00d14c;
 }
 
 .warehouse-tab.active,
 .chip.selected {
-    background-color: #009e39;
-    color: #fff;
+  background-color: #009e39;
+  color: #fff;
 }
 
 .bg-thumb {
-    position: relative;
-    cursor: pointer;
+  position: relative;
+  cursor: pointer;
 }
 
+
 .bg-thumb-delete {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(200, 0, 0, 0.7);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 4px;
-    display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(200, 0, 0, 0.7);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 4px;
+  display: none;
 }
 
 .bg-thumb:hover .bg-thumb-delete {
-    display: inline-block;
+  display: inline-block;
 }
 
 .bg-stock-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
 }
 
 /* ダミー要素用 */
 .dummy {
-    visibility: hidden;
-    pointer-events: none;
-    background-color: transparent;
-    border: none;
+  visibility: hidden;
+  pointer-events: none;
+  background-color: transparent;
+  border: none;
 }
 
 /* レア度3以上で背景画像が大きくなりがちな場合に対応 */
 .card.rarity3 .card-front .card-image,
 .card.rarity4 .card-front .card-image,
 .card.rarity5 .card-front .card-image {
-    z-index: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: right;
-    align-items: flex-start;
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: flex-start;
 }
 
 .card.rarity3 .card-front .card-image img,
 .card.rarity4 .card-front .card-image img,
 .card.rarity5 .card-front .card-image img {
-    object-position: bottom;
-    opacity: 0.9;
+  object-position: bottom;
+  opacity: 0.9;
 }
 
 .card.rarity3 .card-info,
 .card.rarity4 .card-info,
 .card.rarity5 .card-info {
-    position: absolute;
-    box-sizing: border-box;
-    width: 100%;
-    left: 0;
-    bottom: 0;
-    padding-left: calc(3% + 8px);
-    padding-right: calc(3% + 8px);
-    padding-top: 3%;
-    padding-bottom: 3%;
-    border-radius: 0 0 20px 20px;
-    background-color: rgba(37, 37, 37, 0.85);
-    color: #fff;
-    text-shadow: 0 0 10px #fff;
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding-left: calc(3% + 8px);
+  padding-right: calc(3% + 8px);
+  padding-top: 3%;
+  padding-bottom: 3%;
+  border-radius: 0 0 20px 20px;
+  background-color: rgba(37, 37, 37, 0.85);
+  color: #fff;
+  text-shadow: 0 0 10px #fff;
 }
 
 .card.rarity3 .card-front .card-info p:last-child,
 .card.rarity4 .card-front .card-info p:last-child,
 .card.rarity5 .card-front .card-info p:last-child {
-    margin-left: -3%;
-    margin-right: -3%;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #fff;
+  margin-left: -3%;
+  margin-right: -3%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
 }
 
 .card.rarity3 .card-front .card-info p:last-child span,
 .card.rarity4 .card-front .card-info p:last-child span,
 .card.rarity5 .card-front .card-info p:last-child span {
-    padding-top: 20px;
-    padding-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .card.rarity3 .card-front .gen-image-btn,
 .card.rarity4 .card-front .gen-image-btn,
 .card.rarity5 .card-front .gen-image-btn {
-    position: relative;
-    left: initial;
-    right: 10px;
-    bottom: initial;
-    top: 100px;
+  position: relative;
+  left: initial;
+  right: 10px;
+  bottom: initial;
+  top: 100px;
 }
 
 #scenario-list-container {
-    text-align: right;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    max-height: 50vh;
-    overflow-y: auto;
+  text-align: right;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .scenario-list-container,
 .scenario-wizard-section,
 .api-key-section,
 .element-section {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .scenario-list {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    width: 100%;
-    padding: 20px 10px;
-    box-sizing: border-box;
-    border: 1px solid #876d51;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  border: 1px solid #876d51;
 }
 
 .accordion-content .scenario-list:first-child {
-    border-top: none;
+  border-top: none;
 }
 
 .scenario-list + .scenario-list {
-    border-top: none;
+  border-top: none;
 }
 
 .scenario-list.selected {
-    border: 1px solid #ff0;
+  border: 1px solid #ff0;
 }
 
 .scenario-list:nth-child(odd) {
-    background-color: #00000069;
+  background-color: #00000069;
 }
 
 .scenario-list .info {
-    display: inline-block;
-    line-height: 1.2rem;
-    box-sizing: border-box;
-    text-align: left;
-    width: 100%;
+  display: inline-block;
+  line-height: 1.2rem;
+  box-sizing: border-box;
+  text-align: left;
+  width: 100%;
 }
 
 .scenario-list .buttons {
-    box-sizing: border-box;
-    display: flex;
-    margin-left: auto;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: right;
-    flex-wrap: wrap;
+  box-sizing: border-box;
+  display: flex;
+  margin-left: auto;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: right;
+  flex-wrap: wrap;
 }
 
 .scenario-list .buttons .left-button {
-    margin-right: auto;
+  margin-right: auto;
 }
 
 .scenario-wizard-section {
-    margin-top: 40px;
-    margin-bottom: 40px;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
 
 .element-section button {
-    margin: 0;
+  margin: 0;
 }
 
 /* ▼ 倉庫ヘッダー全体の横並びレイアウト */
 .warehouse-header-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* 画面中央に置きたい場合 */
-    width: calc(90% - 40px);
-    margin: 0 auto 10px;
-    gap: 10px;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 画面中央に置きたい場合 */
+  width: calc(90% - 40px);
+  margin: 0 auto 10px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .warehouse-left,
 .warehouse-center,
 .warehouse-right {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
 }
 
 .warehouse-center {
-    justify-content: center;
+  justify-content: center;
 }
 
 .warehouse-left {
-    justify-content: left;
+  justify-content: left;
 }
 
 .warehouse-right {
-    justify-content: right;
+  justify-content: right;
 }
 
 @media (max-width: 700px) {
-    .warehouse-tabs {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+  .warehouse-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    .warehouse-tab {
-        min-width: 5rem;
-    }
+  .warehouse-tab {
+    min-width: 5rem;
+  }
 
-    .warehouse-header-bar {
-        flex-direction: column;
-        width: 100%;
-    }
+  .warehouse-header-bar {
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
 /* タブの見た目 */
 .warehouse-tabs {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 /* ソートUI */
 #warehouse-sort-dropdown {
-    box-sizing: border-box;
-    height: 3rem;
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #666;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
+  box-sizing: border-box;
+  height: 3rem;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 
 #warehouse-sort-dropdown:focus {
-    outline: 2px solid #4caf50;
+  outline: 2px solid #4caf50;
 }
 
 #warehouse-sort-direction-btn {
-    width: 36px;
-    height: 36px;
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #666;
-    border-radius: 4px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  width: 36px;
+  height: 36px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 #warehouse-sort-direction-btn:hover {
-    background-color: #444;
+  background-color: #444;
 }
 
 #stop-bgm-button {
-    margin: 0;
+  margin: 0;
 }
 
 .close-warehouse-btn {
-    margin: 0;
-    display: flex;
-    right: 20px;
-    top: 20px;
-    min-width: initial;
-    min-height: initial;
-    position: fixed;
-    z-index: 10;
-    border-radius: 50%;
-    height: 50px;
-    width: 50px;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-    max-width: initial;
-    max-height: initial;
+  margin: 0;
+  display: flex;
+  right: 20px;
+  top: 20px;
+  min-width: initial;
+  min-height: initial;
+  position: fixed;
+  z-index: 10;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  max-width: initial;
+  max-height: initial;
 }
 
 button.important {
-    margin: 0;
-    background-color: #2196f3;
-    font-size: 1.4rem;
-    padding: 20px 35px;
-    border-color: #2196f3;
+  margin: 0;
+  background-color: #2196f3;
+  font-size: 1.4rem;
+  padding: 20px 35px;
+  border-color: #2196f3;
 }
 
 #start-new-scenario-button:hover {
-    background-color: #45a049;
-    border-color: #45a049;
+  background-color: #45a049;
+  border-color: #45a049;
 }
 
 #toggle-history-button,
 #change-bg-button {
-    position: relative;
-    z-index: 1;
-    font-size: 0.7rem;
+  position: relative;
+  z-index: 1;
+  font-size: 0.7rem;
 }
 
 #token-adjust-button {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }
 
 #back-to-menu {
-    position: relative;
-    z-index: 1;
-    font-size: 0.7rem;
+  position: relative;
+  z-index: 1;
+  font-size: 0.7rem;
 }
 #open-tutorial-list-button {
-    position: relative;
-    margin-right: auto;
+  position: relative;
+  margin-right: auto;
 }
 #save-load-button {
-    position: relative;
+  position: relative;
 }
 #view-all-sections-button {
-    position: absolute;
-    z-index: 1;
-    left: 20px;
+  position: absolute;
+  z-index: 1;
+  left: 20px;
 }
 
 #clear-ending-button,
 #ending-button {
-    position: relative;
+  position: relative;
 }
 
 #get-card-button {
-    position: absolute;
-    left: 250px;
-    margin: 0;
+  position: absolute;
+  left: 250px;
+  margin: 0;
 }
 
 #image-auto-generate-button {
-    width: 10rem;
+  width: 10rem;
 }
 
 .r-flexbox {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: right;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: right;
 }
 
 .l-flexbox {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: left;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: left;
 }
 
 @media (max-width: 900px) {
-    .mobile-col {
-        flex-direction: column;
-        margin-bottom: 20px;
-    }
+  .mobile-col {
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
 }
 
 .s-flexbox {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .c-flexbox {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 #player-action {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 /* ----- ステップ0のパーティ選択用クラス ----- */
 
 /* 1行ぶんの枠 */
 .wizard-party-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 
-    /* 背景を少し透過した感じにするなど */
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    transition: background-color 0.2s;
+  /* 背景を少し透過した感じにするなど */
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
 /* ホバー時に少し明るくなる */
 .wizard-party-row:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 /* 中にあるラジオボタンを隠して行全体クリックを可能にするための工夫 */
-.wizard-party-row input[type='radio'] {
-    /* 完全に隠したい場合 (見た目のラジオを後述の擬似要素で作る) */
-    display: none;
+.wizard-party-row input[type="radio"] {
+  /* 完全に隠したい場合 (見た目のラジオを後述の擬似要素で作る) */
+  display: none;
 }
 
 /* ラベル部分 */
 .wizard-party-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    width: 100%;
-    /* 行全体をラベルにする */
-    padding: 10px 15px;
-    /* 余白を少し広めに */
-    box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  /* 行全体をラベルにする */
+  padding: 10px 15px;
+  /* 余白を少し広めに */
+  box-sizing: border-box;
 }
 
 /* ラジオボタンの擬似要素を表示: before を丸にしてチェック状にする */
 .wizard-party-label::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    margin-right: 12px;
-    transition: background-color 0.1s, border-color 0.1s;
-    box-sizing: border-box;
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin-right: 12px;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s;
+  box-sizing: border-box;
 }
 
 /* 選択状態: input[type="radio"]:checked + .wizard-party-label::before で円を塗りつぶす */
-.wizard-party-row input[type='radio']:checked + .wizard-party-label::before {
-    background-color: #019a39;
-    /* 選択時の色 (例: 緑) */
-    border-color: #00d14c;
+.wizard-party-row input[type="radio"]:checked + .wizard-party-label::before {
+  background-color: #019a39;
+  /* 選択時の色 (例: 緑) */
+  border-color: #00d14c;
 }
 
 /* パーティ画像 */
 .wizard-party-label img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    margin-right: 10px;
-    border-radius: 4px;
-    border: 1px solid #222;
-    /* ほんの少し枠をつける */
-    background-color: #161616;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+  border: 1px solid #222;
+  /* ほんの少し枠をつける */
+  background-color: #161616;
 }
 
 /* 画像がない場合の No Image box */
 .no-image-box {
-    width: 60px;
-    height: 60px;
-    background-color: #555;
-    color: #fff;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    border: 1px solid #222;
+  width: 60px;
+  height: 60px;
+  background-color: #555;
+  color: #fff;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid #222;
 }
 
 #confirm-party-text,
 #confirm-genre-type-text {
-    text-align: left;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 10px;
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  margin-bottom: 10px;
 }
 
 #you-avatar-btn {
-    width: 10rem;
+  width: 10rem;
 }
 
 #avatar-card-preview-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    flex: 0.5;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  flex:0.5;
 }
 
 #avatar-form-container {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    justify-content: left;
-    align-items: flex-start;
-    flex: 1;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: left;
+  align-items: flex-start;
+  flex:1;
 }
 
 .accordion-header:hover {
-    background-color: #45a049;
-    border: 1px solid #45a049;
+  background-color: #45a049;
+  border: 1px solid #45a049;
 }
 
 /* アコーディオン全体のラッパ */
@@ -1424,52 +1517,54 @@ button.important {
 
 /* アコーディオンヘッダー */
 .accordion-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    position: relative;
-    text-shadow: 1px 1px 4px #000;
-    background-color: #5f4c38;
-    color: #fff;
-    box-sizing: border-box;
-    box-shadow: inset 0px 0px 8px 2px #161616;
-    border: 1px solid #876d51;
-    background-image: linear-gradient(0deg, #00000061, transparent);
-    cursor: pointer;
-    padding: 10px 15px;
-    user-select: none;
-    border-radius: 5px 5px 0 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  text-shadow: 1px 1px 4px #000;
+  background-color: #5f4c38;
+  color: #fff;
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 8px 2px #161616;
+  border: 1px solid #876d51;
+  background-image: linear-gradient(0deg, #00000061, transparent);
+  cursor: pointer;
+  padding: 10px 15px;
+  user-select: none;
+  border-radius: 5px 5px 0 0;
 }
 
 /* アコーディオンコンテンツ */
 .accordion-content {
-    overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s ease;
-    max-height: 0;
-    margin-bottom: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    padding 0.3s ease;
+  max-height: 0;
+  margin-bottom: 0;
 }
 
 .accordion-content.open {
-    padding: 0;
-    margin-bottom: 20px;
-    max-height: 50vh;
-    overflow-y: auto;
+  padding: 0;
+  margin-bottom: 20px;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 #show-hidden-scenarios {
-    width: 1rem;
-    height: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .book {
-    top: 0px;
-    transition: ease 0.3s all;
+  top: 0px;
+  transition: ease 0.3s all;
 }
 
 .book:hover {
-    top: 0;
-    display: flex;
-    z-index: 1000;
+  top: 0;
+  display: flex;
+  z-index: 1000;
 }
 
 /*
@@ -1498,107 +1593,101 @@ button.important {
    （既存の .book は触らず、そのまま利用）
 ===================================== */
 .book-wrapper {
-    perspective: 1000px;
-    display: inline-block;
-    vertical-align: bottom;
-    position: relative;
+  perspective: 1000px;
+  display: inline-block;
+  vertical-align: bottom;
+  position: relative;
 }
 
 .book-inner {
-    transform-style: preserve-3d;
-    transition: transform 0.7s ease;
-    transform-origin: left center;
-    height: 200px;
+  transform-style: preserve-3d;
+  transition: transform 0.7s ease;
+  transform-origin: left center;
+  height: 200px;
 }
 
 .book {
-    transform: rotateY(0deg);
-    backface-visibility: hidden;
-    position: absolute;
-    left: 0;
-    top: 0;
+  transform: rotateY(0deg);
+  backface-visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .book-front {
-    transform: rotateY(90deg);
-    /* ← 重要 */
-    transform-origin: 0 0;
-    backface-visibility: hidden;
-    position: absolute;
-    left: 0px;
-    top: 0;
-    height: 200px;
-    /* 7:5比率で */
-    width: 170px;
-    transition: all 1s ease;
+  transform: rotateY(90deg);
+  /* ← 重要 */
+  transform-origin: 0 0;
+  backface-visibility: hidden;
+  position: absolute;
+  left: 0px;
+  top: 0;
+  height: 200px;
+  /* 7:5比率で */
+  width: 170px;
+  transition: all 1s ease;
 }
 
 .book-front img {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    box-shadow: 0 5px 10px -4px #000;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: 0 5px 10px -4px #000;
 }
 
 .book-wrapper.facing-front .book-inner {
-    transform: rotateY(-90deg);
-    /* 背表紙 0 + (-90) = -90, 表紙 90 + (-90) = 0 */
+  transform: rotateY(-90deg);
+  /* 背表紙 0 + (-90) = -90, 表紙 90 + (-90) = 0 */
 }
 
 .book-front-title {
-    box-sizing: border-box;
-    position: absolute;
-    text-wrap: auto;
-    background-color: #00000099;
-    width: 100%;
-    padding: 5px;
-    top: 10px;
+  box-sizing: border-box;
+  position: absolute;
+  text-wrap: auto;
+  background-color: #00000099;
+  width: 100%;
+  padding: 5px;
+  top: 10px;
 }
 
 .bookshelf-board {
-    width: 100%;
-    border-bottom: 25px solid #fff;
-    border-image-source: linear-gradient(to right bottom, rgb(219 183 111), rgb(194 134 73));
+  width: 100%;
+  border-bottom: 25px solid #fff;
+  border-image-source: linear-gradient(to right bottom, rgb(219 183 111), rgb(194 134 73));
 
-    flex: 1;
-    overflow-x: auto;
-    overflow-y: hidden;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
 
-    border-bottom: 20px solid;
-    border-image-slice: 1;
-    border-image-width: 1;
-    border-image-outset: 0;
-    border-image-repeat: stretch;
+  border-bottom: 20px solid;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
 }
 
 .book-wrapper.facing-front:last-child {
-    padding-right: 140px;
+  padding-right: 140px;
 }
 
 /* ドラッグ中のドロップ候補用スタイル */
 .book-wrapper.drag-over {
-    box-sizing: border-box;
-    border-right: 15px solid transparent;
-    border-image-slice: 1;
-    border-image-width: 5px;
-    border-image-outset: 0;
-    border-image-repeat: stretch;
-    border-image-source: linear-gradient(
-        to left,
-        #fff 0px,
-        #fff 20px,
-        rgba(0, 0, 0, 0) 20px,
-        rgba(0, 0, 0, 0) 100%
-    );
+  box-sizing: border-box;
+  border-right: 15px solid transparent;
+  border-image-slice: 1;
+  border-image-width: 5px;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-source: linear-gradient(to left, #fff 0px, #fff 20px, rgba(0, 0, 0, 0) 20px, rgba(0, 0, 0, 0) 100%);
 }
 
 #edit-scenario-covercolor1,
 #edit-scenario-covercolor2 {
-    padding: 0;
+  padding: 0;
 }
 
 /* ================================
@@ -1607,135 +1696,135 @@ button.important {
 
 /* モーダル全体のコンテンツ幅をやや狭く & 中央寄せ */
 .edit-scenario-modal-content {
-    margin: 0 auto;
-    text-align: left;
-    /* 左寄せにすると入力欄が見やすい */
+  margin: 0 auto;
+  text-align: left;
+  /* 左寄せにすると入力欄が見やすい */
 }
 
 /* モーダルのタイトルと入力欄・ボタン間に余白 */
 .edit-scenario-modal-content h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
 /* 各行ごとにラベルと入力欄を横並び */
 .edit-row {
-    display: flex;
-    align-items: center;
-    max-width: 400px;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    /* 狭い画面のとき折り返す */
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  max-width: 400px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  /* 狭い画面のとき折り返す */
+  justify-content: center;
 }
 
 /* ラベルの幅・右余白などを統一 */
 .edit-row label {
-    margin: 0;
-    white-space: nowrap;
-    font-size: 1rem;
-    /* お好みで */
-    width: 100%;
+  margin: 0;
+  white-space: nowrap;
+  font-size: 1rem;
+  /* お好みで */
+  width: 100%;
 }
 
 /* ラジオボタン群は同じ行に2つ並べるだけ */
 .radio-group label {
-    margin-right: 16px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* カラーピッカーにあまり余計なpaddingをつけない */
 #edit-scenario-covercolor1,
 #edit-scenario-covercolor2 {
-    width: 40px;
-    height: 40px;
-    margin: 0;
-    padding: 0;
-    border: 1px solid #ccc;
-    cursor: pointer;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  cursor: pointer;
 }
 
 /* ボタンを横並び + 中央寄せに */
 .modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .application-bar {
-    position: fixed;
-    display: flex;
-    gap: 10px;
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    width: 100%;
-    z-index: 100;
-    justify-content: right;
-    box-shadow: 0 0 8px #000;
-    padding: 10px;
-    box-sizing: border-box;
-    flex-wrap: wrap;
+  position: fixed;
+  display: flex;
+  gap: 10px;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  z-index: 100;
+  justify-content: right;
+  box-shadow: 0 0 8px #000;
+  padding: 10px;
+  box-sizing: border-box;
+  flex-wrap: wrap;
 }
 
 .application-bar button {
-    line-height: 1.5rem;
-    min-width: 4rem;
+  line-height: 1.5rem;
+  min-width: 4rem;
 }
 
 #last-scene-images img {
-    max-height: 50vh;
-    max-width: 100%;
-    object-fit: contain;
+  max-height: 50vh;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .image-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    object-fit: contain;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  object-fit: contain;
 }
 
 #entity-list-container {
-    min-width: 60%;
-    font-family: serif;
+  min-width: 60%;
+  font-family: serif;
 }
 #entity-list-container h3 {
-    font-family: initial;
-    margin-top: 40px;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    font-weight: normal;
-    border-bottom: 1px solid;
+  font-family: initial;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: normal;
+  border-bottom: 1px solid;
 }
 
 #entity-list-container h4 {
-    font-family: initial;
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: normal;
+  font-family: initial;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: normal;
 }
 #entity-generate-button {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 .info-row {
-    padding: 10px;
+  padding: 10px;
 }
 #entity-list-container .info-row {
-    padding: 20px;
+  padding: 20px;
 }
 #entity-list-container .info-row:nth-child(odd) {
-    background-color: #2d2d2d96;
+  background-color: #2d2d2d96;
 }
 .scene-dropdown-menu {
-    display: flex;
-    flex-wrap: nowrap;
-    font-size: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  font-size: 0;
 }
 /* =========================
    画像ビューワ用の追加分
@@ -1743,217 +1832,217 @@ button.important {
 
 /* 画像ビューア用モーダル本体 */
 .image-viewer-modal {
-    /* 通常の .modal と同じ仕組みを使うので特に追加指定しない */
+  /* 通常の .modal と同じ仕組みを使うので特に追加指定しない */
 }
 
 .image-viewer-modal-content {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    /* モーダル全体を黒背景、余白ナシで中央配置 */
-    background-color: #000000d0;
-    padding: 0;
-    border-radius: 0;
-    width: 100%;
-    max-width: 100%;
-    max-height: 100vh;
-    overflow: hidden;
+  /* モーダル全体を黒背景、余白ナシで中央配置 */
+  background-color: #000000d0;
+  padding: 0;
+  border-radius: 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 /* 拡大表示する画像 */
 .viewer-image {
-    object-fit: contain;
-    max-width: 100%;
-    max-height: 100%;
-    transition: transform 0.2s ease;
-    background-color: transparent;
-    cursor: pointer; /* タップでコントロール表示 */
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  transition: transform 0.2s ease;
+  background-color: transparent;
+  cursor: pointer; /* タップでコントロール表示 */
 }
 
 /* コントロール（削除/ダウンロード/閉じる）を中央や下部に重ねる */
 .viewer-controls {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* 全体はクリック無効にしてボタンだけ有効にする */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* 全体はクリック無効にしてボタンだけ有効にする */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 非表示時 */
 .viewer-controls.hidden {
-    display: none;
+  display: none;
 }
 
 /* 中央に並ぶ削除/ダウンロードボタン */
 .viewer-controls .center-buttons {
-    pointer-events: auto; /* ここだけクリック可能 */
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    flex-direction: row;
+  pointer-events: auto; /* ここだけクリック可能 */
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-direction: row;
 
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 10px 20px;
-    border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-radius: 4px;
 }
 
 /* 閉じるボタンは下寄せ */
 .close-button-container {
-    pointer-events: auto; /* クリック有効 */
-    margin-top: 20px;
+  pointer-events: auto; /* クリック有効 */
+  margin-top: 20px;
 }
 
 .close-button-container button {
-    background-color: rgba(0, 0, 0, 0.6);
-    border-color: #ccc;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-color: #ccc;
 }
 
 /* ==== 以下、カルーセル追加スタイル ==== */
 .carousel-wrapper {
-    margin-top: 0;
-    background-color: transparent;
+  margin-top: 0;
+  background-color: transparent;
 }
 .carousel-tabs-scrollable {
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    margin-bottom: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  margin-bottom: 10px;
 }
 .carousel-tabs {
-    display: inline-flex;
-    gap: 8px;
-    flex-wrap: nowrap;
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 .carousel-tab {
-    background-color: #222;
-    color: #eee;
-    border-radius: 4px;
-    border: 1px solid #666;
-    padding: 8px 16px;
-    cursor: pointer;
-    flex-shrink: 0;
-    user-select: none;
+  background-color: #222;
+  color: #eee;
+  border-radius: 4px;
+  border: 1px solid #666;
+  padding: 8px 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
 }
 .carousel-tab.active {
-    background-color: #005f24;
+  background-color: #005f24;
 }
 .carousel-viewport {
-    overflow: hidden;
-    position: relative;
-    margin-left: -20px;
-    margin-right: -20px;
+  overflow: hidden;
+  position: relative;
+  margin-left: -20px;
+  margin-right: -20px;
 }
 .carousel-track {
-    display: flex;
-    transition: transform 0.3s;
-    will-change: transform;
-    touch-action: pan-y; /* 縦スクロールを妨げないように */
+  display: flex;
+  transition: transform 0.3s;
+  will-change: transform;
+  touch-action: pan-y; /* 縦スクロールを妨げないように */
 }
 .carousel-cell {
-    box-sizing: border-box;
-    width: 100%;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid #333;
+  box-sizing: border-box;
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
 }
 .carousel-cell h3 {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 #action-candidates-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 #player-input {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* オーバーレイ */
 #tutorial-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
 
-    /* z-indexはモーダルより上/下など適宜調整 */
-    z-index: 9998;
+  /* z-indexはモーダルより上/下など適宜調整 */
+  z-index: 9998;
 
-    /* クリックを完全に透過する */
-    pointer-events: none;
+  /* クリックを完全に透過する */
+  pointer-events: none;
 
-    display: none; /* 初期は非表示、表示したいときにJSでblockに */
+  display: none; /* 初期は非表示、表示したいときにJSでblockに */
 }
 
 /* チュートリアルダイアログ */
 #tutorial-dialog {
-    position: fixed;
-    z-index: 19999;
-    pointer-events: auto; /* ダイアログ内部はクリック可 */
-    width: 300px;
-    padding: 15px;
-    background-color: rgba(255, 242, 207, 0.88);
-    box-sizing: border-box;
+  position: fixed;
+  z-index: 19999;
+  pointer-events: auto; /* ダイアログ内部はクリック可 */
+  width: 300px;
+  padding: 15px;
+  background-color: rgba(255, 242, 207, 0.88);
+  box-sizing: border-box;
 
-    display: none; /* 初期は非表示 */
-    opacity: 0;
-    transition: opacity 0.25s;
+  display: none; /* 初期は非表示 */
+  opacity: 0;
+  transition: opacity 0.25s;
 }
 
 /* ハイライト */
 .tutorial-highlight {
-    box-shadow: 0 0 10px 5px yellow;
-    position: relative !important;
-    z-index: 19999 !important;
+  box-shadow: 0 0 10px 5px yellow;
+  position: relative !important;
+  z-index: 19999 !important;
 
-    /* クリックを透過する */
+  /* クリックを透過する */
 }
 
 .step-title {
-    font-size: 0.8rem;
-    text-align: left;
-    color: #555;
+  font-size: 0.8rem;
+  text-align: left;
+  color: #555;
 }
 
 .step-message {
-    font-size: 1.2rem;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .step-skip-container {
-    margin-top: 5px;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
 }
 
-.step-skip-container input[type='checkbox'] {
-    margin: 0;
-    height: 1rem;
-    width: 1rem;
+.step-skip-container input[type="checkbox"] {
+  margin: 0;
+  height: 1rem;
+  width: 1rem;
 }
 .step-skip-container label {
-    padding: 5px;
+  padding: 5px;
 }
 
 #tutorial-next-btn {
-    background-color: #4caf50;
-    border: 1px solid #45a049;
-    box-shadow: none;
+  background-color: #4caf50;
+  border: 1px solid #45a049;
+  box-shadow: none;
 }
 
 /* =======================
@@ -1961,240 +2050,240 @@ button.important {
 ======================= */
 /* front-menu-button: 本の正面にマウスオーバーで表示される「...」ボタン */
 .front-menu-button {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    background-color: #5f4c38;
-    border: 1px solid #876d51;
-    border-radius: 20px;
-    box-shadow: inset 0px 0px 8px 2px #161616;
-    background-image: linear-gradient(0deg, #00000061, transparent);
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    color: #fff;
-    display: none; /* 初期は非表示 */
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background-color: #5f4c38;
+  border: 1px solid #876d51;
+  border-radius: 20px;
+  box-shadow: inset 0px 0px 8px 2px #161616;
+  background-image: linear-gradient(0deg, #00000061, transparent);
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  color: #fff;
+  display: none; /* 初期は非表示 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
 }
 
 /* front-dropdown-menu: ドロップダウン本体 */
 .front-dropdown-menu {
-    position: absolute;
-    display: none;
-    flex-direction: column;
-    min-width: 140px;
-    background-color: #5f4c38;
-    border: 1px solid #876d51;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 5px 0;
-    z-index: 999;
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  min-width: 140px;
+  background-color: #5f4c38;
+  border: 1px solid #876d51;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 5px 0;
+  z-index: 999;
 }
 
 .front-dropdown-menu.open {
-    display: flex;
+  display: flex;
 }
 
 /* 個別のメニューアイテム */
 .front-dropdown-menu button {
-    background-color: #5f4c38;
-    border: none;
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    color: #fff;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #876d51;
-    cursor: pointer;
-    box-shadow: inset 0px 0px 8px 2px #161616;
-    background-image: linear-gradient(0deg, #00000061, transparent);
+  background-color: #5f4c38;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #876d51;
+  cursor: pointer;
+  box-shadow: inset 0px 0px 8px 2px #161616;
+  background-image: linear-gradient(0deg, #00000061, transparent);
 }
 
 .front-dropdown-menu button:hover {
-    background-color: #45a049 !important;
-    border: 1px solid #45a049 !important;
-    border-radius: 0;
+  background-color: #45a049 !important;
+  border: 1px solid #45a049 !important;
+  border-radius: 0;
 }
 
 .front-dropdown-menu button:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 /* 既存とは別に、ポータル用コンテナを定義する */
 #dropdown-portal {
-    box-sizing: border-box;
-    position: absolute; /* ボタンクリック時にJSでtop/leftを計算して指定 */
-    display: none; /* 初期は非表示 */
-    flex-direction: column;
-    min-width: 170px;
-    background-color: #5f4c38;
-    border: 1px solid #876d51;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 5px;
-    z-index: 9999; /* 最前面に */
+  box-sizing: border-box;
+  position: absolute; /* ボタンクリック時にJSでtop/leftを計算して指定 */
+  display: none; /* 初期は非表示 */
+  flex-direction: column;
+  min-width: 170px;
+  background-color: #5f4c38;
+  border: 1px solid #876d51;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  z-index: 9999; /* 最前面に */
 }
 
 /* ポータルを開く時は .open を付与して表示 */
 #dropdown-portal.open {
-    display: flex;
+  display: flex;
 }
 
 /* ドロップダウン内部のボタン */
 #dropdown-portal button {
-    background-color: #5f4c38;
-    border: none;
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    color: #fff;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #876d51;
-    cursor: pointer;
-    box-shadow: inset 0px 0px 8px 2px #161616;
-    background-image: linear-gradient(0deg, #00000061, transparent);
+  background-color: #5f4c38;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #876d51;
+  cursor: pointer;
+  box-shadow: inset 0px 0px 8px 2px #161616;
+  background-image: linear-gradient(0deg, #00000061, transparent);
 }
 
 #dropdown-portal button:hover {
-    background-color: #45a049 !important;
-    border: 1px solid #45a049 !important;
-    border-radius: 0;
+  background-color: #45a049 !important;
+  border: 1px solid #45a049 !important;
+  border-radius: 0;
 }
 
 #dropdown-portal button:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 #warehouse-modal {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 /* universalSaveLoad用のスロット一覧 */
 #slot-container {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-    gap: 10px;
-    margin-bottom: 20px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 #slot-items-container {
-    background-color: rgba(0, 0, 0, 0.4);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 #add-slot-button {
-    width: 100%;
-    border: none !important;
-    background-color: rgba(255, 255, 255, 0.08);
-    min-height: initial;
-    border-radius: 0;
-    line-height: 2rem;
-    padding: 0;
+  width: 100%;
+  border: none !important;
+  background-color: rgba(255, 255, 255, 0.08);
+  min-height: initial;
+  border-radius: 0;
+  line-height: 2rem;
+  padding: 0;
 }
 #add-slot-button:hover {
-    border: none !important;
-    box-shadow: none;
-    background-color: rgba(0, 255, 55, 0.39) !important;
+  border: none !important;
+  box-shadow: none;
+  background-color: rgba(0, 255, 55, 0.39) !important;
 }
 
 .save-slot-row-container {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
 }
 .save-slot-row-container button {
-    border: none;
+  border: none;
 
-    min-width: initial;
-    min-height: initial;
-    background: none;
-    box-shadow: none;
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 0;
+  min-width: initial;
+  min-height: initial;
+  background: none;
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 0;
 }
 .save-slot-row-container button:hover {
-    border: none !important;
-    background-color: rgb(255 0 0 / 39%) !important;
+  border: none !important;
+  background-color: rgb(255 0 0 / 39%) !important;
 
-    min-width: initial;
-    min-height: initial;
-    background: none;
+  min-width: initial;
+  min-height: initial;
+  background: none;
 }
 
 .save-slot-row-container button .iconmoon {
-    font-size: 0.5rem !important;
+  font-size: 0.5rem !important;
 }
 .save-slot-row {
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    margin-right: auto;
-    flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  margin-right: auto;
+  flex: 1;
 }
 .save-slot-row:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.15);
 }
-.save-slot-row input[type='radio'] {
-    display: none;
+.save-slot-row input[type="radio"] {
+  display: none;
 }
 .save-slot-row label {
-    cursor: pointer;
-    padding: 10px;
-    width: 100%;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    text-align: left;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  text-align: left;
 }
 .save-slot-row label::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid #bbb;
-    margin-right: 10px;
-    box-sizing: border-box;
-    transition: background-color 0.2s, border-color 0.2s;
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #bbb;
+  margin-right: 10px;
+  box-sizing: border-box;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
 }
-.save-slot-row input[type='radio']:checked + label::before {
-    background-color: #4caf50;
-    border-color: #4caf50;
+.save-slot-row input[type="radio"]:checked + label::before {
+  background-color: #4caf50;
+  border-color: #4caf50;
 }
 
 #info-modal {
-    z-index: 9998;
+  z-index: 9998;
 }
 
 #loading-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* 大きな値を設定 */
-    z-index: 999999;
-    display: none; /* 初期非表示 */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  /* 大きな値を設定 */
+  z-index: 999999;
+  display: none; /* 初期非表示 */
 }
 
 #loading-modal.active {
-    display: flex; /* or block */
-    justify-content: center;
-    align-items: center;
+  display: flex; /* or block */
+  justify-content: center;
+  align-items: center;
 }
 /* ================================
    Gemini モデル選択 UI 用のスタイル
    ================================ */
-.model-selector {
+   .model-selector {
     display: flex;
     flex-wrap: wrap; /* スマホ表示などで折り返すように */
     align-items: center; /* 要素を縦方向に中央揃え */
@@ -2266,8 +2355,7 @@ button.important {
    参考 script.js のメッセージ表示用スタイル
    (既存のスタイルと競合する場合は調整してください)
    ================================ */
-.story-history {
-    /* チャット履歴のコンテナ (もし使う場合) */
+.story-history { /* チャット履歴のコンテナ (もし使う場合) */
     /* border: 1px solid #555; */
     /* padding: 10px; */
     /* height: 400px; */
@@ -2276,43 +2364,37 @@ button.important {
     /* background-color: rgba(0, 0, 0, 0.1); */
 }
 
-.message {
-    /* 個々のメッセージ */
+.message { /* 個々のメッセージ */
     padding: 8px;
     margin-bottom: 8px;
     border-radius: 4px;
     line-height: 1.6;
 }
 
-.message.user {
-    /* ユーザーの発言 */
+.message.user { /* ユーザーの発言 */
     background-color: rgba(76, 175, 80, 0.2); /* 緑系の背景 */
     text-align: right;
 }
 
-.message.model {
-    /* モデルの応答 */
+.message.model { /* モデルの応答 */
     background-color: rgba(33, 150, 243, 0.2); /* 青系の背景 */
     text-align: left;
 }
 
-.message strong {
-    /* 役割表示 (あなた: / 物語:) */
+.message strong { /* 役割表示 (あなた: / 物語:) */
     display: block;
     margin-bottom: 4px;
     font-size: 0.9em;
     color: #aaa;
 }
 
-.loading {
-    /* 生成中表示 (もし使う場合) */
+.loading { /* 生成中表示 (もし使う場合) */
     /* text-align: center; */
     /* color: #888; */
     /* margin-top: 10px; */
 }
 
-.error-message {
-    /* エラーメッセージ表示 (もし使う場合) */
+.error-message { /* エラーメッセージ表示 (もし使う場合) */
     /* color: #f44336; */
     /* text-align: center; */
     /* margin-top: 10px; */
@@ -2323,34 +2405,34 @@ button.important {
 /* styles.css に追加 */
 
 .favorite-btn {
-    padding: 0px;
-    margin-right: 10px;
-    background: none !important; /* !important で他のボタンスタイルを上書き */
-    border: none !important;
-    box-shadow: none !important;
-    min-width: initial !important; /* 幅はアイコンに合わせる */
-    min-height: initial !important; /* 高さは自動 */
-    cursor: pointer;
-    vertical-align: middle; /* 他のテキストと高さを合わせる */
-    font-size: 1.2rem; /* アイコンサイズ */
-    line-height: 1rem; /* 行の高さをアイコンに合わせる */
-    color: #ccc; /* 通常の色 */
-    transition: color 0.2s, transform 0.2s; /* 色とサイズの変化を滑らかに */
+  padding: 0px;
+  margin-right: 10px;
+  background: none !important; /* !important で他のボタンスタイルを上書き */
+  border: none !important;
+  box-shadow: none !important;
+  min-width: initial !important; /* 幅はアイコンに合わせる */
+  min-height: initial !important; /* 高さは自動 */
+  cursor: pointer;
+  vertical-align: middle; /* 他のテキストと高さを合わせる */
+  font-size: 1.2rem; /* アイコンサイズ */
+  line-height: 1rem; /* 行の高さをアイコンに合わせる */
+  color: #ccc; /* 通常の色 */
+  transition: color 0.2s, transform 0.2s; /* 色とサイズの変化を滑らかに */
 }
 
 .favorite-btn:hover {
-    background-color: transparent !important;
-    border: none !important;
-    color: gold !important; /* ホバー時の色 */
+  background-color: transparent !important;
+  border: none !important;
+  color: gold !important; /* ホバー時の色 */
 }
 
 /* お気に入り状態のスタイル */
 .scenario-list.is-favorite .favorite-btn {
-    color: gold; /* お気に入り時の色 */
+  color: gold; /* お気に入り時の色 */
 }
 
 /* アイコンフォントのスタイル (icomoonに合わせて調整) */
 .favorite-btn .iconmoon {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 /* .icon-star-full:before { content: "\e9d9"; } */ /* icomoonの定義を確認 */

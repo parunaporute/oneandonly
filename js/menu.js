@@ -711,45 +711,72 @@ function initAccordion() {
     });
     console.log('Accordion initialized.');
 }
-/** シナリオリストフィルタ適用 */
+/**
+ * シナリオリストのフィルタリングとソート、表示更新を行う
+ * ★ お気に入り最上位表示、チェックボックス状態に応じた表示制御を追加
+ * @param {boolean} showHidden 「非表示シナリオも表示」チェックボックスの状態
+ */
 function applyScenarioFilter(showHidden) {
-    // (中身は変更なし - 省略せず記述 - ★後で修正必要)
     if (!scenarioListContainer || !noScenariosMessage) {
-        console.warn('Scenario list elements missing.');
+        console.warn("[Menu] Scenario list elements missing for filtering.");
         return;
     }
-    console.log(`Filtering scenarios (ShowHidden: ${showHidden})...`);
-    const rows = Array.from(scenarioListContainer.querySelectorAll('.scenario-list'));
-    const map = {};
-    rows.forEach((r) => {
-        if (r.dataset.scenarioId) map[r.dataset.scenarioId] = r;
-    });
-    const filtered = window.cachedScenarios.filter((s) => {
-        return showHidden ? true : !s.hideFromHistoryFlag;
-    });
-    filtered.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-    const ids = new Set(filtered.map((s) => String(s.scenarioId)));
-    let rem = 0,
-        add = 0,
-        upd = 0;
-    /* 差分更新ロジックは一旦コメントアウトし、全再描画に変更 */ scenarioListContainer.innerHTML =
-        '';
-    filtered.forEach((sc) => {
-        console.log(`Appending row for: ${sc.scenarioId}`);
-        const r = createScenarioRow(sc);
-        if (r) scenarioListContainer.appendChild(r);
-        else console.error('Failed create row:', sc);
-        add++;
-    });
-    console.log(`Filter applied: Added ${add}.`);
-    scenarioListContainer.style.display = filtered.length === 0 ? 'none' : '';
-    noScenariosMessage.style.display = filtered.length === 0 ? 'block' : 'none';
-    console.log(
-        `Final display - List: ${filtered.length > 0 ? 'shown' : 'hidden'}, Message: ${
-            filtered.length === 0 ? 'shown' : 'hidden'
-        }`
-    );
+    console.log(`[Menu] Applying scenario filter (ShowHidden: ${showHidden})`);
+
+    // 0. 元データ (メモリキャッシュ) を updatedAt で降順ソートしておく (これが基本順序)
+    const sortedAllScenarios = [...window.cachedScenarios].sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+
+    // 1. お気に入りシナリオを抽出 (更新日時順)
+    const favoriteScenarios = sortedAllScenarios.filter(s => s.isFavorite === true);
+    console.log(`[Menu] Found ${favoriteScenarios.length} favorite scenarios.`);
+
+    // 2. 残りのシナリオ (お気に入りでないもの) を準備
+    const nonFavoriteScenarios = sortedAllScenarios.filter(s => s.isFavorite !== true);
+
+    let displayScenarios = []; // 最終的に表示するシナリオの配列
+
+    if (showHidden) {
+        // --- チェックボックスがオンの場合: お気に入り + 残り全て (通常→非表示の順) ---
+        const normalScenarios = nonFavoriteScenarios.filter(s => s.hideFromHistoryFlag !== true);
+        const hiddenScenarios = nonFavoriteScenarios.filter(s => s.hideFromHistoryFlag === true);
+        // 各グループは既に updatedAt 順になっているはず
+        displayScenarios = [...favoriteScenarios, ...normalScenarios, ...hiddenScenarios];
+        console.log(`[Menu] Show hidden ON: Favorites(${favoriteScenarios.length}), Normal(${normalScenarios.length}), Hidden(${hiddenScenarios.length})`);
+
+    } else {
+        // --- チェックボックスがオフの場合: お気に入り + 最新3件の通常シナリオ ---
+        const normalScenarios = nonFavoriteScenarios.filter(s => s.hideFromHistoryFlag !== true);
+        const top3NormalScenarios = normalScenarios.slice(0, 3); // 更新日時順の先頭3件
+        displayScenarios = [...favoriteScenarios, ...top3NormalScenarios];
+        console.log(`[Menu] Show hidden OFF: Favorites(${favoriteScenarios.length}), Top 3 Normal(${top3NormalScenarios.length})`);
+    }
+
+    // 3. DOM 再描画 (全クリアして再構築)
+    scenarioListContainer.innerHTML = ''; // 一旦クリア
+    if (displayScenarios.length === 0) {
+        // 表示するシナリオがない場合
+        scenarioListContainer.style.display = "none";
+        noScenariosMessage.style.display = "block";
+        console.log("[Menu] No scenarios to display after filtering/sorting.");
+    } else {
+        // 表示するシナリオがある場合
+        scenarioListContainer.style.display = ""; // block や flex はコンテナによる
+        noScenariosMessage.style.display = "none";
+        let appendedCount = 0;
+        displayScenarios.forEach(scenario => {
+            const row = createScenarioRow(scenario); // 行要素作成 (下で定義)
+            if (row) {
+                scenarioListContainer.appendChild(row); // 追加
+                appendedCount++;
+            } else {
+                console.error("[Menu] Failed to create scenario row for:", scenario);
+            }
+        });
+        console.log(`[Menu] Rendered ${appendedCount} scenario rows.`);
+    }
+    console.log("[Menu] Scenario filter and render complete.");
 }
+
 /** シナリオ行DOM生成 */
 function createScenarioRow(scenario) {
     // (中身は変更なし - 省略せず記述 - ★後で修正必要)
