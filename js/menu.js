@@ -364,95 +364,89 @@ function updateApiKeyButtonStatus() {
   }
 }
 
-/** メニュー内のボタン等のイベント設定 (★ リスナー重複防止削除、チェックボックスリスナー修正) */
+/** メニュー内のボタン等のイベント設定 (★ hasAttribute チェック復活) */
 function setupMenuButtons() {
-  console.log("Setting up menu buttons (Force listener registration)...");
+    console.log("Setting up menu buttons (Re-adding duplicate listener check)..."); // ログ変更
 
-  // ★ 各要素へのリスナー登録 (hasAttribute チェックを削除)
-  setApiKeyButton?.addEventListener("click", openApiKeysModal);
-  clearCharBtn?.addEventListener("click", async () => {
-    multiModalOpen({
-      title: "全エレメントクリア確認",
-      contentHtml: "<p>生成物全削除？</p>",
-      okLabel: "削除",
-      okButtonColor: "#f44336",
-      cancelLabel: "キャンセル",
-      onOk: async () => {
-        window.characterData = [];
-        try {
-          await saveCharacterDataToIndexedDB([]);
-          console.log("Cleared char data.");
-          showToast("全エレメント削除完了");
-        } catch (e) {
-          console.error("Clear failed:", e);
-          showToast("削除失敗");
-        } // import
-      },
-    });
-  });
-  showWhBtn?.addEventListener("click", () => {
-    if (typeof showWarehouseModal === "function") showWarehouseModal("menu");
-    else console.error("showWhModal not found.");
-  }); // import
-  charCreateBtn?.addEventListener("click", () => {
-    window.location.href = "characterCreate.html";
-  });
-  partyListBtn?.addEventListener("click", () => {
-    window.location.href = "partyList.html";
-  });
-  newScenBtn?.addEventListener("click", () => {
-    window.location.href = "scenarioWizard.html";
-  });
-  customScenBtn?.addEventListener("click", () => {
-    window.location.href = "customScenario.html";
-  });
-  bookshelfBtn?.addEventListener("click", () => {
-    window.location.href = "bookshelf.html";
-  });
-  tutorialBtn?.addEventListener("click", () => {
-    window.location.href = "tutorialList.html";
-  });
-  saveLoadButton?.addEventListener("click", openSaveLoadModal); // import
-  changeBgButton?.addEventListener("click", onChangeBgButtonClick); // import
+    // ★ 各要素へのリスナー登録 (hasAttribute チェックと setAttribute を復活)
+    // APIキー設定ボタン
+    if (setApiKeyButton && !setApiKeyButton.hasAttribute('data-apikey-listener-added')) { // チェック復活
+        setApiKeyButton.addEventListener("click", openApiKeysModal);
+        setApiKeyButton.setAttribute('data-apikey-listener-added', 'true'); // 属性セット復活
+    } else if (!setApiKeyButton) { console.warn("API Key button not found."); }
 
-  // --- ▼▼▼ 非表示チェックボックスのイベントリスナー設定 (hasAttribute チェック削除) ▼▼▼ ---
-  const showHiddenCheckbox = document.getElementById("show-hidden-scenarios");
-  console.log("ここは１回だけ？");
-  if (clearCharBtn && !clearCharBtn.hasAttribute("data-listener-added")) {
-      console.log("ここは１回だけ？");
+    // 各ボタンにイベントリスナーを設定
+    if (clearCharBtn && !clearCharBtn.hasAttribute('data-listener-added')) { // チェック復活
+        clearCharBtn.addEventListener("click", async () => {
+             multiModalOpen({ title: "全エレメントクリア確認", contentHtml: "<p>生成物全削除？</p>", okLabel: "削除", okButtonColor:"#f44336", onOk: async () => { window.characterData = []; try { await saveCharacterDataToIndexedDB([]); console.log("Cleared char data."); showToast("全エレメント削除完了"); } catch(e){ console.error("Clear failed:", e); showToast("削除失敗"); } }});
+        });
+        clearCharBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (showWhBtn && !showWhBtn.hasAttribute('data-listener-added')) { // チェック復活
+        showWhBtn.addEventListener("click", () => { if(typeof showWarehouseModal === 'function') showWarehouseModal("menu"); else console.error("showWhModal not found."); });
+        showWhBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (charCreateBtn && !charCreateBtn.hasAttribute('data-listener-added')) { // チェック復活
+        charCreateBtn.addEventListener("click", () => { window.location.href = "characterCreate.html"; });
+        charCreateBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (partyListBtn && !partyListBtn.hasAttribute('data-listener-added')) { // チェック復活
+        partyListBtn.addEventListener("click", () => { window.location.href = "partyList.html"; });
+        partyListBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (newScenBtn && !newScenBtn.hasAttribute('data-listener-added')) { // チェック復活
+        newScenBtn.addEventListener("click", () => { window.location.href = "scenarioWizard.html"; });
+        newScenBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (customScenBtn && !customScenBtn.hasAttribute('data-listener-added')) { // チェック復活
+        customScenBtn.addEventListener("click", () => { window.location.href = "customScenario.html"; });
+        customScenBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (bookshelfBtn && !bookshelfBtn.hasAttribute('data-listener-added')) { // チェック復活
+        bookshelfBtn.addEventListener("click", () => { window.location.href = "bookshelf.html"; });
+        bookshelfBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (tutorialBtn && !tutorialBtn.hasAttribute('data-listener-added')) { // チェック復活
+        tutorialBtn.addEventListener("click", () => { window.location.href = "tutorialList.html"; });
+        tutorialBtn.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (saveLoadButton && typeof openSaveLoadModal === 'function' && !saveLoadButton.hasAttribute('data-listener-added')) { // チェック復活
+        saveLoadButton.addEventListener("click", openSaveLoadModal);
+        saveLoadButton.setAttribute('data-listener-added', 'true'); // 属性セット復活
+    }
+    if (changeBgButton && typeof onChangeBgButtonClick === 'function' && !changeBgButton.hasAttribute('data-bg-listener-added')) { // チェック復活
+        // ★ background.js 側でリスナーを追加している可能性を考慮し、ここではコメントアウトのままにする
+        // changeBgButton.addEventListener("click", onChangeBgButtonClick);
+        // changeBgButton.setAttribute('data-bg-listener-added', 'true');
+         console.log("[Menu] Skipping background button listener setup here.");
+    }
 
-  }
+    // --- ▼▼▼ 非表示チェックボックス (hasAttribute チェック復活) ▼▼▼ ---
+    const showHiddenCheckbox = document.getElementById("show-hidden-scenarios");
+    if (showHiddenCheckbox) {
+        // ★ リスナーが既に追加されていないか確認 (チェック復活)
+        if (!showHiddenCheckbox.hasAttribute('data-hidden-listener-added')) {
+             console.log("[Menu Debug] Adding listeners to checkbox (with check).");
+             showHiddenCheckbox.addEventListener("click", (event) => { event.stopPropagation(); });
+             showHiddenCheckbox.addEventListener("change", () => {
+                 console.log('[Menu Debug] Show hidden checkbox changed!');
+                 const isChecked = showHiddenCheckbox.checked;
+                 console.log(`[Menu] Checkbox state is now: ${isChecked}`);
+                 try { localStorage.setItem(SHOW_HIDDEN_CHECKBOX_KEY, String(isChecked)); console.log(`Saved state.`); } catch (e) { console.error("Failed save state:", e); showToast("状態保存失敗"); }
+                 applyScenarioFilter(isChecked);
+             });
+             // ★ リスナーが追加されたことを記録 (復活)
+             showHiddenCheckbox.setAttribute('data-hidden-listener-added', 'true');
+        } else {
+             console.log("[Menu] Show hidden checkbox listener was already added.");
+        }
+    } else {
+        console.warn("Show hidden checkbox (#show-hidden-scenarios) not found.");
+    }
+    // --- ▲▲▲ 非表示チェックボックス ▲▲▲ ---
 
-  if (showHiddenCheckbox) {
-    console.log("[Menu Debug] Found checkbox, adding listeners (force).");
-    // click イベント (伝播停止)
-    showHiddenCheckbox.addEventListener("click", (event) => {
-      event.stopPropagation();
-    });
-    // change イベント (状態保存とリスト更新)
-    showHiddenCheckbox.addEventListener("change", () => {
-      console.log("[Menu Debug] Show hidden checkbox changed!"); // ★ ログ確認用
-      const isChecked = showHiddenCheckbox.checked;
-      console.log(`[Menu] Checkbox state is now: ${isChecked}`);
-      try {
-        // ★ localStorage に状態を保存
-        localStorage.setItem(SHOW_HIDDEN_CHECKBOX_KEY, String(isChecked));
-        console.log(`[Menu] Saved state (${isChecked}) to localStorage.`);
-      } catch (e) {
-        console.error("Failed to save checkbox state:", e);
-        showToast("状態保存失敗"); // import
-      }
-      applyScenarioFilter(isChecked); // フィルタ適用
-    });
-    console.log("[Menu] Show hidden checkbox listeners added (force).");
-  } else {
-    console.warn("Show hidden checkbox (#show-hidden-scenarios) not found.");
-  }
-  // --- ▲▲▲ 非表示チェックボックスのイベントリスナー設定 ▲▲▲ ---
-
-  console.log("Menu buttons setup complete.");
+    console.log("Menu buttons setup complete.");
 }
-
 /** APIキー設定モーダルを開く (Gemini & Stability AI) */
 function openApiKeysModal() {
   // (中身は変更なし - 省略せず記述)
