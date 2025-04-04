@@ -746,7 +746,7 @@ function applyScenarioFilter(showHidden) {
     } else {
         // --- チェックボックスがオフの場合: お気に入り + 最新3件の通常シナリオ ---
         const normalScenarios = nonFavoriteScenarios.filter(s => s.hideFromHistoryFlag !== true);
-        const top3NormalScenarios = normalScenarios.slice(0, 3); // 更新日時順の先頭3件
+        const top3NormalScenarios = normalScenarios.slice(0, 5); // 更新日時順の先頭5件
         displayScenarios = [...favoriteScenarios, ...top3NormalScenarios];
         console.log(`[Menu] Show hidden OFF: Favorites(${favoriteScenarios.length}), Top 3 Normal(${top3NormalScenarios.length})`);
     }
