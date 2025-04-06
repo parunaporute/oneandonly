@@ -43,12 +43,6 @@ window.onload = async () => {
     // 1) IndexedDB初期化
     await initIndexedDB();
 
-    // 2) APIキー読み込み
-    const savedApiKey = localStorage.getItem('apiKey');
-    if (savedApiKey) {
-        window.apiKey = savedApiKey;
-    }
-
     // 3) URLパラメータを解析
     const urlParams = new URLSearchParams(window.location.search);
 

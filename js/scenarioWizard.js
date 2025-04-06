@@ -1077,31 +1077,13 @@ function updateSummaryUI() {
 }
 /** ローディングモーダル表示/非表示 */
 function showLoadingModal(show) {
-    let m = document.getElementById('loading-modal');
-    if (!m) {
-        m = document.createElement('div');
-        m.id = 'loading-modal';
-        Object.assign(m.style, {
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.6)',
-            zIndex: '99999',
-            display: 'none',
-            justifyContent: 'center',
-            alignItems: 'center',
-        });
-        m.innerHTML = `<div style="background:#fff; padding:20px 40px; border-radius:5px; text-align:center;"><div class="loading">処理中...</div><button id="internal-cancel-request-button" style="margin-top:15px; background:#aaa;">キャンセル(試行)</button></div>`;
-        document.body.appendChild(m);
-        m.querySelector('#internal-cancel-request-button')?.addEventListener(
-            'click',
-            onCancelFetch
-        );
-        m = document.getElementById('loading-modal');
+    const m = document.getElementById("loading-modal");
+    if (!m) return;
+    if (show) {
+      m.classList.add("active");
+    } else {
+      m.classList.remove("active");
     }
-    if (m) m.style.display = show ? 'flex' : 'none';
 }
 /** APIリクエストキャンセル試行 */
 function onCancelFetch() {

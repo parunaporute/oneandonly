@@ -17,6 +17,7 @@ import {
     getSceneEntriesByScenarioId,
     getEntitiesByScenarioId,
     updateScenario,
+    deleteSceneEntry,
 } from './indexedDB.js';
 // --- 以下の import は関数の実際の場所に合わせてパスや関数名を修正してください ---
 
@@ -212,31 +213,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /** ローディングモーダル表示/非表示 */
 export function showLoadingModal(show) {
-    let m = document.getElementById('loading-modal');
-    if (!m) {
-        m = document.createElement('div');
-        m.id = 'loading-modal';
-        Object.assign(m.style, {
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.7)',
-            zIndex: '99999',
-            display: 'none',
-            justifyContent: 'center',
-            alignItems: 'center',
-        });
-        m.innerHTML = `<div style="background:#333; color:#fff; padding:20px 40px; border-radius:5px; text-align:center;"><div class="loading">処理中...</div><button id="internal-cancel-request-button" style="margin-top:15px; background:#aaa;">キャンセル(試行)</button></div>`;
-        document.body.appendChild(m);
-        m.querySelector('#internal-cancel-request-button')?.addEventListener(
-            'click',
-            onCancelFetch
-        );
-        m = document.getElementById('loading-modal');
+    const m = document.getElementById('loading-modal');
+    if (!m) return;
+    if (show) {
+        m.classList.add('active');
+    } else {
+        m.classList.remove('active');
     }
-    if (m) m.style.display = show ? 'flex' : 'none';
 }
 
 /** APIリクエストキャンセル試行 */
@@ -884,6 +867,23 @@ window.updateSceneHistory = function () {
     his.scrollTop = his.scrollHeight;
 };
 
+/** シーン削除 */
+async function deleteScene(sceneObj) {
+    const allEntries = await getSceneEntriesByScenarioId(sceneObj.scenarioId);
+    const scRec = allEntries.find((e) => e.type === 'scene' && e.sceneId === sceneObj.sceneId);
+    if (scRec) {
+        await deleteSceneEntry(scRec.entryId);
+    }
+    const imgs = allEntries.filter((e) => e.type === 'image' && e.sceneId === sceneObj.sceneId);
+    for (const iRec of imgs) {
+        await deleteSceneEntry(iRec.entryId);
+    }
+    window.scenes = window.scenes.filter((s) => s.sceneId !== sceneObj.sceneId);
+
+    updateSceneHistory();
+    showLastScene();
+}
+
 /** 最新シーン表示 */
 export async function showLastScene() {
     const storyDiv = document.getElementById('story');
@@ -1033,7 +1033,9 @@ function containsJapanese(text) {
 =========================================================== */
 /** シーンorアクションのテキストを編集 */
 async function onSceneOrActionContentEdited(sceneObj, newText, isActionEdit) {
-    if (!window.apiKey) return;
+    const gemini = new GeminiApiClient(); // import
+    if (!gemini.isAvailable) return;
+    //    if (!window.apiKey) return;
     const oldText = isActionEdit ? sceneObj.action.content : sceneObj.content;
     if (newText.trim() === oldText.trim()) {
         return;
