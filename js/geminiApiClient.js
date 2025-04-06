@@ -1,53 +1,93 @@
 // geminiApiClient.js
-// ★ Gemini API (テキスト生成、モデルリスト) 専用クライアントに戻す
-// ★ 画像生成関連メソッド (Imagen 3, Stability AI) を削除
+// Gemini API (テキスト生成、モデルリスト) 専用クライアント
+// ★ Constructor で localStorage から API キーを読み込む
+// ★ ES Modules 形式、クラスを export
+// ★ 省略なし
 
 /**
  * Gemini API (generativelanguage.googleapis.com) との通信を行うクライアントクラス
  * 主にテキスト生成 (:generateContent) とモデルリスト取得 (:listModels) を担当
  */
 export class GeminiApiClient {
-    #geminiApiKey; // プライベートプロパティとして Gemini API キーを保持
-    #textBaseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/'; // テキスト生成/モデルリスト用
-    // #imageBaseUrl は削除
-    // #stabilityApiBaseUrl は削除
-
-    conversationHistory = []; // テキスト生成用の会話履歴
-    #stubMode = false; // スタブモードフラグ
+    #geminiApiKey = null; // プライベートプロパティとしてキーを保持
+    #textBaseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/';
+    conversationHistory = [];
+    #stubMode = false;
     #stubResponses = [
-        // テキスト生成スタブ応答例
-        'なるほど、それであなたは市場に向かうことにしたのですね。活気ある声と香辛料の匂いが漂ってきます。何を探しますか？',
-        '古いレンガ造りの図書館の扉を開けると、静寂と古い本の匂いに包まれました。どのセクションを調べますか？',
-        '路地裏に入ると、不思議な雰囲気の店を見つけました。中から猫の鳴き声が聞こえます。入ってみますか？',
-        '川沿いを歩いていると、吟遊詩人が物悲しい歌を歌っていました。話しかけてみますか？',
+        '市場ですね。活気があります。何を探しましょう？',
+        '図書館は静かです。どの棚へ？',
+        '怪しい店…猫の声がします。入りますか？',
+        '吟遊詩人がいますね。話しかけますか？',
     ];
-    // #stubImageResponse は削除
+    #isKeyValid = false; // キーが有効そうか (簡易チェック)
 
     /**
-     * @param {string} geminiApiKey Gemini API キー (Google AI Studio で取得したもの)
-     * @param {object} [options] オプション
+     * @param {object} [options={}] オプション
      * @param {boolean} [options.stubMode=false] スタブモードを有効にするか
      */
-    constructor(geminiApiKey, options = {}) {
-        if (!geminiApiKey || geminiApiKey === 'YOUR_API_KEY') {
-            console.warn(
-                '[GeminiClient] APIキーが設定されていないか、有効でない可能性があります。スタブモードでない場合、API呼び出しは失敗します。'
-            );
-        }
-        this.#geminiApiKey = geminiApiKey;
-        this.#stubMode = options.stubMode || false;
+    constructor(options = {}) {
+        this.#stubMode = options.stubMode || false; // スタブモード設定
         if (this.#stubMode) {
-            console.warn('[GeminiClient] --- GeminiApiClientはスタブモードで動作しています ---');
+            console.warn('[GeminiClient] Constructor: Initializing in STUB MODE.');
+            this.#isKeyValid = true; // スタブならキー不要だが利用可能扱い
+        } else {
+            // ★ localStorage から API キーを読み込む
+            try {
+                const storedKey = localStorage.getItem('geminiApiKey'); // menu.js で保存するキー名
+                if (storedKey && storedKey !== 'YOUR_API_KEY' && storedKey.startsWith('AIza')) {
+                    // 簡単な形式チェック
+                    this.#geminiApiKey = storedKey;
+                    this.#isKeyValid = true;
+                    console.log(
+                        '[GeminiClient] Constructor: Gemini API Key loaded and seems valid.'
+                    );
+                } else {
+                    this.#geminiApiKey = null;
+                    this.#isKeyValid = false;
+                    if (storedKey) {
+                        console.warn(
+                            '[GeminiClient] Constructor: Invalid Gemini API Key found in localStorage.'
+                        );
+                    } else {
+                        console.warn(
+                            '[GeminiClient] Constructor: Gemini API Key not found in localStorage.'
+                        );
+                    }
+                }
+            } catch (e) {
+                console.error(
+                    '[GeminiClient] Constructor: Error accessing localStorage for API Key:',
+                    e
+                );
+                this.#geminiApiKey = null;
+                this.#isKeyValid = false;
+            }
         }
-        console.log(`[GeminiClient] Initialized. Stub Mode: ${this.#stubMode}`);
+        console.log(
+            `[GeminiClient] Initialized. Stub Mode: ${this.#stubMode}, Key Set: ${!!this
+                .#geminiApiKey}`
+        );
     }
 
-    /** スタブモードが有効か */
+    /** API キーが設定されているか (スタブモードでなくてもキーが設定されているか) */
+    get hasApiKey() {
+        return !!this.#geminiApiKey;
+    }
+
+    /** API呼び出しが可能か (スタブモードか、キーが有効そうか) */
+    get isAvailable() {
+        console.log("API確認か？",this.#isKeyValid);
+        // スタブモードが true なら常に利用可能
+        // 通常モードなら #isKeyValid が true である必要がある
+        return this.#stubMode || this.#isKeyValid;
+    }
+
+    /** スタブモードか */
     get isStubMode() {
         return this.#stubMode;
     }
 
-    /** 会話履歴を初期化 */
+    /** 会話履歴初期化 */
     initializeHistory(initialHistory = []) {
         // (中身は変更なし - 省略せず記述)
         if (
@@ -69,29 +109,68 @@ export class GeminiApiClient {
     } // (中身は変更なし)
 
     /** テキスト生成 (generateContent) */
-    async generateContent(prompt, modelId) {
-        // (中身は変更なし - 省略せず記述)
-        if (!prompt?.trim()) throw new Error('テキスト生成プロンプトが空');
-        this.conversationHistory.push({ role: 'user', parts: [{ text: prompt }] });
-        console.log(`[History User] ${prompt.substring(0, 100)}...`);
+    /**
+     * 選択されたモデルを使用して Gemini API (generateContent) でテキストを生成します。
+     * 内部の会話履歴を使用・更新します。
+     * ★ systemPrompt 引数を追加
+     * @param {string} prompt ユーザーからの最新の入力プロンプト
+     * @param {string} modelId 使用するモデルのID
+     * @param {string | null} [systemPrompt=null] システムプロンプト (オプション)
+     * @returns {Promise<string>} 生成されたテキスト
+     * @throws {Error} APIキー/モデルIDがない場合、APIエラーの場合
+     */
+    async generateContent(prompt, modelId, systemPrompt = null) {
+        // ★ systemPrompt 引数追加
+        if (!prompt?.trim()) throw new Error('プロンプトが空');
+
+        // ★ システムプロンプトとユーザープロンプトを含む会話履歴を作成
+        const currentConversation = [...this.conversationHistory]; // 既存履歴コピー
+        currentConversation.push({ role: 'user', parts: [{ text: prompt }] });
+        console.log(`[GeminiClient][History User] ${prompt.substring(0, 100)}...`);
+
+        // ★ リクエストボディに含めるコンテンツ
+        const requestContents = [...currentConversation];
+
+        // ★ リクエストボディ全体
+        const requestBody = {
+            contents: requestContents,
+            // ★ generationConfig や safetySettings は必要なら追加
+        };
+
+        // ★ systemPrompt が指定されていれば、リクエストボディに追加
+        //    Gemini API の正しいフィールド名は 'system_instruction' の可能性があります (要確認)
+        if (systemPrompt && typeof systemPrompt === 'string') {
+            requestBody.system_instruction = { parts: [{ text: systemPrompt }] };
+            console.log('[GeminiClient] System prompt provided.');
+        }
+
+        // スタブモードまたはキー無効チェック
         if (this.#stubMode) {
-            /* スタブ処理 */ const stubText =
+            console.log('[GeminiClient][Stub] generateContent: Returning dummy response.');
+            const stubText =
                 this.#stubResponses[Math.floor(Math.random() * this.#stubResponses.length)];
-            this.conversationHistory.push({ role: 'model', parts: [{ text: stubText }] });
-            console.log(`[History Model Stub] ${stubText}`);
+            this.conversationHistory = currentConversation; // ★ ユーザー入力は履歴に残す
+            this.conversationHistory.push({ role: 'model', parts: [{ text: stubText }] }); // スタブ応答も履歴へ
+            console.log(`[GeminiClient][History Model Stub] ${stubText}`);
             await new Promise((r) => setTimeout(r, 500));
             return stubText;
         }
-        if (!this.#geminiApiKey) throw new Error('Gemini APIキー未設定');
-        if (!modelId) throw new Error('テキスト生成モデルID未指定');
+        if (!this.isAvailable || !this.#geminiApiKey) {
+            if (this.conversationHistory.at(-1)?.role === 'user') this.conversationHistory.pop(); // 失敗時はユーザー入力削除
+            throw new Error('Gemini APIキー未設定/無効');
+        }
+        if (!modelId) throw new Error('モデルID未指定');
+
         const apiUrl = `${this.#textBaseUrl}${modelId}:generateContent?key=${this.#geminiApiKey}`;
-        console.log(`[Gemini Text] POST ${apiUrl}`);
+        console.log(`[GeminiClient][Text] POST ${apiUrl}`);
+        // console.log("[GeminiClient][Text] Request Body:", JSON.stringify(requestBody, null, 2)); // デバッグ用
+
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: this.conversationHistory }),
-            });
+                body: JSON.stringify(requestBody),
+            }); // ★ 修正したボディを使用
             const data = await response.json();
             if (!response.ok) {
                 const msg = this.#formatApiError(response.status, data, modelId);
@@ -99,37 +178,39 @@ export class GeminiApiClient {
                     this.conversationHistory.pop();
                 throw new Error(msg);
             }
-            console.log('[Gemini Text Resp]', data);
+            console.log('[GeminiClient][Text Response]', data);
             let text = '';
             if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
                 text = data.candidates[0].content.parts[0].text;
-                if (data.candidates[0].finishReason !== 'STOP')
+                if (data.candidates[0].finishReason && data.candidates[0].finishReason !== 'STOP')
                     text += ` (End: ${data.candidates[0].finishReason})`;
+                // ★ 成功したので会話履歴を更新
+                this.conversationHistory = currentConversation;
                 this.conversationHistory.push({ role: 'model', parts: [{ text }] });
-                console.log(`[History Model] ${text.substring(0, 100)}...`);
+                console.log(`[GeminiClient][History Model] ${text.substring(0, 100)}...`);
             } else if (data.promptFeedback?.blockReason) {
                 text = `ブロック: ${data.promptFeedback.blockReason}`;
+                // ★ ブロックされた場合も履歴は更新する（ユーザー入力は残る）
+                this.conversationHistory = currentConversation;
                 this.conversationHistory.push({ role: 'model', parts: [{ text }] });
-                console.log(`[History Model Blocked]`);
+                console.log(`[GeminiClient][History Model Blocked]`);
             } else {
-                if (this.conversationHistory.at(-1)?.role === 'user')
-                    this.conversationHistory.pop();
-                throw new Error('予期しない応答形式');
+                text = `(空応答: ${data.candidates?.[0]?.finishReason || '不明'})`;
+                this.conversationHistory = currentConversation; // ユーザー入力は残す
+                this.conversationHistory.push({ role: 'model', parts: [{ text }] });
+                console.warn(`[GeminiClient][History Added - Model (Empty)]`, data);
             }
             return text;
         } catch (e) {
-            console.error('[Gemini Text] Error:', e);
+            console.error('[GeminiClient][Text] Error:', e);
+            if (this.conversationHistory.at(-1)?.role === 'user') this.conversationHistory.pop();
             throw e;
-        }
+        } // エラー時もユーザー入力削除
     }
-
-    // --- ▼▼▼ 画像生成関連メソッドは削除 ▼▼▼ ---
-    // async generateImageWithImagen3(prompt, options = {}) { ... } // 削除
-    // async generateImageContent(prompt, modelId = 'gemini-1.5-flash-latest') { ... } // 削除またはコメントアウト
-    // async generateImageWithStabilityAI(prompt, stabilityApiKey, options = {}) { ... } // ここに追加していたものも削除
-
+    
     /**
-     * 利用可能なGeminiモデルを取得する静的メソッド (テキスト生成用)
+     * 利用可能なGeminiモデルリスト取得 (静的メソッド)
+     * ★ これは静的メソッドなので、APIキーは引数で受け取る必要がある
      */
     static async listAvailableModels(apiKey) {
         // (中身は変更なし - 省略せず記述)
@@ -147,9 +228,9 @@ export class GeminiApiClient {
             const models = [];
             if (d.models?.length) {
                 const info = {
-                    'gemini-1.5-pro-latest': { tier: '高性能', desc: '...' },
-                    'gemini-1.5-flash-latest': { tier: '高速', desc: '...' },
-                    'gemini-pro': { tier: '標準', desc: '...' },
+                    'gemini-1.5-pro-latest': { tier: '高性能', description: '...' },
+                    'gemini-1.5-flash-latest': { tier: '高速', description: '...' },
+                    'gemini-pro': { tier: '標準', description: '...' },
                 };
                 d.models.forEach((m) => {
                     if (m.supportedGenerationMethods?.includes('generateContent')) {
@@ -167,7 +248,7 @@ export class GeminiApiClient {
                         models.push({
                             id,
                             displayName: m.displayName || id,
-                            description: m.description || i?.desc || '',
+                            description: m.description || i?.description || '',
                             tier: i?.tier || null,
                         });
                     }
@@ -188,9 +269,7 @@ export class GeminiApiClient {
         }
     }
 
-    /**
-     * APIエラーレスポンスを整形する内部ヘルパーメソッド
-     */
+    /** APIエラー整形 */
     #formatApiError(status, errorData, modelId = '') {
         // (中身は変更なし - 省略せず記述)
         const detail = errorData?.error?.message || '不明';
@@ -213,4 +292,4 @@ export class GeminiApiClient {
     }
 } // End of GeminiApiClient class
 
-console.log('[GeminiClient] geminiApiClient.js loaded (Gemini Text/ListModels only).'); // ログ修正
+console.log('[GeminiClient] geminiApiClient.js loaded (Constructor reads API key).');

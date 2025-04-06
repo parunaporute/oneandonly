@@ -222,7 +222,6 @@ export async function generateNewBackground() {
         });
     } finally {
         if (generatingModal && typeof generatingModal.close === 'function') {
-            debugger;
             generatingModal.close();
         }
         // ★ 成功した場合のみ選択モーダルを開く

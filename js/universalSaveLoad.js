@@ -21,9 +21,38 @@ import {
     deleteUniversalSlot as dbDeleteUniversalSlot,
 } from './indexedDB.js';
 import { showToast } from './common.js';
+import { loadScenarioData } from './sceneManager.js'; // ← この行を追加！
 // DOMPurify はグローバルにある想定
 
 // --- セーブ/ロード モーダル関連 ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[UniversalSaveLoad] DOMContentLoaded fired.'); // (1) リスナー実行確認
+
+    const saveLoadButton = document.getElementById('save-load-button');
+    console.log('[UniversalSaveLoad] saveLoadButton element:', saveLoadButton); // (2) ボタン要素を取得できたか確認
+
+    if (saveLoadButton) {
+        console.log('[UniversalSaveLoad] Adding click listener to #save-load-button'); // (3) リスナー追加処理が実行されるか確認
+
+        // クリックされた時の処理を無名関数で囲み、その中でログ出力と関数呼び出しを行う
+        saveLoadButton.addEventListener('click', () => {
+            console.log('[UniversalSaveLoad] #save-load-button clicked!'); // (4) ボタンクリックが検知されたか確認
+
+            // openSaveLoadModal が関数として存在するか確認してから呼び出す
+            if (typeof openSaveLoadModal === 'function') {
+                console.log('[UniversalSaveLoad] Calling openSaveLoadModal...'); // (5) 関数呼び出しが試みられるか確認
+                openSaveLoadModal(); // 実際の関数呼び出し
+            } else {
+                console.error('[UniversalSaveLoad] openSaveLoadModal function is not defined!'); // (5') 関数が見つからない場合のエラーログ
+                alert('エラー: モーダルを開く関数が見つかりません。');
+            }
+        });
+    } else {
+        // もしボタン要素が見つからない場合
+        console.warn('[UniversalSaveLoad] #save-load-button element not found!');
+    }
+});
 
 /**
  * セーブ／ロード用モーダルを multiModal で開く。
@@ -475,11 +504,15 @@ export async function doLoadScenarioFromSlot(slotData) {
         }
         await Promise.all(addProms);
         console.log(`Added ${scenes.length} scenes.`);
-        if (typeof window.loadScenarioData === 'function') {
-            await window.loadScenarioData(sId);
+        // ★ 修正箇所: window を使わず、import した関数を直接呼び出す
+        if (typeof loadScenarioData === 'function') {
+            // import した関数があるか確認
+            await loadScenarioData(sId); // 直接呼び出し (window. を削除)
             console.log(`Scenario ${sId} reloaded.`);
         } else {
-            console.warn('loadScenarioData not found.');
+            // この else は import が正しければ通常通りません
+            console.error('loadScenarioData function is not imported or not found!');
+            showToast('エラー: シナリオ再読込関数の呼び出しに失敗しました');
         }
     } catch (e) {
         console.error(`Failed load from slot ${sId}:`, e);

@@ -1,223 +1,124 @@
 /* indexedDB.js */
-/* ★ scenarios ストアに isFavorite インデックスを追加 */
-/* ★ DBバージョンを更新 (例: 18 -> 19) */
+/* ★ deleteScenarioById 内のカーソル処理と非同期管理を修正 */
+/* ★ isFavorite インデックス追加済み、DBバージョン 19 */
 /* ★ export を使用、省略なし */
 
-let db = null; // データベースオブジェクト
+let db = null;
 
-/**
- * IndexedDB データベースを開き、オブジェクトストアとインデックスを初期化（またはアップグレード）します。
- * @returns {Promise<void>} データベースの準備ができたら解決される Promise
- */
 export function initIndexedDB() {
     return new Promise((resolve, reject) => {
-        // ★ バージョン番号をインクリメント (例: 18 -> 19)
-        const request = indexedDB.open('trpgDB', 19);
+        const request = indexedDB.open('trpgDB', 19); // ★ Version 19
 
-        // データベースのバージョンが古い場合や新規作成時に実行
         request.onupgradeneeded = (event) => {
-            console.log('[IndexedDB] onupgradeneeded event triggered. Upgrading database...');
+            console.log('[IndexedDB] onupgradeneeded event triggered.');
             db = event.target.result;
-            const tx = event.target.transaction; // ★ トランザクションを取得
-
-            // characterData ストア
+            const tx = event.target.transaction;
+            // (各ストア定義 - isFavorite インデックス追加済み)
             if (!db.objectStoreNames.contains('characterData')) {
-                console.log('[IndexedDB] Creating object store: characterData');
                 db.createObjectStore('characterData', { keyPath: 'id' });
             }
-
-            // scenarios ストア (★ isFavorite インデックス追加)
             let scenarioStore;
             if (!db.objectStoreNames.contains('scenarios')) {
-                console.log('[IndexedDB] Creating object store: scenarios');
                 scenarioStore = db.createObjectStore('scenarios', {
                     keyPath: 'scenarioId',
                     autoIncrement: true,
                 });
-                if (!scenarioStore.indexNames.contains('updatedAt')) {
-                    scenarioStore.createIndex('updatedAt', 'updatedAt', {
-                        unique: false,
-                    });
-                }
-                // ★ 新規作成時に isFavorite インデックスを追加
-                if (!scenarioStore.indexNames.contains('isFavorite')) {
-                    console.log("[IndexedDB] Creating index 'isFavorite' on new scenarios store.");
-                    scenarioStore.createIndex('isFavorite', 'isFavorite', {
-                        unique: false,
-                    });
-                }
+                scenarioStore.createIndex('updatedAt', 'updatedAt', { unique: false });
+                scenarioStore.createIndex('isFavorite', 'isFavorite', { unique: false });
             } else {
-                // 既存ストアの場合、トランザクションから取得してインデックス確認・追加
-                console.log('[IndexedDB] Checking existing store: scenarios');
                 if (tx) {
                     scenarioStore = tx.objectStore('scenarios');
-                    if (!scenarioStore.indexNames.contains('isFavorite')) {
-                        console.log(
-                            "[IndexedDB] Creating index 'isFavorite' on existing scenarios store."
-                        );
-                        scenarioStore.createIndex('isFavorite', 'isFavorite', {
-                            unique: false,
-                        });
-                    }
-                    // 既存の updatedAt インデックスも確認 (念のため)
-                    if (!scenarioStore.indexNames.contains('updatedAt')) {
-                        console.log(
-                            "[IndexedDB] Creating index 'updatedAt' on existing scenarios store."
-                        );
-                        scenarioStore.createIndex('updatedAt', 'updatedAt', {
-                            unique: false,
-                        });
-                    }
-                } else {
-                    console.error(
-                        '[IndexedDB] Could not get transaction during upgrade for scenarios store.'
-                    );
+                    if (!scenarioStore.indexNames.contains('isFavorite'))
+                        scenarioStore.createIndex('isFavorite', 'isFavorite', { unique: false });
+                    if (!scenarioStore.indexNames.contains('updatedAt'))
+                        scenarioStore.createIndex('updatedAt', 'updatedAt', { unique: false });
                 }
             }
-
-            // sceneEntries ストア
             if (!db.objectStoreNames.contains('sceneEntries')) {
-                console.log('[IndexedDB] Creating object store: sceneEntries');
-                const sceneStore = db.createObjectStore('sceneEntries', {
+                const store = db.createObjectStore('sceneEntries', {
                     keyPath: 'entryId',
                     autoIncrement: true,
                 });
-                if (!sceneStore.indexNames.contains('scenarioId')) {
-                    sceneStore.createIndex('scenarioId', 'scenarioId', { unique: false });
-                }
-                if (!sceneStore.indexNames.contains('content_en')) {
-                    try {
-                        sceneStore.createIndex('content_en', 'content_en', {
-                            unique: false,
-                        });
-                    } catch (e) {
-                        console.warn("Failed index 'content_en':", e.message);
-                    }
-                }
+                store.createIndex('scenarioId', 'scenarioId', { unique: false });
+                try {
+                    store.createIndex('content_en', 'content_en');
+                } catch (e) {}
             }
-
-            // wizardState ストア
             if (!db.objectStoreNames.contains('wizardState')) {
-                console.log('[IndexedDB] Creating object store: wizardState');
                 db.createObjectStore('wizardState', { keyPath: 'id' });
             }
-
-            // parties ストア
             if (!db.objectStoreNames.contains('parties')) {
-                console.log('[IndexedDB] Creating object store: parties');
-                const partyStore = db.createObjectStore('parties', {
+                const store = db.createObjectStore('parties', {
                     keyPath: 'partyId',
                     autoIncrement: true,
                 });
-                if (!partyStore.indexNames.contains('updatedAt')) {
-                    partyStore.createIndex('updatedAt', 'updatedAt', { unique: false });
-                }
+                store.createIndex('updatedAt', 'updatedAt');
             }
-
-            // bgImages ストア
             if (!db.objectStoreNames.contains('bgImages')) {
-                console.log('[IndexedDB] Creating object store: bgImages');
-                db.createObjectStore('bgImages', {
-                    keyPath: 'id',
-                    autoIncrement: true,
-                });
+                db.createObjectStore('bgImages', { keyPath: 'id', autoIncrement: true });
             }
-
-            // sceneSummaries ストア
             if (!db.objectStoreNames.contains('sceneSummaries')) {
-                console.log('[IndexedDB] Creating object store: sceneSummaries');
-                const sumStore = db.createObjectStore('sceneSummaries', {
+                const store = db.createObjectStore('sceneSummaries', {
                     keyPath: 'summaryId',
                     autoIncrement: true,
                 });
-                if (!sumStore.indexNames.contains('chunkIndex')) {
-                    sumStore.createIndex('chunkIndex', 'chunkIndex', { unique: false });
-                }
+                store.createIndex('chunkIndex', 'chunkIndex');
             }
-
-            // endings ストア
             if (!db.objectStoreNames.contains('endings')) {
-                console.log('[IndexedDB] Creating object store: endings');
                 db.createObjectStore('endings', { keyPath: ['scenarioId', 'type'] });
             }
-
-            // avatarData ストア
             if (!db.objectStoreNames.contains('avatarData')) {
-                console.log('[IndexedDB] Creating object store: avatarData');
                 db.createObjectStore('avatarData', { keyPath: 'id' });
             }
-
-            // entities ストア
             if (!db.objectStoreNames.contains('entities')) {
-                console.log('[IndexedDB] Creating object store: entities');
-                const entStore = db.createObjectStore('entities', {
+                const store = db.createObjectStore('entities', {
                     keyPath: 'entityId',
                     autoIncrement: true,
                 });
-                if (!entStore.indexNames.contains('scenarioId')) {
-                    entStore.createIndex('scenarioId', 'scenarioId', { unique: false });
-                }
+                store.createIndex('scenarioId', 'scenarioId');
             }
-
-            // universalSaves ストア
             if (!db.objectStoreNames.contains('universalSaves')) {
-                console.log('[IndexedDB] Creating object store: universalSaves');
                 db.createObjectStore('universalSaves', { keyPath: 'slotIndex' });
             }
-
-            // modelCache ストア (任意)
             if (!db.objectStoreNames.contains('modelCache')) {
-                console.log('[IndexedDB] Creating object store: modelCache');
                 db.createObjectStore('modelCache', { keyPath: 'id' });
             }
-
             console.log('[IndexedDB] onupgradeneeded finished.');
         };
-
         request.onsuccess = (event) => {
             db = event.target.result;
-            console.log(`[IndexedDB] Database opened successfully (version ${db.version}).`);
-            // DB接続後にグローバル変数に設定 (他のファイルから参照するため)
+            console.log(`[IndexedDB] DB opened (v${db.version}).`);
             window.db = db;
             resolve();
         };
         request.onerror = (event) => {
-            console.error('[IndexedDB] Database error:', event.target.error);
+            console.error('[IndexedDB] DB error:', event.target.error);
             reject(event.target.error);
         };
         request.onblocked = () => {
-            console.warn('[IndexedDB] Database open blocked.');
-            alert('DB更新ブロック。他のタブを閉じてリロードしてください。');
-            reject(new Error('Database open blocked'));
+            console.warn('[IndexedDB] DB open blocked.');
+            alert('DB更新ブロック。他タブ閉じてリロード要。');
+            reject(new Error('DB open blocked'));
         };
     });
 }
 
 // --- トランザクションヘルパー ---
 function getStore(storeName, mode = 'readonly') {
-    // ★ window.db を使うように修正
-    if (!window.db) throw new Error('Database not initialized (window.db is null).');
+    if (!window.db) throw new Error('DB not initialized.');
     try {
         const tx = window.db.transaction(storeName, mode);
-        // トランザクションエラーハンドリング (オプション)
-        tx.onerror = (event) => {
-            console.error(
-                `[IndexedDB] Transaction error on store "${storeName}":`,
-                event.target.error
-            );
-        };
+        tx.onerror = (e) => console.error(`[DB] Tx error on ${storeName}:`, e.target.error);
         return tx.objectStore(storeName);
     } catch (e) {
-        console.error(`[IndexedDB] Error getting store "${storeName}" (mode: ${mode}):`, e);
+        console.error(`[DB] Error getting store ${storeName}:`, e);
         throw e;
     }
 }
 
-// --- 各ストアへのアクセス関数 (export 付き、省略なし) ---
-
-/** 新しいシナリオを作成 */
+// --- 各ストアアクセス関数 (export 付き、省略なし) ---
 export function createNewScenario(wizardData, title = '新シナリオ') {
-    return new Promise((resolve, reject) => {
+    /* (省略なし) */ return new Promise((resolve, reject) => {
         try {
             const store = getStore('scenarios', 'readwrite');
             const now = new Date().toISOString();
@@ -238,11 +139,9 @@ export function createNewScenario(wizardData, title = '新シナリオ') {
         }
     });
 }
-
-/** シナリオを更新 */
 export function updateScenario(scenario, noUpdateDateTimeFlag = false) {
-    return new Promise((resolve, reject) => {
-        if (!scenario?.scenarioId) return reject(new Error('Invalid scenario or ID'));
+    /* (省略なし) */ return new Promise((resolve, reject) => {
+        if (!scenario?.scenarioId) return reject(new Error('Invalid scenario'));
         try {
             const store = getStore('scenarios', 'readwrite');
             if (!noUpdateDateTimeFlag) scenario.updatedAt = new Date().toISOString();
@@ -259,10 +158,8 @@ export function updateScenario(scenario, noUpdateDateTimeFlag = false) {
         }
     });
 }
-
-/** シナリオをIDで取得 */
 export function getScenarioById(scenarioId) {
-    return new Promise((resolve, reject) => {
+    /* (省略なし) */ return new Promise((resolve, reject) => {
         if (typeof scenarioId !== 'number') return resolve(null);
         try {
             const store = getStore('scenarios');
@@ -274,10 +171,8 @@ export function getScenarioById(scenarioId) {
         }
     });
 }
-
-/** 全シナリオ取得 */
 export function listAllScenarios() {
-    return new Promise((resolve, reject) => {
+    /* (省略なし) */ return new Promise((resolve, reject) => {
         try {
             const store = getStore('scenarios');
             const req = store.getAll();
@@ -298,92 +193,171 @@ export function listAllScenarios() {
     });
 }
 
-/** シナリオ削除 (関連データも) */
+/**
+ * シナリオ削除 (関連データも) (★ イベントハンドラベースに修正 v5)
+ * @param {number} scenarioId 削除するシナリオのID
+ * @returns {Promise<void>} 削除が成功したら解決される Promise
+ */
 export function deleteScenarioById(scenarioId) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         if (!window.db) return reject(new Error('DB未初期化'));
-        if (typeof scenarioId !== 'number') return reject(new Error('不正ID'));
+        if (typeof scenarioId !== 'number' || isNaN(scenarioId)) {
+            return reject(new Error(`不正なシナリオID: ${scenarioId}`));
+        }
+
+        const storesToAccess = [
+            'scenarios',
+            'sceneEntries',
+            'entities',
+            'endings',
+            'universalSaves',
+        ];
+        let tx;
+        console.log(`[IndexedDB] Starting deletion transaction for scenario ${scenarioId}...`);
+
         try {
-            console.log(`Deleting scenario ${scenarioId}...`);
-            const stores = ['scenarios', 'sceneEntries', 'entities', 'endings', 'universalSaves'];
-            const tx = window.db.transaction(stores, 'readwrite');
-            const scStore = tx.objectStore('scenarios');
-            const seStore = tx.objectStore('sceneEntries');
-            const enStore = tx.objectStore('entities');
-            const edStore = tx.objectStore('endings');
-            const usStore = tx.objectStore('universalSaves');
-            const proms = [];
-            proms.push(
-                new Promise((res, rej) => {
-                    scStore.delete(scenarioId).onsuccess = res; /* onerrorはtxで捕捉 */
-                })
-            );
-            proms.push(
-                new Promise(async (res, rej) => {
-                    const idx = seStore.index('scenarioId');
-                    let cur = await idx.openCursor(IDBKeyRange.only(scenarioId));
-                    let c = 0;
-                    while (cur) {
-                        await seStore.delete(cur.primaryKey);
-                        c++;
-                        cur = await cur.continue();
-                    }
-                    console.log(`Deleted ${c} sceneEntries.`);
-                    res();
-                })
-            );
-            proms.push(
-                new Promise(async (res, rej) => {
-                    const idx = enStore.index('scenarioId');
-                    let cur = await idx.openCursor(IDBKeyRange.only(scenarioId));
-                    let c = 0;
-                    while (cur) {
-                        await enStore.delete(cur.primaryKey);
-                        c++;
-                        cur = await cur.continue();
-                    }
-                    console.log(`Deleted ${c} entities.`);
-                    res();
-                })
-            );
-            proms.push(
-                new Promise(async (res, rej) => {
-                    const range = IDBKeyRange.bound([scenarioId, ''], [scenarioId, '\uffff']);
-                    let cur = await edStore.openCursor(range);
-                    let c = 0;
-                    while (cur) {
-                        await edStore.delete(cur.primaryKey);
-                        c++;
-                        cur = await cur.continue();
-                    }
-                    console.log(`Deleted ${c} endings.`);
-                    res();
-                })
-            );
-            proms.push(
-                new Promise(async (res, rej) => {
-                    let cur = await usStore.openCursor();
-                    let c = 0;
-                    while (cur) {
-                        if (cur.value?.data?.scenarioId === scenarioId) {
-                            const up = { ...cur.value, data: null };
-                            await usStore.put(up);
-                            c++;
-                        }
-                        cur = await cur.continue();
-                    }
-                    console.log(`Cleared ${c} save slots.`);
-                    res();
-                })
-            );
-            await Promise.all(proms);
+            tx = window.db.transaction(storesToAccess, 'readwrite');
+            let deleteCount = {
+                scenarios: 0,
+                sceneEntries: 0,
+                entities: 0,
+                endings: 0,
+                universalSaves: 0,
+            };
+
+            // トランザクション全体のイベントハンドラ
             tx.oncomplete = () => {
-                console.log(`Deletion tx completed for ${scenarioId}.`);
+                console.log(
+                    `[IndexedDB] Deletion transaction completed for scenario ${scenarioId}. Counts:`,
+                    deleteCount
+                );
                 resolve();
             };
-            tx.onerror = (e) => reject(e.target.error);
-        } catch (e) {
-            reject(e);
+            tx.onerror = (event) => {
+                console.error(
+                    `[IndexedDB] Deletion transaction error for scenario ${scenarioId}:`,
+                    event.target.error
+                );
+                reject(event.target.error || new Error('トランザクションエラー'));
+            };
+            tx.onabort = () => {
+                console.warn(
+                    `[IndexedDB] Deletion transaction aborted for scenario ${scenarioId}.`
+                );
+                reject(new Error('トランザクションが中断'));
+            };
+
+            // 各ストアオブジェクト取得
+            const scenarioStore = tx.objectStore('scenarios');
+            const sceneEntriesStore = tx.objectStore('sceneEntries');
+            const entitiesStore = tx.objectStore('entities');
+            const endingsStore = tx.objectStore('endings');
+            const universalSavesStore = tx.objectStore('universalSaves');
+
+            // --- 1) シナリオ本体削除 ---
+            const scDeleteReq = scenarioStore.delete(scenarioId);
+            scDeleteReq.onsuccess = () => {
+                deleteCount.scenarios++;
+                console.log(`[DB] scenarios delete request issued for ${scenarioId}`);
+            };
+            // scDeleteReq.onerror は tx.onerror で捕捉
+
+            // --- 2) SceneEntries 削除 ---
+            const seIndex = sceneEntriesStore.index('scenarioId');
+            const seCursorReq = seIndex.openCursor(IDBKeyRange.only(scenarioId));
+            seCursorReq.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const key = cursor.primaryKey;
+                    const req = sceneEntriesStore.delete(key); // ★ ストアの delete を使う
+                    req.onsuccess = () => {
+                        deleteCount.sceneEntries++;
+                    };
+                    cursor.continue(); // ★ 同期的に continue
+                } else {
+                    console.log(
+                        `[DB] sceneEntries delete requests issued (approx ${deleteCount.sceneEntries}).`
+                    );
+                }
+            };
+            // seCursorReq.onerror は tx.onerror で捕捉
+
+            // --- 3) Entities 削除 ---
+            const enIndex = entitiesStore.index('scenarioId');
+            const enCursorReq = enIndex.openCursor(IDBKeyRange.only(scenarioId));
+            enCursorReq.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const key = cursor.primaryKey;
+                    const req = entitiesStore.delete(key); // ★ ストアの delete
+                    req.onsuccess = () => {
+                        deleteCount.entities++;
+                    };
+                    cursor.continue();
+                } else {
+                    console.log(
+                        `[DB] entities delete requests issued (approx ${deleteCount.entities}).`
+                    );
+                }
+            };
+            // enCursorReq.onerror は tx.onerror で捕捉
+
+            // --- 4) Endings 削除 ---
+            const endingRange = IDBKeyRange.bound([scenarioId, ''], [scenarioId, '\uffff']);
+            const edCursorReq = endingsStore.openCursor(endingRange);
+            edCursorReq.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const key = cursor.primaryKey;
+                    const req = endingsStore.delete(key); // ★ ストアの delete
+                    req.onsuccess = () => {
+                        deleteCount.endings++;
+                    };
+                    cursor.continue();
+                } else {
+                    console.log(
+                        `[DB] endings delete requests issued (approx ${deleteCount.endings}).`
+                    );
+                }
+            };
+            // edCursorReq.onerror は tx.onerror で捕捉
+
+            // --- 5) UniversalSaves クリア ---
+            const usCursorReq = universalSavesStore.openCursor();
+            usCursorReq.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    if (cursor.value?.data?.scenarioId === scenarioId) {
+                        const updatedSlot = { ...cursor.value, data: null };
+                        // ★ update リクエストを発行
+                        const req = cursor.update(updatedSlot);
+                        req.onsuccess = () => {
+                            deleteCount.universalSaves++;
+                        };
+                    }
+                    cursor.continue(); // ★ update の完了を待たずに continue
+                } else {
+                    console.log(
+                        `[DB] universalSaves update requests issued (approx ${deleteCount.universalSaves}).`
+                    );
+                }
+            };
+            // usCursorReq.onerror は tx.onerror で捕捉
+
+            // ★ ここで Promise.all は使わない。トランザクションの完了を待つ。
+        } catch (err) {
+            // トランザクション開始時などの同期エラー
+            console.error(
+                `[IndexedDB] Error starting deletion transaction for scenario ${scenarioId}:`,
+                err
+            );
+            reject(err);
+            // トランザクションが開始されていれば abort を試みる (オプション)
+            if (tx && tx.readyState !== 'done' && typeof tx.abort === 'function') {
+                try {
+                    tx.abort();
+                } catch (abortErr) {}
+            }
         }
     });
 }
@@ -507,7 +481,7 @@ export function deleteSceneSummaryByChunkIndex(chunkIndex) {
                     const proms = keys.map(
                         (k) =>
                             new Promise((res, rej) => {
-                                store.delete(k).onsuccess = res; /* onerrorはtx */
+                                store.delete(k).onsuccess = res;
                             })
                     );
                     await Promise.all(proms);
@@ -672,12 +646,7 @@ export function saveEnding(scenarioId, type, story) {
             return reject(new Error('Invalid args'));
         try {
             const store = getStore('endings', 'readwrite');
-            const rec = {
-                scenarioId,
-                type,
-                story,
-                createdAt: new Date().toISOString(),
-            };
+            const rec = { scenarioId, type, story, createdAt: new Date().toISOString() };
             const req = store.put(rec);
             req.onsuccess = resolve;
             req.onerror = (e) => reject(e.target.error);
@@ -816,32 +785,29 @@ export function deleteBgImage(id) {
 
 /* --- ユニバーサルセーブ (universalSaves) --- */
 export function ensureInitialSlots() {
-    /* (省略なし - universalSaveLoad.js に移動推奨) */ return new Promise(
-        async (resolve, reject) => {
-            try {
-                const all = await listAllSlots();
-                if (all.length > 0) {
-                    resolve();
-                    return;
-                }
-                console.log('[IndexedDB] Creating initial 5 slots.');
-                const proms = [];
-                for (let i = 1; i <= 5; i++) {
-                    const rec = {
+    /* (省略なし) */ return new Promise(async (resolve, reject) => {
+        try {
+            const all = await dbListAllSlots();
+            if (all.length > 0) {
+                resolve();
+                return;
+            }
+            console.log('[DB] Creating initial slots...');
+            const proms = [];
+            for (let i = 1; i <= 5; i++)
+                proms.push(
+                    dbPutUniversalSave({
                         slotIndex: i,
                         updatedAt: new Date().toISOString(),
                         data: null,
-                    };
-                    proms.push(putUniversalSave(rec));
-                }
-                await Promise.all(proms);
-                console.log('[IndexedDB] Initial slots created.');
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
+                    })
+                );
+            await Promise.all(proms);
+            resolve();
+        } catch (e) {
+            reject(e);
         }
-    );
+    });
 }
 export function listAllSlots() {
     /* (省略なし) */ return new Promise((resolve, reject) => {
@@ -902,18 +868,18 @@ export function deleteUniversalSlot(slotIndex) {
 
 /* --- モデルキャッシュ (modelCache) - 任意追加 --- */
 export function saveModels(models) {
-    /* (省略なし - コメントアウト中) */ console.warn('[DB] saveModels: Cache disabled.');
+    /* (省略なし - Cache disabled) */ console.warn('[DB] saveModels: Cache disabled.');
     return Promise.resolve();
 }
 export function loadModels() {
-    /* (省略なし - コメントアウト中) */ console.warn('[DB] loadModels: Cache disabled.');
+    /* (省略なし - Cache disabled) */ console.warn('[DB] loadModels: Cache disabled.');
     return Promise.resolve(null);
 }
 
 /* --- アバターデータ (avatarData) --- */
 export function saveAvatarData(avatarObj) {
     /* (省略なし) */ return new Promise((resolve, reject) => {
-        if (!avatarObj?.id) return reject(new Error('Invalid avatar or ID'));
+        if (!avatarObj?.id) return reject(new Error('Invalid avatar'));
         try {
             const store = getStore('avatarData', 'readwrite');
             const req = store.put(avatarObj);
@@ -940,3 +906,4 @@ export function loadAvatarData(id) {
 
 // --- ファイル読み込み完了ログ ---
 console.log('[IndexedDB] indexedDB.js loaded and functions exported.');
+window.initIndexedDB = initIndexedDB;
