@@ -503,7 +503,7 @@ export async function onGenerateActionCandidates() {
  * シーンの挿絵を生成 (★ Stability AI 使用)
  * @param {object} sceneObj 対象シーンオブジェクト
  */
-async function generateImageForScene(sceneObj) {
+export async function generateImageForScene(sceneObj) {
     console.log(`[SceneUI] Generating illustration for scene ${sceneObj?.sceneId}...`);
     if (!sceneObj?.sceneId || !sceneObj.content) {
         showToast('挿絵生成対象シーン情報不正');

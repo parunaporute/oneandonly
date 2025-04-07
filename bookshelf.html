@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>本棚</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <!-- 黒背景 + 白文字ベースのCSS -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- サニタイズ -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
+  <!-- zip -->
+  <script src="https://cdn.jsdelivr.net/npm/pako/dist/pako.min.js"></script>
+  <!-- 雑多 -->
+  <script type="module" src="js/common.js"></script>
+  <!-- multiModal.js -->
+  <script type="module" src="js/multiModal.js"></script>
+  <!-- 背景管理用 -->
+  <script type="module" src="js/background.js"></script>
+  <!-- 取説 -->
+  <script type="module" src="js/tutorialData.js"></script>
+  <script type="module" src="js/tutorialManager.js"></script>
+  <script type="module" src="js/universalSaveLoad.js"></script>
+</head>
+
+<body>
+  <div class="application-bar">
+    <!-- メニューに戻るボタン -->
+    <button id="back-to-menu">
+      <div class="iconmoon icon-home3"></div>戻る
+    </button>
+    <!-- 取説一覧ページへ遷移するボタン -->
+    <button id="open-tutorial-list-button">
+      <div class="iconmoon icon-book"></div>取説
+    </button>
+    <button id="save-load-button">
+      <div class="iconmoon icon-address"></div>
+      続き
+    </button>
+    <!-- 背景を変更するボタン -->
+    <button id="change-bg-button">
+      <div class="iconmoon icon-picture"></div>背景
+    </button>
+  </div>
+
+  <div class="container">
+    <h1>本棚</h1>
+    <p style="text-align:center;">本棚に収納されたシナリオが表示されます。</p>
+
+    <!-- ▼ 「アップロード」ボタン＆隠しファイル入力 -->
+    <div id="upload" style="display: flex; justify-content: right;align-items: end; width: 100%; margin: 10px auto;">
+      <button>アップロード</button>
+    </div>
+    <input id="scenario-upload-input" type="file" accept=".zip" style="display: none;" />
+
+    <!-- ▼ 棚とリストを左右に配置するラッパ -->
+    <div style="display: flex; gap: 20px; flex-direction: column;">
+
+      <!-- 1. 右スクロール可能な本棚 -->
+      <div id="bookshelf-scroll-area" style="
+        height: 250px;
+        box-sizing: border-box;
+        overflow: auto;
+        flex: 1;
+        padding-top: 45px;
+        padding-bottom: 25px;
+        overflow-x: auto;
+        background-image:
+          linear-gradient(
+            180deg,
+            #ffffff00 0%,
+            #ffffff00 215px,
+            rgb(0 0 0 / 0%) 237px,
+            rgb(0 0 0 / 50%) 246px,
+            rgb(255 173 105) 246px
+          ),
+          linear-gradient(
+            180deg,
+            #dd7f37 0%,
+            rgb(233 168 104) 25px,
+            rgb(0 0 0 / 62%) 25px,
+            rgb(0 0 0 / 0%) 34px,
+            rgb(194 113 73 / 0%) 20px
+          ),
+          linear-gradient(0, #b37417, #ffbb6f);
+        white-space: nowrap;
+      ">
+        <div id="bookshelf-container" style="display: flex; flex-direction: row; gap: 0px; padding-left: 5px;"></div>
+      </div>
+
+      <!-- 2. リスト表示（本一覧） -->
+      <div id="bookshelf-list-panel" style="
+        min-height: 50vh;
+        max-height: 60vh;
+        overflow: auto;
+      ">
+        <div class="accordion">
+          <!-- ヘッダー -->
+          <div class="accordion-header" id="bookshelf-list-header">
+            本一覧
+          </div>
+          <!-- コンテンツ -->
+          <div class="accordion-content" id="bookshelf-list-content">
+            <div id="bookshelf-list-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ▼ ドロップダウン配置用要素 (body直下) -->
+  <div id="dropdown-portal"></div>
+
+  <!--
+    ★ 不要モーダル群は削除しました (delete-scenario-modal等)
+    すべて multiModal へ置き換え
+  -->
+
+  <!-- ▼ スクリプト読み込み -->
+  <!-- JSZip（ZIP圧縮ライブラリ） -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <script type="module" src="js/indexedDB.js"></script>
+  <script type="module" src="js/bookshelfPage.js"></script>
+</body>
+</html>
