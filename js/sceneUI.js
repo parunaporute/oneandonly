@@ -51,12 +51,25 @@ const GEMINI_API_KEY_LS_KEY = 'geminiApiKey';
 const STABILITY_API_KEY_LS_KEY = 'stabilityApiKey';
 const PREFERRED_GEMINI_MODEL_LS_KEY = 'preferredGeminiModel';
 
-// --- 初期化・イベントリスナー ---
-// (sceneMain.js で DOMContentLoaded 後に必要な関数が呼ばれる想定)
+// --- ★ 画像ビューワの状態管理用オブジェクト初期化 (エラー修正) ★ ---
+// window.imageViewerState = { sceneObj: null, currentIndex: 0, images: [], isOpen: false };
+// 元の imageViewerState の定義に tapThreshold を追加（もし未定義なら）
+window.imageViewerState = {
+    sceneObj: null,
+    currentIndex: 0,
+    images: [],
+    isOpen: false,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
+    isDragging: false,
+    hasMoved: false, // tapThreshold を超えた移動があったか
+    didIntentionalDrag: false, // わずかでもドラッグ操作を意図したか
+    tapThreshold: 10, // タップと判定する移動距離の閾値 (px)
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('[SceneUI] DOMContentLoaded');
-
+export function intUI(){
     // カルーセル初期化
     if (typeof initCarousel === 'function' && typeof removeDuplicateIDs === 'function') {
         setTimeout(() => {
@@ -207,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
      const customCancelBtn = document.getElementById('image-custom-cancel-button');
      if (customCancelBtn) customCancelBtn.addEventListener('click', closeImagePromptModal);
      */
-}); // End of DOMContentLoaded
+}
 
 // --- UI更新系関数 ---
 
@@ -331,19 +344,27 @@ function renderAllSections() {
 // --- API呼び出し関連 ---
 
 /**
- * 回答候補を生成 (★ Gemini API 使用)
+ * 回答候補を生成 (★ Gemini API でJSON出力を指示し、JSでシャッフルする修正版)
  */
-async function onGenerateActionCandidates() {
-    console.log('[SceneUI] Generating action candidates using Gemini...');
+export async function onGenerateActionCandidates() {
+    console.log('[SceneUI] Generating action candidates using Gemini (JSON format)...');
+
     const gemini = new GeminiApiClient(); // import
     if (!gemini.isAvailable) {
         showToast('Gemini APIキー未設定/無効');
         return;
-    } // import
+    }
     if (gemini.isStubMode) {
         console.warn('STUB MODE: Skip candidates');
         const c = document.getElementById('action-candidates-container');
-        if (c) c.innerHTML = '<span>スタブ候補1</span>';
+        // スタブモードでも複数のボタンを表示する例
+        if (c)
+            c.innerHTML = ['探索する', '話しかける', '休憩する', '踊る']
+                .sort(() => 0.5 - Math.random()) // スタブもシャッフル
+                .map(
+                    (t) => `<button style="display:block; text-align:left; margin:0;">${t}</button>`
+                )
+                .join('');
         return;
     }
 
@@ -351,98 +372,130 @@ async function onGenerateActionCandidates() {
     if (!lastScene?.content) {
         showToast('行動候補生成にはシーンが必要');
         return;
-    } // import
+    }
     const lastSceneTextJa = lastScene.content;
-    let conditionTextJa = '';
+
+    // クリア条件テキストの取得
+    let conditionTextJa = '(目標情報なし)';
     const wd = window.currentScenario?.wizardData; // global
     if (wd?.sections && typeof decompressCondition === 'function') {
-        /* ... */
-    } // import
+        // decompressCondition を import
+        const sorted = [...wd.sections].sort((a, b) => (a.number || 0) - (b.number || 0));
+        const firstUncleared = sorted.find((s) => !s.cleared);
+        if (firstUncleared) {
+            conditionTextJa = decompressCondition(firstUncleared.conditionZipped || '') || '?';
+        } else if (sorted.length > 0) {
+            conditionTextJa = '(全目標達成済み)';
+        }
+    } else if (wd && !wd.sections) {
+        conditionTextJa = '(セクション情報なし)';
+    } else if (typeof decompressCondition !== 'function') {
+        console.warn('decompressCondition function not imported/found.');
+        conditionTextJa = '(条件展開不可)';
+    }
 
     const candidatesContainer = document.getElementById('action-candidates-container');
-    if (candidatesContainer) candidatesContainer.innerHTML = `<div class="loading">生成中...</div>`;
-    showLoadingModal(true); // このファイル内
+    if (candidatesContainer)
+        candidatesContainer.innerHTML = `<div class="loading">選択肢生成中...</div>`;
+    showLoadingModal(true); // このファイル内で export されている想定
 
     try {
         const modelId =
             localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-        const prompt = `あなたはTRPGのGMです。
-下記シーンとセクションクリア条件を踏まえ、プレイヤーが可能な行動案を4つ提案してください。
-１：セクションのクリアに関係しそうなものを1つ
-２：妥当なものを2つ
-３：少し頭がおかしい行動案を1つ
-合計４行構成にしてください。
-順番はシャッフルしてください。
-言葉の表現でどれがクリアに関係しそうなのかわからないようにしてください。
----
-シーン：
-${lastSceneTextJa}
----
-クリア条件：
-${conditionTextJa}
-    `;
+
+        // ★★★ プロンプトをJSON出力指示に変更 ★★★
+        const prompt = `あなたはTRPGのGMアシスタントです。以下の状況に基づき、プレイヤーが次に取りうる**多様な**行動の選択肢を**4つ**提案し、その結果を必ず指定されたJSON形式で出力してください。\n\n状況:\n---\n現在のシーン:\n${lastSceneTextJa}\n---\n現在の目標（セクションクリア条件）:\n${conditionTextJa}\n---\n\n出力指示:\n- 提案する行動選択肢は4つ生成してください。\n- 各選択肢は具体的で、プレイヤーが実際に行動できる内容にしてください。\n- 多様性を意識し、探索、対話、戦闘準備、回避、あるいは少し意外な行動など、異なる方向性の選択肢を含めてください。\n- **必ず以下のJSON形式で、選択肢テキストの配列のみを出力してください。JSON以外の前置き、後書き、説明、コメント、マークダウンの \`\`\`json \`\`\` などは一切含めないでください。**\n\n出力形式 (JSON):\n{\n  "options": [\n    "選択肢のテキスト1",\n    "選択肢のテキスト2",\n    "選択肢のテキスト3",\n    "選択肢のテキスト4"\n  ]\n}`;
+        console.log('[onGenerateActionCandidates] Prompt for options (JSON format):', prompt);
 
         gemini.initializeHistory([]);
-        console.log('Calling Gemini for candidates...');
-        const responseText = await gemini.generateContent(prompt, modelId);
+        console.log('[onGenerateActionCandidates] Calling API for options...');
+        const jsonString = await gemini.generateContent(prompt, modelId); // API呼び出し (JSON文字列が返る想定)
+        console.log('[onGenerateActionCandidates] API raw response:', jsonString);
 
-        // 1. 応答テキストを改行で分割し、前後の空白を削除
-        const allLines = responseText.split('\n').map((l) => l.trim());
+        let options = [];
+        try {
+            // ★★★ JSONパース処理 (マークダウン除去含む) ★★★
+            const cleanJsonString = jsonString
+                .replace('```json', '') // 開始マーカーを除去
+                .replace('```', '') // 終了マーカーを除去
+                .trim();
+            const responseObject = JSON.parse(cleanJsonString);
 
-        // 2. "数字. " または "数字. **" で始まる行だけを抽出（選択肢候補のみ）
-        const candidateLines = allLines.filter((l) => /^\d+\.\s*\**/.test(l));
+            if (responseObject && Array.isArray(responseObject.options)) {
+                options = responseObject.options
+                    .map((opt) => String(opt).trim()) // 文字列化、トリム
+                    .filter((opt) => opt && opt.length > 1); // 空や短すぎるものを除去
+                console.log(
+                    `[onGenerateActionCandidates] Parsed ${options.length} options successfully.`
+                );
+            } else {
+                console.warn(
+                    '[onGenerateActionCandidates] Invalid JSON structure received:',
+                    cleanJsonString
+                );
+                throw new Error('AIが期待しない形式で応答しました。');
+            }
+        } catch (e) {
+            console.error(
+                '[onGenerateActionCandidates] Failed to parse JSON response:',
+                e,
+                jsonString
+            );
+            if (typeof showToast === 'function') showToast('AI応答の解析に失敗しました');
+            options = []; // パース失敗時は空にする
+        }
 
-        console.log('Filtered candidate lines:', candidateLines); // 抽出結果をログで確認
-
-        const candidatesContainer = document.getElementById('action-candidates-container');
+        // ★★★ ボタン生成処理 (シャッフル含む) ★★★
         if (candidatesContainer) {
             candidatesContainer.innerHTML = ''; // コンテナをクリア
 
-            if (candidateLines.length > 0) {
-                candidateLines.forEach((line) => {
+            if (options.length > 0) {
+                // ★ JavaScript側でシャッフル (Fisher-Yatesアルゴリズム)
+                const shuffledOptions = [...options]; // 配列をコピーしてシャッフル
+                for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledOptions[i], shuffledOptions[j]] = [
+                        shuffledOptions[j],
+                        shuffledOptions[i],
+                    ];
+                }
+                console.log('[onGenerateActionCandidates] Shuffled options:', shuffledOptions);
+
+                // シャッフル後の配列でボタン生成
+                shuffledOptions.forEach((optionText) => {
                     const btn = document.createElement('button');
-
-                    // 3. 抽出した行から不要な部分を除去してボタンテキストを整形
-                    let buttonText = line
-                        .replace(/^\d+\.\s*/, '') // 先頭の "数字. " を削除
-                        .replace(/\*\*(.*?)\*\*/g, '$1') // Markdown太字 "**Text**" を "Text" に
-                        .replace(/\s*\(例:.*?\)$/, '') // 末尾の "(例:...)" を削除
-                        .trim(); // 再度トリム
-
-                    // 4. さらに "探索：" のような接頭辞も削除 (必要に応じて追加)
-                    buttonText = buttonText.replace(/^(探索|戦闘準備|交渉|撤退)：\s*/, '').trim();
-
-                    if (buttonText) {
-                        // テキストが空でなければボタンを追加
-                        btn.textContent = buttonText;
-                        btn.style.display = 'block';
-                        btn.style.textAlign = 'left';
-                        btn.style.margin = '0';
-                        btn.addEventListener('click', () => {
-                            const playerInput = document.getElementById('player-input');
-                            if (playerInput) {
-                                playerInput.value = btn.textContent; // 整形後のテキストを設定
-                            }
-                        });
-                        candidatesContainer.appendChild(btn);
-                    } else {
-                        // テキストが空になった場合はログに残す (デバッグ用)
-                        console.warn('Button text became empty after processing:', line);
-                    }
+                    btn.textContent = optionText; // JSONから取得したテキストをそのまま設定
+                    btn.style.display = 'block';
+                    btn.style.textAlign = 'left';
+                    btn.style.margin = '0';
+                    btn.addEventListener('click', () => {
+                        const playerInput = document.getElementById('player-input');
+                        if (playerInput) {
+                            playerInput.value = btn.textContent;
+                        }
+                        // ★ オプション: クリックで候補を消す or チェックボックスをオフにする
+                        // candidatesContainer.innerHTML = '';
+                        // const autoCbx = document.getElementById('auto-generate-candidates-checkbox');
+                        // if (autoCbx) autoCbx.checked = false;
+                    });
+                    candidatesContainer.appendChild(btn);
                 });
             } else {
-                // 適切な候補行が見つからなかった場合
-                candidatesContainer.innerHTML = `<span>候補が見つかりませんでした</span>`;
-                console.warn('No valid candidate lines found in API response:', responseText);
+                // 候補が取得できなかった場合
+                candidatesContainer.innerHTML = `<span>行動候補の生成に失敗しました</span>`;
+                console.warn('[onGenerateActionCandidates] No options generated or extracted.');
             }
+        } else {
+            console.error('[onGenerateActionCandidates] candidatesContainer not found!');
         }
-        // ★★★ ここまで修正 ★★★
     } catch (e) {
-        console.error('候補生成失敗:', e);
-        if (candidatesContainer) candidatesContainer.innerHTML = `<span>エラー</span>`;
-        showToast(`候補生成エラー: ${e.message}`); // import
+        // API呼び出し自体のエラーなど
+        console.error('候補生成API呼び出しエラー:', e);
+        if (candidatesContainer) candidatesContainer.innerHTML = `<span>候補生成エラー</span>`;
+        if (typeof showToast === 'function') showToast(`候補生成エラー: ${e.message}`);
     } finally {
-        showLoadingModal(false);
+        if (typeof showLoadingModal === 'function') showLoadingModal(false);
+        console.log('[onGenerateActionCandidates] Function finished.');
     }
 }
 
@@ -866,6 +919,383 @@ window.updateSceneHistory = function () {
     }
     his.scrollTop = his.scrollHeight;
 };
+
+/** ビューワを開く */
+function openImageViewer(sceneObj, startIndex) {
+    // 1) state にデータ保持
+    window.imageViewerState.sceneObj = sceneObj;
+    window.imageViewerState.currentIndex = startIndex;
+    window.imageViewerState.images = sceneObj.images || [];
+    window.imageViewerState.isOpen = true;
+
+    // 2) multiModal.open
+    multiModalOpen({
+        title: '画像ビューワー',
+        contentHtml: `
+        <div style="position:relative; background-color:#000; text-align:center; overflow:hidden;">
+          <img id="viewer-image-element" class="viewer-image" 
+               style="max-width:100%; max-height:80vh; transition:transform 0.2s;"
+          />
+          <div id="viewer-controls" class="viewer-controls hidden" 
+               style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none;">
+            <div class="center-buttons" style="pointer-events:auto; display:flex; gap:20px; justify-content:center; margin-top:40px;">
+              <button id="viewer-delete-button">削除</button>
+              <button id="viewer-download-button">ダウンロード</button>
+            </div>
+          </div>
+        </div>
+      `,
+        appearanceType: 'center',
+        closeOnOutsideClick: false, // 外クリックで閉じるかは好みで
+        showCloseButton: false, // 右上×は不要ならfalse
+        okLabel: 'OK', // 「OK」ボタンで閉じる
+        // 追加ボタンは再度削除/ダウンロードしてもよいが、ここでは viewer-controls 内にあるため省略
+        onOpen: () => {
+            // モーダルが描画されたので、ここで画像表示/スワイプイベント登録
+            initViewerModalContent();
+        },
+    });
+}
+
+function initViewerModalContent() {
+    const imgEl = document.getElementById('viewer-image-element');
+    const controlsEl = document.getElementById('viewer-controls');
+    const delBtn = document.getElementById('viewer-delete-button');
+    const dlBtn = document.getElementById('viewer-download-button');
+
+    if (!imgEl || !delBtn || !dlBtn) return;
+
+    // スワイプ等のイベント付与
+    addViewerTouchEvents(imgEl);
+
+    // 「削除」ボタン
+    delBtn.onclick = () => {
+        onClickViewerDelete();
+    };
+
+    // 「ダウンロード」ボタン
+    dlBtn.onclick = () => {
+        onClickViewerDownload();
+    };
+
+    // 初期表示
+    showImageInViewer();
+}
+
+function showImageInViewer() {
+    const { images, currentIndex } = window.imageViewerState;
+    const viewerImg = document.getElementById('viewer-image-element');
+    if (!viewerImg) return;
+    if (!images[currentIndex]) return;
+
+    viewerImg.src = images[currentIndex].dataUrl;
+    viewerImg.style.transform = 'translateX(0px)';
+}
+
+/** スワイプイベント (グローバルリスナー版) */
+function addViewerTouchEvents(imgEl) {
+    const state = window.imageViewerState; // エイリアス
+
+    // pointermove ハンドラ (グローバル)
+    const handlePointerMove = (e) => {
+        // isDragging チェックは不要 (リスナーが存在する = ドラッグ中)
+        e.preventDefault();
+        const dx = e.clientX - state.startX;
+        const dy = e.clientY - state.startY;
+        state.currentX = e.clientX;
+        state.currentY = e.clientY;
+
+        // わずかでも動いたらドラッグ操作意図ありとみなす
+        if (!state.didIntentionalDrag && (Math.abs(dx) > 2 || Math.abs(dy) > 2)) {
+            state.didIntentionalDrag = true;
+        }
+
+        // tapThreshold を超えたら hasMoved フラグを立てる
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (!state.hasMoved && dist > state.tapThreshold) {
+            state.hasMoved = true;
+        }
+
+        // ドラッグ中は画像位置を更新
+        imgEl.style.transform = `translateX(${dx}px)`;
+    };
+
+    // pointerup / pointercancel ハンドラ (グローバル)
+    const handlePointerEnd = (e) => {
+        // isDragging チェックは念のため
+        if (!state.isDragging) return;
+
+        // グローバルリスナーを解除
+        document.removeEventListener('pointermove', handlePointerMove, { passive: false });
+        document.removeEventListener('pointerup', handlePointerEnd);
+        document.removeEventListener('pointercancel', handlePointerEnd);
+
+        // ポインタキャプチャを解放
+        // try-catch は、万が一要素が存在しない/キャプチャされてない場合のエラーを防ぐため
+        try {
+            imgEl.releasePointerCapture(e.pointerId);
+        } catch (error) {
+            // console.warn("Failed to release pointer capture:", error);
+        }
+
+        // スワイプ/タップ判定へ
+        finishSwipeOrTap(e.type === 'pointercancel');
+    };
+
+    // pointerdown ハンドラ (画像要素に設定)
+    imgEl.onpointerdown = (e) => {
+        // メインボタン(通常マウス左クリック、タッチ)以外は無視
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        // すでにドラッグ中の場合は無視（マルチタッチ対策）
+        if (state.isDragging) return;
+
+        e.preventDefault(); // デフォルトのドラッグなどを抑制
+        e.stopPropagation(); // 親要素への伝播を抑制
+
+        state.isDragging = true;
+        state.hasMoved = false; // リセット
+        state.didIntentionalDrag = false; //リセット
+        state.startX = e.clientX;
+        state.startY = e.clientY;
+        state.currentX = e.clientX;
+        state.currentY = e.clientY;
+
+        // ポインタをキャプチャ
+        try {
+            imgEl.setPointerCapture(e.pointerId);
+        } catch (error) {
+            // console.error("Failed to set pointer capture:", error);
+            // キャプチャ失敗時はドラッグ開始しない方が安全かもしれない
+            state.isDragging = false;
+            return;
+        }
+
+        // グローバルリスナーを登録 (passive: false で preventDefault を有効に)
+        document.addEventListener('pointermove', handlePointerMove, { passive: false });
+        document.addEventListener('pointerup', handlePointerEnd);
+        document.addEventListener('pointercancel', handlePointerEnd);
+
+        // ドラッグ開始時はアニメーションを切る
+        imgEl.style.transition = 'none';
+    };
+
+    // クリックイベントの誤発火防止 (ドラッグ操作直後のクリックを無視)
+    let wasDragging = false;
+    imgEl.addEventListener(
+        'click',
+        (e) => {
+            if (wasDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+                // console.log("Suppressed click after drag");
+            }
+        },
+        true
+    ); // キャプチャフェーズで早めに処理
+
+    // finishSwipeOrTap 内で wasDragging を適切に設定する必要あり (後述)
+    window.setWasDragging = (val) => {
+        wasDragging = val;
+    };
+}
+
+/** スワイプorタップ判定 */
+function finishSwipeOrTap(isCancel) {
+    const imgEl = document.getElementById('viewer-image-element');
+    const s = window.imageViewerState;
+
+    // ドラッグ状態を解除 (リスナーは handlePointerEnd で解除済み)
+    s.isDragging = false;
+    // 直後のクリックイベントを抑制するためのフラグを設定（少し遅延させる）
+    const dragOccurred = s.didIntentionalDrag; // わずかでもドラッグしたか
+    window.setWasDragging(dragOccurred);
+    setTimeout(() => {
+        window.setWasDragging(false);
+    }, 100); // 100ms後に抑制解除
+
+    if (!imgEl) return;
+    if (isCancel) {
+        resetImagePosition(imgEl);
+        return;
+    }
+
+    // タップ判定: 意図的なドラッグ操作がなかった場合
+    if (!s.didIntentionalDrag) {
+        // console.log("Tap detected");
+        toggleViewerControls();
+        // タップの場合は位置をリセット（念のため）
+        resetImagePosition(imgEl);
+        return;
+    }
+
+    // --- 以下、スワイプ判定 ---
+    const dx = s.currentX - s.startX;
+    // スワイプとみなす閾値を調整 (例: 画面幅の 15%)
+    const swipeThreshold = window.innerWidth * 0.15; // この値は調整してください
+
+    if (Math.abs(dx) < swipeThreshold) {
+        // スワイプ距離が足りない場合は元の位置に戻す
+        // console.log("Swipe distance too short, resetting.");
+        resetImagePosition(imgEl);
+    } else {
+        // スワイプ方向に応じて次/前の画像へ
+        if (dx < 0) {
+            // console.log("Swipe left detected");
+            goNextImage();
+        } else {
+            // console.log("Swipe right detected");
+            goPrevImage();
+        }
+    }
+}
+/** バウンスバック */
+function resetImagePosition(imgEl) {
+    imgEl.style.transition = 'transform 0.2s';
+    imgEl.style.transform = 'translateX(0px)';
+    setTimeout(() => {
+        imgEl.style.transition = '';
+    }, 200);
+}
+
+/** 次へ */
+function goNextImage() {
+    const s = window.imageViewerState;
+    if (s.currentIndex < s.images.length - 1) {
+        animateSwipeTransition(-window.innerWidth);
+        s.currentIndex++;
+    } else {
+        bounceBack(-1);
+    }
+}
+
+/** 前へ */
+function goPrevImage() {
+    const s = window.imageViewerState;
+    if (s.currentIndex > 0) {
+        animateSwipeTransition(window.innerWidth);
+        s.currentIndex--;
+    } else {
+        bounceBack(1);
+    }
+}
+
+/** スワイプアニメ後に差し替え */
+function animateSwipeTransition(offset) {
+    const imgEl = document.getElementById('viewer-image-element');
+    if (!imgEl) return;
+    imgEl.style.transition = 'transform 0.2s';
+    imgEl.style.transform = `translateX(${offset}px)`;
+    setTimeout(() => {
+        showImageInViewer();
+        imgEl.style.transition = 'none';
+    }, 200);
+}
+
+/** 端で弾く */
+function bounceBack(direction) {
+    const imgEl = document.getElementById('viewer-image-element');
+    if (!imgEl) return;
+    imgEl.style.transition = 'transform 0.2s';
+    imgEl.style.transform = `translateX(${direction * 60}px)`;
+    setTimeout(() => {
+        imgEl.style.transform = 'translateX(0px)';
+    }, 200);
+    setTimeout(() => {
+        imgEl.style.transition = '';
+    }, 400);
+}
+
+/** タップ時のコントロール表示切替 */
+function toggleViewerControls() {
+    const controls = document.getElementById('viewer-controls');
+    if (!controls) return;
+    controls.classList.toggle('hidden');
+}
+/** 画像削除 (async/await版) */
+async function onClickViewerDelete() {
+    // async キーワード追加
+    const s = window.imageViewerState;
+    const { currentIndex, images } = s;
+    if (!images[currentIndex]) return;
+
+    // entryId の存在確認
+    const entryId = images[currentIndex].entryId;
+    if (!entryId) {
+        console.error('Cannot delete image: entryId is missing.');
+        alert('削除に必要な情報が見つかりません。');
+        return;
+    }
+
+    if (!confirm('この画像を削除します。よろしいですか？')) return;
+
+    // deleteSceneEntry が利用可能かチェック
+    if (typeof deleteSceneEntry !== 'function') {
+        console.error('deleteSceneEntry function is not available.');
+        alert('データベース削除機能が見つかりません。');
+        return;
+    }
+
+    showLoadingModal(true); // Loading表示開始
+
+    try {
+        await deleteSceneEntry(entryId); // await で待機
+
+        images.splice(currentIndex, 1); // メモリから削除
+
+        if (images.length === 0) {
+            // 画像がなくなったらモーダルを閉じる処理（multiModal依存）
+            const closeButton = document.querySelector(
+                '.multimodal.active .modal-footer button.cancel, .multimodal.active .modal-close-button'
+            );
+            if (closeButton) closeButton.click();
+            else console.warn('Could not find modal close button to click.');
+            // UI更新はモーダルが閉じた後でも良いかもしれない
+            if (typeof updateSceneHistory === 'function') updateSceneHistory();
+            if (typeof showLastScene === 'function') showLastScene();
+            showToast('最後の画像が削除されました。'); // Toast表示
+            return; // モーダルが閉じるので以降の処理は不要
+        }
+
+        // インデックス調整
+        if (currentIndex >= images.length) {
+            s.currentIndex = images.length - 1;
+        }
+
+        // 残りの画像を表示し、UI更新
+        showImageInViewer();
+        if (typeof updateSceneHistory === 'function') updateSceneHistory();
+        if (typeof showLastScene === 'function') showLastScene();
+        showToast('画像を削除しました。'); // Toast表示
+    } catch (err) {
+        console.error('Delete error:', err);
+        alert('削除に失敗しました: ' + err.message);
+    } finally {
+        showLoadingModal(false); // Loading表示終了
+    }
+}
+
+/** 画像ダウンロード */
+function onClickViewerDownload() {
+    const s = window.imageViewerState;
+    const { images, currentIndex } = s;
+    if (!images[currentIndex]) return;
+
+    const link = document.createElement('a');
+    link.href = images[currentIndex].dataUrl;
+    link.download = 'image.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/** ビューワを閉じる */
+function closeImageViewer() {
+    window.imageViewerState.isOpen = false;
+    const viewerModal = document.getElementById('image-viewer-modal');
+    if (viewerModal) {
+        viewerModal.classList.remove('active');
+    }
+}
 
 /** シーン削除 */
 async function deleteScene(sceneObj) {

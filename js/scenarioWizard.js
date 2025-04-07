@@ -58,7 +58,7 @@ let wizardChoice = '';
 let wizardPartyList = [];
 
 /** 指定ミリ秒待機する Promise ベースの sleep 関数 */
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // ★ localStorage キー定数
 const PREFERRED_GEMINI_MODEL_LS_KEY = 'preferredGeminiModel';
@@ -510,7 +510,8 @@ async function wizardOtherGenerate() {
     try {
         const modelId =
             localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-        const prompt = `TRPGの${categoryJa}設定の新アイデア提案。既存: <span class="math-inline">\{existingList\.join\(" / "\)\}\\nこれらと異なるユニークな</span>{categoryJa}のアイデアを**1つだけ**短い単語かフレーズで提案(提案のみ出力)。`;
+        const prompt = `TRPGの${categoryJa}設定の新アイデア提案。既存: <span class="math-inline">\{existingList\.join\(" / "\)\}\
+これらと異なるユニークな</span>{categoryJa}のアイデアを**1つだけ**短い単語かフレーズで提案(提案のみ出力)。`;
         gemini.initializeHistory([]);
         const newCandidate = await gemini.generateContent(prompt, modelId);
         const cleaned = newCandidate.replace(/["'「」]/g, '').trim();
@@ -522,7 +523,7 @@ async function wizardOtherGenerate() {
         showToast('新しい候補を生成'); // import
     } catch (err) {
         console.error('候補生成失敗:', err);
-        alert('候補生成失敗:\n' + err.message);
+        alert('候補生成失敗:' + err.message);
     } finally {
         showLoadingModal(false);
     }
@@ -657,7 +658,8 @@ function onSelectScenarioType(type) {
     const partyEl = document.getElementById('confirm-party-text');
     if (partyEl) partyEl.textContent = 'パーティ: ' + (wizardData.currentPartyName || '(未選択)');
     const confirmEl = document.getElementById('confirm-genre-type-text');
-    if (confirmEl) confirmEl.textContent = `ジャンル: ${wizardData.genre}\nタイプ: ${typeLbl}`;
+    if (confirmEl) confirmEl.textContent = `ジャンル: ${wizardData.genre}
+タイプ: ${typeLbl}`;
     document.getElementById('confirm-scenario-modal')?.classList.add('active');
 }
 /** 確認モーダルキャンセル */
@@ -665,6 +667,7 @@ function onConfirmScenarioModalCancel() {
     document.getElementById('confirm-scenario-modal')?.classList.remove('active');
     console.log('Scenario confirm cancelled.');
 }
+
 /** 確認モーダルOK → シナリオ生成処理開始 (★ 待機処理追加) */
 async function onConfirmScenarioModalOK() {
     console.log('[Wiz] Confirm scenario OK. Starting generation...');
@@ -721,64 +724,184 @@ async function onConfirmScenarioModalOK() {
     }
 }
 
-/** セクション目標生成 (★ 待機処理追加) */
+// generateSections 関数の修正版 (エラー処理修正)
+// ★★★ この関数の先頭で、必要な関数やクラスを import してください ★★★
+// import { GeminiApiClient } from './geminiApiClient.js';
+// import { generateEnglishTranslation } from './sceneManager.js'; // または翻訳関数があるファイル
+// import { zipString, sleep } from './utils.js'; // 仮: zipStringやsleepがあるファイル
+// import { saveWizardDataToIndexedDB } from './indexedDB.js';
+// import { showToast } from './common.js';
+// const PREFERRED_GEMINI_MODEL_LS_KEY = 'preferredGeminiModel'; // 必要なら定数も import または定義
+// let wizardData = {}; // ★ wizardData をグローバル参照しない場合は引数で受け取るなど変更が必要
+
 async function generateSections() {
     console.log('[Wiz] Generating sections...');
-    const gemini = new GeminiApiClient();
+    const gemini = new GeminiApiClient(); // ★ import されている想定
+
+    // グローバル変数 wizardData を参照 (または引数で渡されていること)
+    // この関数が呼ばれる時点で wizardData に genre, scenarioType, scenarioSummary, clearCondition が
+    // 設定されている必要があります。
+    if (typeof wizardData === 'undefined' || !wizardData) {
+        console.error('[Wiz] wizardData is not defined! Cannot generate sections.');
+        if (typeof showToast === 'function') showToast('エラー: ウィザードデータが見つかりません');
+        throw new Error('Wizard data missing for section generation.'); // ★ エラーをスローして中断
+    }
+
     if (!gemini.isAvailable) {
-        wizardData.sections = [];
-        return;
+        console.warn('[Wiz] Gemini API key not available. Skipping section generation.');
+        wizardData.sections = []; // APIキーなければ空
+        if (typeof saveWizardDataToIndexedDB === 'function') {
+            // ★ save関数があるか確認
+            await saveWizardDataToIndexedDB(wizardData);
+        }
+        return; // APIキーなしはエラーとせず、空セクションで完了
     }
     if (gemini.isStubMode) {
-        /* スタブ */ return;
+        console.log('[Wiz] Stub mode: Generating dummy sections.');
+        const count = Math.floor(Math.random() * 3) + 2;
+        wizardData.sections = [];
+        for (let i = 1; i <= count; i++) {
+            wizardData.sections.push({
+                number: i,
+                // ★ zipString が利用可能か確認
+                conditionZipped:
+                    typeof zipString === 'function'
+                        ? zipString(`ダミー目標 ${i}`)
+                        : btoa(unescape(encodeURIComponent(`ダミー目標 ${i}`))), // なければBase64で代替
+                conditionEn: `Dummy Goal ${i}`,
+                cleared: false,
+            });
+        }
+        if (typeof saveWizardDataToIndexedDB === 'function') {
+            // ★ save関数があるか確認
+            await saveWizardDataToIndexedDB(wizardData);
+        }
+        return;
     }
+
     const count = Math.floor(Math.random() * 3) + 2; // 2-4個
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `TRPG目標作成AIとして情報に基づき達成目標${count}個リストアップ...`; // 前と同じプロンプト
+
+    // ★★★ プロンプトを修正 ★★★
+    const genre = wizardData.genre || '指定なし';
+    const scenarioType = wizardData.scenarioType || '指定なし';
+    const summary = wizardData.scenarioSummary || '概要不明';
+    const finalGoal =
+        scenarioType === 'objective' && wizardData.clearCondition
+            ? wizardData.clearCondition
+            : '(最終目標は特に設定なし)';
+
+    const prompt = `あなたはTRPGのシナリオプランナーです。以下のシナリオ情報と最終目標に基づき、プレイヤーが最終目標に至るまでの中間ステップとなるような「セクション目標」を${count}個提案してください。
+
+シナリオ情報:
+- ジャンル: ${genre}
+- タイプ: ${scenarioType}
+- 概要: ${summary}
+- 最終目標（クリア条件）: ${finalGoal}
+
+セクション目標の生成ルール:
+- 各目標は日本語で、1行に1つ記述してください。
+- 各目標は、最終目標に至るための具体的で達成可能な行動や状態を示してください。
+- 必ず「～を発見する」「～を説得する」「～を起動させる」「～から脱出する」のように、達成したかどうかが客観的に判断しやすい動詞で始めてください。
+- 生成する目標の数は厳密に ${count} 個にしてください。
+- 目標リストのみを出力し、番号、前置き、説明、追加のコメントは一切含めないでください。
+
+${count}個のセクション目標リスト:`;
+    console.log('[Wiz] Prompt for sections (revised):', prompt);
+
     try {
         gemini.initializeHistory([]);
         const responseText = await gemini.generateContent(prompt, modelId);
         console.log('[Wiz] Raw resp (Sections):', responseText);
+
         const lines = responseText
             .split('\n')
-            .map((l) => l.trim().replace(/^[\s・\-*]\s*/, ''))
-            .filter((l) => l);
-        wizardData.sections = [];
-        if (lines.length > 0) {
-            // ★ 翻訳処理を直列化し、間に待機を入れる
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                const zipped = zipString(line);
-                let condEn = '';
-                try {
-                    // ★ 翻訳呼び出しの前に待機 (例: 1.5秒)
-                    await sleep(1500);
-                    console.log(`[Wiz] Translating section ${i + 1}: ${line}`);
-                    condEn = await generateEnglishTranslation(line); // ヘルパー関数呼び出し
-                } catch (e) {
-                    console.error(`Section ${i + 1} translation failed:`, e);
-                    condEn = '(EN translation failed)';
-                    // ★ 翻訳失敗しても次の処理に進むが、API制限に引っかかっている可能性を示唆
-                    showToast(
-                        `目標${i + 1}の翻訳でエラーが発生しました。API制限の可能性があります。`
-                    );
-                    await sleep(5000); // ★ エラー時は長めに待つ (例: 5秒)
-                }
-                wizardData.sections.push({
-                    number: i + 1,
-                    conditionZipped: zipped,
-                    conditionEn: condEn,
-                    cleared: false,
-                });
-            }
-        } else {
-            /* ダミー生成 */
+            .map((l) =>
+                l
+                    .trim()
+                    .replace(/^[\s・\-*]\s*/, '')
+                    .replace(/^\d+\.\s*/, '')
+            )
+            .filter((l) => l && l.length > 5); // 5文字以下の行は除去 (調整可能)
+        console.log('[Wiz] Parsed section lines:', lines);
+
+        // ★★★ エラー処理: 応答不足の場合 ★★★
+        if (!lines || lines.length < count) {
+            const generatedCount = lines ? lines.length : 0;
+            console.error(
+                `[Wiz] API generated only ${generatedCount} sections (expected ${count}). Throwing error.`
+            );
+            // エラーをスローして呼び出し元 (onConfirmScenarioModalOK) に伝える
+            throw new Error(
+                `セクション目標の生成数が不足しています (${generatedCount}/${count})。
+設定を見直すか、再度お試しください。`
+            );
         }
-        await saveWizardDataToIndexedDB(wizardData);
-        console.log(`[Wiz] ${wizardData.sections.length} sections generated.`);
+
+        // ★★★ 正常処理 ★★★
+        wizardData.sections = [];
+        for (let i = 0; i < lines.length; i++) {
+            // 指定数に達したらループを抜ける (APIが多めに返す可能性も考慮)
+            if (wizardData.sections.length >= count) break;
+            const line = lines[i];
+            // ★ zipString 関数が利用可能か確認
+            const zipped =
+                typeof zipString === 'function'
+                    ? zipString(line)
+                    : btoa(unescape(encodeURIComponent(line))); // なければBase64エンコードで代替
+            let condEn = '';
+            try {
+                // ★ sleep 関数が利用可能か確認
+                if (typeof sleep === 'function') await sleep(1500);
+                else await new Promise((r) => setTimeout(r, 1500));
+                console.log(`[Wiz] Translating section ${wizardData.sections.length + 1}: ${line}`);
+                // ★ generateEnglishTranslation が利用可能か確認
+                if (typeof generateEnglishTranslation === 'function') {
+                    condEn = await generateEnglishTranslation(line);
+                } else {
+                    console.warn('generateEnglishTranslation function not found, using Japanese.');
+                    condEn = line + ' (EN trans unavailable)';
+                }
+            } catch (e) {
+                console.error(`Section ${wizardData.sections.length + 1} trans failed:`, e);
+                condEn = '(EN translation failed)';
+                if (typeof showToast === 'function')
+                    showToast(`目標${wizardData.sections.length + 1}の翻訳エラー`);
+                if (typeof sleep === 'function') await sleep(5000);
+                else await new Promise((r) => setTimeout(r, 5000));
+            }
+            wizardData.sections.push({
+                number: wizardData.sections.length + 1, // 正しく追加された数で番号を振る
+                conditionZipped: zipped,
+                conditionEn: condEn,
+                cleared: false,
+            });
+        }
+
+        // DB保存 (正常完了時のみ)
+        if (typeof saveWizardDataToIndexedDB === 'function') {
+            await saveWizardDataToIndexedDB(wizardData);
+            console.log(`[Wiz] ${wizardData.sections.length} sections generated and saved.`);
+        } else {
+            console.error(
+                '[Wiz] saveWizardDataToIndexedDB function not found! Cannot save sections.'
+            );
+            if (typeof showToast === 'function')
+                showToast('エラー: セクション情報を保存できません');
+            // ★ DB 保存失敗もエラーとして扱うべき
+            throw new Error('Failed to save section data to DB.');
+        }
     } catch (err) {
-        /* ... エラー処理 ... */ throw err;
+        // ★★★ 全体のエラーハンドリング ★★★
+        console.error('[Wiz] Error during section generation (in catch block):', err);
+        wizardData.sections = []; // エラー時はセクションを空にする
+        // 空の状態で保存するかどうかは仕様によるが、一旦しないでおく
+        // if (typeof saveWizardDataToIndexedDB === 'function') {
+        //      await saveWizardDataToIndexedDB(wizardData);
+        // }
+        // エラーを呼び出し元 (onConfirmScenarioModalOK) に伝播させる
+        throw err; // ← これを追加！ 呼び出し元で catch させる
     }
 }
 
@@ -789,7 +912,10 @@ async function generateEnglishTranslation(japaneseText) {
     if (!gemini.isAvailable) throw new Error('翻訳APIキー未設定/無効');
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `Translate Japanese to English:\nJA:\n${japaneseText}\nEN:`;
+    const prompt = `Translate Japanese to English:
+JA:
+${japaneseText}
+EN:`;
     try {
         // ★ 翻訳API呼び出し前にも少し待機 (オプション)
         // await sleep(500); // 0.5秒
@@ -880,7 +1006,11 @@ async function generateScenarioSummaryAndClearCondition() {
     }
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `TRPGシナリオAIとして概要とクリア条件生成。\n条件:ジャンル:${wizardData.genre},タイプ:目的達成型\n出力形式:シナリオ概要(200字程度)\n【クリア条件】\n具体的クリア条件(1つ)`;
+    const prompt = `TRPGシナリオAIとして概要とクリア条件生成。
+条件:ジャンル:${wizardData.genre},タイプ:目的達成型
+出力形式:シナリオ概要(200字程度, 背景黒想定で飾りタグOK)
+【クリア条件】
+具体的クリア条件(1つ)`;
     try {
         gemini.initializeHistory([]);
         const text = await gemini.generateContent(prompt, modelId);
@@ -916,7 +1046,10 @@ async function generateScenarioSummary() {
     }
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `TRPG概要AIとして概要(200字程度,日本語)生成。\nジャンル:${wizardData.genre}\nタイプ:探索型`;
+    const prompt = `TRPG概要AIとして概要を生成。
+出力形式:シナリオ概要(200字程度, 背景黒想定で飾りタグOK)
+ジャンル:${wizardData.genre}
+タイプ:探索型`;
     try {
         gemini.initializeHistory([]);
         const summary = await gemini.generateContent(prompt, modelId);
@@ -948,7 +1081,10 @@ async function generateScenarioSummaryEn() {
     }
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `Translate Japanese TRPG summary to English.\nJA:\n${jp}\nEN:`;
+    const prompt = `Translate Japanese TRPG summary to English.
+JA:
+${jp}
+EN:`;
     try {
         gemini.initializeHistory([]);
         const enSummary = await gemini.generateContent(prompt, modelId);
@@ -987,9 +1123,15 @@ async function generateIntroScene() {
     }
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `TRPGライターとして情報から導入シーン(日本語,300字程度)生成。\n概要:\n${
+    const prompt = `TRPGライターとして情報から導入シーン(日本語,300字程度)生成。
+概要:
+${
         wizardData.scenarioSummary
-    }\nパーティ:\n${buildPartyInsertionText(wizardData.party || [])}\n\n導入シーン:`;
+    }
+パーティ:
+${buildPartyInsertionText(wizardData.party || [])}
+
+導入シーン:`;
     try {
         gemini.initializeHistory([]);
         const intro = await gemini.generateContent(prompt, modelId);
@@ -1056,7 +1198,10 @@ async function generateScenarioTitle(summary) {
     if (gemini.isStubMode) return 'スタブタイトル';
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `以下概要から魅力的な日本語タイトルを1つだけ生成(タイトルのみ出力):\n概要:\n${summary}\nタイトル:`;
+    const prompt = `以下概要から魅力的な日本語タイトルを1つだけ生成(タイトルのみ出力):
+概要:
+${summary}
+タイトル:`;
     try {
         gemini.initializeHistory([]);
         const title = await gemini.generateContent(prompt, modelId);
@@ -1077,12 +1222,12 @@ function updateSummaryUI() {
 }
 /** ローディングモーダル表示/非表示 */
 function showLoadingModal(show) {
-    const m = document.getElementById("loading-modal");
+    const m = document.getElementById('loading-modal');
     if (!m) return;
     if (show) {
-      m.classList.add("active");
+        m.classList.add('active');
     } else {
-      m.classList.remove("active");
+        m.classList.remove('active');
     }
 }
 /** APIリクエストキャンセル試行 */
@@ -1099,7 +1244,9 @@ function buildPartyInsertionText(party) {
         txt += `- Name: ${p.name} (${p.type})`;
         if (p.role === 'avatar') txt += ' [あなた]';
         if (p.role === 'partner') txt += ' [パートナー]';
-        txt += `\n  詳細: ${p.special || p.caption || '(詳細なし)'}\n`;
+        txt += `
+  詳細: ${p.special || p.caption || '(詳細なし)'}
+`;
     });
     return txt;
 }
@@ -1111,7 +1258,10 @@ async function generateImagePromptFromScene(sceneTextJa) {
     if (!gemini.isAvailable) return '';
     const modelId =
         localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
-    const prompt = `Extract English keywords for image generation from Japanese scene:\nJA:\n${sceneTextJa}\nEN Keywords:`;
+    const prompt = `Extract English keywords for image generation from Japanese scene:
+JA:
+${sceneTextJa}
+EN Keywords:`;
     try {
         gemini.initializeHistory([]);
         const keywords = await gemini.generateContent(prompt, modelId);

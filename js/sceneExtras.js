@@ -11,7 +11,6 @@ import { GeminiApiClient } from './geminiApiClient.js';
 import { StabilityApiClient } from './stabilityApiClient.js';
 import { open as multiModalOpen } from './multiModal.js';
 import { showToast } from './common.js';
-
 import {
     getEnding,
     saveEnding,
@@ -31,7 +30,8 @@ import {
     // updateSceneHistory, showLastScene // refreshEntitiesAndChips 内で必要なら
 } from './sceneManager.js'; // ★仮パス
 import {
-    showLoadingModal
+    showLoadingModal,
+    renderItemChips
 } from './sceneUI.js';
 
 // DOMPurify はグローバルにある想定

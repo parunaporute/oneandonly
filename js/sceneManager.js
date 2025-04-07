@@ -28,6 +28,7 @@ import {
     showLoadingModal,
     showLastScene,
     renderItemChips,
+    onGenerateActionCandidates,
     openImagePromptModal, // ★ 仮: sceneUI.js で export されている想定
     // 他に必要な UI 関数があれば追加
 } from './sceneUI.js'; // ★ パス確認
@@ -73,6 +74,24 @@ export async function loadScenarioData(scenarioId) {
             if (!sumRec) break; // 見つからなくなったら終了
             window.sceneSummaries[i] = { en: sumRec.content_en, ja: sumRec.content_ja };
         }
+
+        // 履歴エリアの初期表示状態をDBの値に合わせて設定
+        const hist = document.getElementById('scene-history');
+        const historyBtn = document.getElementById('toggle-history-button'); // ボタン要素も取得
+        if (hist && window.currentScenario) {
+            // DBから読み込んだ showHistory の値 (未定義なら false 扱い) を反映
+            const show = window.currentScenario.showHistory || false;
+            hist.style.display = show ? 'flex' : 'none'; // toggleHistory内の設定に合わせる ('flex' or 'block')
+            console.log(`[SceneManager] Initial history display set to: ${hist.style.display}`);
+
+            // 履歴ボタンの見た目も初期状態に合わせる (任意)
+            if (historyBtn) {
+                historyBtn.style.backgroundColor = show ? '#777' : ''; // toggleHistory内のスタイルに合わせる
+            }
+        } else if (!hist) {
+            console.warn('[SceneManager] #scene-history element not found for initial setup.');
+        }
+
         console.log(`[SceneManager] Loaded ${window.sceneSummaries.length} summary chunks.`);
 
         // UI再描画 (sceneUI.js の関数を import して使用)
@@ -97,7 +116,6 @@ export async function loadScenarioData(scenarioId) {
         // エラーが発生したらメニューに戻るなどの処理
         // window.location.href = "index.html";
     }
-    
 }
 
 /**
@@ -143,7 +161,6 @@ async function loadAllScenesForScenario(scenarioId) {
  */
 // ★ export する (sceneMain.js や sceneUI.js から呼ばれるため)
 export async function getNextScene(useItem = false) {
-
     console.log(`[SceneManager] getNextScene called (useItem: ${useItem})`);
     // ★ Gemini クライアントを new して使用
     const gemini = new GeminiApiClient(); // import
@@ -200,7 +217,19 @@ export async function getNextScene(useItem = false) {
         // 2) システムプロンプト + 会話履歴の準備
         const wd = window.currentScenario?.wizardData || {}; // global
         const sections = wd.sections || [];
-        let systemText = `あなたは経験豊富なTRPGゲームマスター(GM)です。以下のルールに従い、プレイヤーの行動に対する次のシーンを生成してください。\nルール:\n- 出力は必ず日本語。\n- シナリオ設定と過去の展開との整合性を保つ。\n- プレイヤーの行動の結果を具体的に描写する。\n- 新たな状況や登場人物、選択肢を提示し、物語を進展させる。\n- 時々パーティメンバーの短い会話や反応を含める。\n- メタ的な発言(GMとしての説明など)はしない。\n- 最後の文章はプレイヤーに次の行動を促す問いかけで終わることが望ましい。\n- 必要に応じて【セクション目標】の達成に繋がるヒントを自然に含める。\n======\n`;
+        let systemText = `あなたは経験豊富なTRPGゲームマスター(GM)です。以下のルールに従い、プレイヤーの行動に対する次のシーンを生成してください。
+ルール:
+- 背景黒が前提の、読みやすい文字のHTML的な装飾をする。style直書きで良い。
+- 出力は必ず日本語。
+- シナリオ設定と過去の展開との整合性を保つ。
+- プレイヤーの行動の結果を具体的に描写する。
+- 新たな状況や登場人物、選択肢を提示し、物語を進展させる。
+- 時々パーティメンバーの短い会話や反応を含める。
+- メタ的な発言(GMとしての説明など)はしない。
+- 最後の文節はプレイヤーに次の行動を促す問いかけで終わることが望ましいが、選択肢は不要。
+- 必要に応じて【セクション目標】の達成に繋がるヒントを自然に含める。
+======
+`;
         if (sections.length > 0) {
             systemText += '【現在のセクション目標】\n';
             sections.forEach((s) => {
@@ -337,8 +366,7 @@ export async function getNextScene(useItem = false) {
         if (candidatesContainer) candidatesContainer.innerHTML = '';
         const autoGenCbx = document.getElementById('auto-generate-candidates-checkbox');
         if (autoGenCbx?.checked && typeof onGenerateActionCandidates === 'function') {
-            // sceneUI.js?
-            onGenerateActionCandidates(); // ★ 再度候補生成
+            onGenerateActionCandidates(); 
         }
     } catch (e) {
         console.error('[SceneManager] シーン取得失敗:', e);

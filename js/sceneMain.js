@@ -5,12 +5,13 @@
  *  - ユニークスロット方式ロード対応
  ********************************/
 import { loadScenarioData, getNextScene } from './sceneManager.js';
-import { onCancelFetch } from './sceneUI.js';
+import { onCancelFetch, intUI } from './sceneUI.js';
 import { initBackground } from './background.js';
 import { getUniversalSave, getScenarioById  } from './indexedDB.js';
 import { doLoadScenarioFromSlot } from './universalSaveLoad.js';
 
 window.addEventListener('DOMContentLoaded', () => {
+    intUI();
     const autoCbx = document.getElementById('auto-generate-candidates-checkbox');
     if (autoCbx) {
         // 初期状態読み込み
