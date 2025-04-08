@@ -106,8 +106,7 @@ export async function loadScenarioData(scenarioId) {
 
         // ネタバレボタンの表示制御 (wizardData を直接参照)
         const spoilerButton = document.getElementById('spoiler-button');
-        if (spoilerButton)
-            spoilerButton.style.display = wd.scenarioType === 'objective' ? 'inline-block' : 'none';
+        if (spoilerButton) spoilerButton.style.display = wd.scenarioType === 'objective' ? 'inline-block' : 'none';
 
         console.log(`[SceneManager] Scenario ${scenarioId} loaded successfully.`);
     } catch (err) {
@@ -172,8 +171,7 @@ export async function getNextScene(useItem = false) {
         /* ... スタブ処理 ... */ return;
     }
 
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     let playerInputJa = ''; // 日本語のプレイヤー入力
 
     if (!useItem) {
@@ -188,9 +186,7 @@ export async function getNextScene(useItem = false) {
         playerInputJa = `[アイテム使用] ${item.name || '?'}: ${item.description || '?'}`;
         window.selectedItem = null; // 使用したら解除
         // アイテムチップの選択状態も解除 (sceneUI.js の責務かも)
-        document
-            .querySelectorAll('#item-chips-container .chip.selected')
-            .forEach((c) => c.classList.remove('selected'));
+        document.querySelectorAll('#item-chips-container .chip.selected').forEach((c) => c.classList.remove('selected'));
     } else {
         alert('使用するアイテムが選択されていません。');
         return;
@@ -248,9 +244,7 @@ export async function getNextScene(useItem = false) {
         // ★ 過去のやり取りをプロンプトに含める形式 (Gemini推奨の一つ)
         let promptForGemini = systemText + '\n--- シナリオ情報 ---\n';
         if (window.currentScenario) {
-            const summ = wd.scenarioSummaryEn?.trim()
-                ? wd.scenarioSummaryEn
-                : wd.scenarioSummary || '';
+            const summ = wd.scenarioSummaryEn?.trim() ? wd.scenarioSummaryEn : wd.scenarioSummary || '';
             promptForGemini += `概要(Summary): ${summ}\n`;
             if (wd.party?.length > 0) {
                 // パーティ情報は英語の方が良いかもしれない
@@ -314,9 +308,7 @@ export async function getNextScene(useItem = false) {
                     if (imgPrompt && newSceneEntry.entryId) {
                         newSceneEntry.prompt = imgPrompt;
                         await updateSceneEntry(newSceneEntry); // import
-                        console.log(
-                            `[SceneManager] Image prompt generated and saved for scene ${sceneId}`
-                        );
+                        console.log(`[SceneManager] Image prompt generated and saved for scene ${sceneId}`);
                     }
                 })
                 .catch((e) => console.error('Error generating/saving image prompt:', e));
@@ -366,7 +358,7 @@ export async function getNextScene(useItem = false) {
         if (candidatesContainer) candidatesContainer.innerHTML = '';
         const autoGenCbx = document.getElementById('auto-generate-candidates-checkbox');
         if (autoGenCbx?.checked && typeof onGenerateActionCandidates === 'function') {
-            onGenerateActionCandidates(); 
+            onGenerateActionCandidates();
         }
     } catch (e) {
         console.error('[SceneManager] シーン取得失敗:', e);
@@ -383,8 +375,7 @@ export async function getNextScene(useItem = false) {
 async function buildPartyInsertionTextEn(party) {
     if (!party?.length) return 'Party: None';
     let txtEn = 'Party Members:\n';
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     const gemini = new GeminiApiClient();
     if (!gemini.isAvailable) return '(Translation API Error)';
     try {
@@ -423,8 +414,7 @@ export async function generateEnglishTranslation(japaneseText) {
     const gemini = new GeminiApiClient(); // import
     if (!gemini.isAvailable) throw new Error('翻訳用APIキー未設定/無効');
     if (gemini.isStubMode) return '(Stub EN)';
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     const prompt = `Translate Japanese to English. Output only the translation.\nJA:\n${japaneseText}\nEN:`;
     try {
         gemini.initializeHistory([]);
@@ -443,8 +433,7 @@ export async function generateJapaneseTranslation(englishText) {
     const gemini = new GeminiApiClient(); // import
     if (!gemini.isAvailable) throw new Error('翻訳用APIキー未設定/無効');
     if (gemini.isStubMode) return '(Stub JA)';
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     const prompt = `Translate English to Japanese. Output only the translation.\nEN:\n${englishText}\nJA:`;
     try {
         gemini.initializeHistory([]);
@@ -478,19 +467,12 @@ export async function checkSectionClear(latestActionJa, latestSceneJa) {
         return;
     }
 
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     const conditionTextJa = decompressCondition(firstUncleared.conditionZipped || '') || '?'; // import/このファイル内?
     const scenarioSummary = wd.scenarioSummary || '(概要なし)';
 
     // ★ Gemini に YES/NO で答えさせるプロンプト
-    const prompt = `あなたはTRPGの審判AIです。以下の情報に基づき、提示された「達成条件」がプレイヤーの行動や状況によって満たされたかどうかを判断し、**YESかNOのみ**で答えてください。\n\nシナリオ概要:\n${scenarioSummary}\n\n達成条件(セクション${
-        firstUncleared.number
-    }):\n「${conditionTextJa}」\n\n最新のプレイヤー行動:\n${
-        latestActionJa || '(行動なし)'
-    }\n\n最新のシーン状況:\n${
-        latestSceneJa || '(シーンなし)'
-    }\n\n質問: この達成条件は満たされましたか？ (YES/NO)`;
+    const prompt = `あなたはTRPGの審判AIです。以下の情報に基づき、提示された「達成条件」がプレイヤーの行動や状況によって満たされたかどうかを判断し、**YESかNOのみ**で答えてください。\n\nシナリオ概要:\n${scenarioSummary}\n\n達成条件(セクション${firstUncleared.number}):\n「${conditionTextJa}」\n\n最新のプレイヤー行動:\n${latestActionJa || '(行動なし)'}\n\n最新のシーン状況:\n${latestSceneJa || '(シーンなし)'}\n\n質問: この達成条件は満たされましたか？ (YES/NO)`;
 
     try {
         gemini.initializeHistory([]);
@@ -547,8 +529,7 @@ export async function handleSceneSummaries() {
                 if (scn.action?.content?.trim()) gatheredTextJa += `\nP:${scn.action.content}`;
                 gatheredTextJa += `\nS:${scn.content}`;
                 // 英語データもあれば結合 (なければ日本語のみ)
-                if (scn.action?.content_en?.trim())
-                    gatheredTextEn += `\nP:${scn.action.content_en}`;
+                if (scn.action?.content_en?.trim()) gatheredTextEn += `\nP:${scn.action.content_en}`;
                 else if (scn.action?.content?.trim()) gatheredTextEn += `\nP:${scn.action.content}`; // JA fallback
                 if (scn.content_en?.trim()) gatheredTextEn += `\nS:${scn.content_en}`;
                 else gatheredTextEn += `\nS:${scn.content}`; // JA fallback
@@ -583,8 +564,7 @@ async function generateSummaryWithLimit(text, lines = 5, lang = 'en') {
     if (!gemini.isAvailable) throw new Error('要約APIキー未設定/無効');
     if (gemini.isStubMode) return `(Stub ${lang} summary ${lines} lines)`;
 
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     let systemPrompt = `You are a summarizer. Output language must be English. Summarize in about ${lines} lines.`;
     let userPrompt = `Summarize the following game progress text concisely in about ${lines} lines of English. Focus on key events and outcomes:\n---\n${text}\n---\nSummary:`;
     if (lang === 'ja') {
@@ -618,8 +598,7 @@ export async function generateImagePromptFromScene(sceneTextJa) {
         return 'anime style, stub scene';
     }
 
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     // ★ プロンプトを改善 (よりキーワード抽出を意識)
     const prompt = `以下の日本語のシーン描写から、画像生成に適した英語のキーワードを抽出してください。情景、登場人物の外見や感情、重要なオブジェクトなどをカンマ区切りで列挙してください。\nシーン:\n${sceneTextJa}\n\nImage Generation Keywords (English):`;
 
@@ -662,8 +641,7 @@ export async function getLastSceneSummary() {
         return '【名前】スタブカード\n【タイプ】スタブ\n【外見】ダミーデータ';
     }
 
-    const modelId =
-        localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+    const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
     const text = lastSceneEntry.content;
     // ★ Gemini にJSON風の出力をさせるプロンプト
     const prompt = `あなたはTRPGの情報を整理するAIです。以下のシーンテキストから、ゲーム内で「エレメントカード」として登録できそうな重要な【アイテム】または【キャラクター】（人物・モンスター）を**1つだけ**選び出し、以下の形式で情報を抽出・記述してください。対象が見つからない場合は「抽出対象なし」とだけ答えてください。\n\n【名前】: （抽出した名前）\n【タイプ】: （アイテム or キャラクター or モンスター のいずれか）\n【外見・説明】: （2,3行程度の簡潔な説明）\n\nシーンテキスト:\n---\n${text}\n---\n\n抽出結果:`;
@@ -705,24 +683,31 @@ export function decompressCondition(zippedBase64) {
 
 /** 全セクションがクリア済みかどうか */
 export function areAllSectionsCleared() {
-    if (!window.sections || !window.sections.length) return false;
-    return window.sections.every((s) => s.cleared);
+    const wd = window.currentScenario?.wizardData || {}; // global
+    const sections = wd.sections || [];
+
+    if (!sections || !sections.length) return false;
+    return sections.every((s) => s.cleared);
 }
 
 /** エンディングボタン表示切り替え */
 export function refreshEndingButtons() {
     const endingBtn = document.getElementById('ending-button');
     const clearEndingBtn = document.getElementById('clear-ending-button');
+    const wd = window.currentScenario?.wizardData || {}; // global
+    const sections = wd.sections || [];
+    console.log(sections);
+
     if (!endingBtn || !clearEndingBtn) return;
 
-    if (!window.sections || window.sections.length === 0) {
+    if (!sections || sections.length === 0) {
         endingBtn.style.display = 'none';
         clearEndingBtn.style.display = 'none';
         return;
     }
 
     // いずれか1つでもクリア済みか？
-    const anyCleared = window.sections.some((sec) => sec.cleared);
+    const anyCleared = sections.some((sec) => sec.cleared);
     // 全クリアか？
     const allCleared = areAllSectionsCleared();
 

@@ -69,7 +69,7 @@ window.imageViewerState = {
     tapThreshold: 10, // タップと判定する移動距離の閾値 (px)
 };
 
-export function intUI(){
+export function intUI() {
     // カルーセル初期化
     if (typeof initCarousel === 'function' && typeof removeDuplicateIDs === 'function') {
         setTimeout(() => {
@@ -128,33 +128,14 @@ export function intUI(){
             applicationBar.insertBefore(spoilerBtn, baseButton);
             spoilerBtn.addEventListener('click', openSpoilerModal); // このファイル内で定義
         }
-        // エンディングボタン
-        if (!document.getElementById('ending-button') && typeof showEndingModal === 'function') {
-            // import
-            const endBtn = document.createElement('button');
-            endBtn.id = 'ending-button';
-            endBtn.innerHTML = `<div class="iconmoon icon-sad"></div>Ending`;
-            endBtn.title = 'Bad End';
-            endBtn.style.display = 'none';
-            applicationBar.insertBefore(endBtn, baseButton);
-            endBtn.addEventListener('click', () => showEndingModal('bad'));
-        }
-        if (
-            !document.getElementById('clear-ending-button') &&
-            typeof showEndingModal === 'function'
-        ) {
-            // import
-            const clrEndBtn = document.createElement('button');
-            clrEndBtn.id = 'clear-ending-button';
-            clrEndBtn.innerHTML = `<div class="iconmoon icon-trophy"></div>Ending`;
-            clrEndBtn.title = 'Clear End';
-            clrEndBtn.style.display = 'none';
-            applicationBar.insertBefore(clrEndBtn, baseButton);
-            clrEndBtn.addEventListener('click', () => showEndingModal('clear'));
-        }
     } else {
         console.warn('Application bar or base button not found for adding buttons.');
     }
+    
+    const endBtn = document.getElementById('ending-button');
+    endBtn.addEventListener('click', () => showEndingModal('bad'));
+    const clearEndBtn = document.getElementById('clear-ending-button');
+    clearEndBtn.addEventListener('click', () => showEndingModal('clear'));
 
     // 回答候補チェックボックス
     const autoGenCbx = document.getElementById('auto-generate-candidates-checkbox');

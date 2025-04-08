@@ -1,312 +1,308 @@
 /* styles.css */
 
 @font-face {
-  font-family: "icomoon";
-  src: url("fonts/icomoon.eot?adaa");
-  src:
-    url("fonts/icomoon.eot?adaa") format("embedded-opentype"),
-    url("fonts/icomoon.ttf?adaa") format("truetype"),
-    url("fonts/icomoon.woff?adaa") format("woff"),
-    url("fonts/icomoon.svg?adaa") format("svg");
+  font-family: 'icomoon';
+  src: url('fonts/icomoon.eot?adaa');
+  src: url('fonts/icomoon.eot?adaa') format('embedded-opentype'), url('fonts/icomoon.ttf?adaa') format('truetype'), url('fonts/icomoon.woff?adaa') format('woff'), url('fonts/icomoon.svg?adaa') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
 
 .iconmoon {
-  font-family: "icomoon" !important;
+  font-family: 'icomoon' !important;
   font-size: 1.2rem;
 }
 .icon-dots-three-horizontal:before {
-  content: "\e900";
+  content: '\e900';
   /* 3つ並んだ水平ドットのアイコン（メニュー、オプションなど） */
 }
 .icon-home:before {
-  content: "\e901";
+  content: '\e901';
   /* 家のアイコン（ホーム画面、メインページなど） */
 }
 .icon-home3:before {
-  content: "\e902";
+  content: '\e902';
   /* 別デザインのホームアイコン（ホーム画面、トップページ） */
 }
 .icon-home2:before {
-  content: "\e903";
+  content: '\e903';
   /* もう一つのホームアイコン（ホーム画面、トップページ） */
 }
 .icon-save:before {
-  content: "\e904";
+  content: '\e904';
   /* 保存のアイコン（セーブ、書き込みなど） */
 }
 .icon-address:before {
-  content: "\e905";
+  content: '\e905';
   /* 住所アイコン（所在地、アドレス情報など） */
 }
 .icon-chat:before {
-  content: "\e906";
+  content: '\e906';
   /* チャットのアイコン（会話、メッセージ、チャット画面など） */
 }
 .icon-credit-card:before {
-  content: "\e907";
+  content: '\e907';
   /* クレジットカードのアイコン（支払い、決済など） */
 }
 .icon-documents:before {
-  content: "\e908";
+  content: '\e908';
   /* ドキュメントのアイコン（複数書類、ファイルなど） */
 }
 .icon-flag1:before {
-  content: "\e909";
+  content: '\e909';
   /* フラグアイコン（マーク、注目など） */
 }
 .icon-game-controller:before {
-  content: "\e90a";
+  content: '\e90a';
   /* ゲームコントローラーのアイコン（ゲーム関連、エンターテインメントなど） */
 }
 .icon-info-with-circle:before {
-  content: "\e90b";
+  content: '\e90b';
   /* 丸枠付きの情報アイコン（ヘルプ、案内など） */
 }
 .icon-info:before {
-  content: "\e90c";
+  content: '\e90c';
   /* 情報アイコン（ヘルプ、詳細情報など） */
 }
 .icon-mail:before {
-  content: "\e90d";
+  content: '\e90d';
   /* メールのアイコン（メッセージ、連絡先など） */
 }
 .icon-tag:before {
-  content: "\e90e";
+  content: '\e90e';
   /* タグのアイコン（分類、ラベルなど） */
 }
 .icon-typing:before {
-  content: "\e90f";
+  content: '\e90f';
   /* 入力中のアイコン（チャット、テキスト入力など） */
 }
 .icon-search:before {
-  content: "\e007";
+  content: '\e007';
   /* 検索のアイコン（サーチ、虫眼鏡など） */
 }
 .icon-clipboard:before {
-  content: "\e008";
+  content: '\e008';
   /* クリップボードのアイコン（コピー、貼り付け、メモなど） */
 }
 .icon-newspaper:before {
-  content: "\e009";
+  content: '\e009';
   /* 新聞のアイコン（ニュース、記事など） */
 }
 .icon-book-open:before {
-  content: "\e00b";
+  content: '\e00b';
   /* 開いている本のアイコン（テキスト、ドキュメント参照など） */
 }
 .icon-browser:before {
-  content: "\e00c";
+  content: '\e00c';
   /* ブラウザアイコン（ウェブ閲覧、ページなど） */
 }
 .icon-picture:before {
-  content: "\e00f";
+  content: '\e00f';
   /* 画像アイコン（写真、ギャラリーなど） */
 }
 .icon-edit:before {
-  content: "\e01c";
+  content: '\e01c';
   /* 編集のアイコン（ペンツール、修正など） */
 }
 .icon-ribbon:before {
-  content: "\e01e";
+  content: '\e01e';
   /* リボンアイコン（受賞、バッジ、飾りなど） */
 }
 .icon-streetsign:before {
-  content: "\e029";
+  content: '\e029';
   /* 道路標識アイコン（道案内、方向など） */
 }
 .icon-gears:before {
-  content: "\e02b";
+  content: '\e02b';
   /* ギア（歯車）アイコン（設定、オプションなど） */
 }
 .icon-key:before {
-  content: "\e02c";
+  content: '\e02c';
   /* 鍵のアイコン（セキュリティ、ロックなど） */
 }
 .icon-strategy:before {
-  content: "\e03b";
+  content: '\e03b';
   /* 戦略アイコン（プランニング、戦略的思考など） */
 }
 .icon-beaker:before {
-  content: "\e03c";
+  content: '\e03c';
   /* ビーカーアイコン（実験、化学、テストなど） */
 }
 .icon-profile-male:before {
-  content: "\e040";
+  content: '\e040';
   /* 男性プロフィールアイコン（ユーザー、人物など） */
 }
 .icon-chat1:before {
-  content: "\e049";
+  content: '\e049';
   /* 別デザインのチャットアイコン（会話、メッセージなど） */
 }
 .icon-target:before {
-  content: "\e04e";
+  content: '\e04e';
   /* ターゲットアイコン（目標、的など） */
 }
 .icon-pacman:before {
-  content: "\e916";
+  content: '\e916';
   /* パックマンアイコン（ゲーム、エンタメなど） */
 }
 .icon-book:before {
-  content: "\e91f";
+  content: '\e91f';
   /* 本のアイコン（書籍、資料など） */
 }
 .icon-books:before {
-  content: "\e920";
+  content: '\e920';
   /* 複数の本アイコン（ライブラリ、書籍集など） */
 }
 .icon-library:before {
-  content: "\e921";
+  content: '\e921';
   /* 図書館アイコン（ライブラリ、保管場所など） */
 }
 .icon-folder-download:before {
-  content: "\e933";
+  content: '\e933';
   /* ダウンロードフォルダアイコン（ファイル取得など） */
 }
 .icon-folder-upload:before {
-  content: "\e934";
+  content: '\e934';
   /* アップロードフォルダアイコン（ファイル送信など） */
 }
 .icon-price-tag:before {
-  content: "\e935";
+  content: '\e935';
   /* プライスタグアイコン（値札、価格情報など） */
 }
 .icon-price-tags:before {
-  content: "\e936";
+  content: '\e936';
   /* プライスタグが複数のアイコン（複数の価格情報など） */
 }
 .icon-coin-dollar:before {
-  content: "\e93b";
+  content: '\e93b';
   /* ドル硬貨のアイコン（通貨、金銭、経済など） */
 }
 .icon-floppy-disk:before {
-  content: "\e962";
+  content: '\e962';
   /* フロッピーディスクのアイコン（セーブ、保存など） */
 }
 .icon-undo2:before {
-  content: "\e967";
+  content: '\e967';
   /* 元に戻すアイコン（アンドゥ、巻き戻しなど） */
 }
 .icon-bubble:before {
-  content: "\e96b";
+  content: '\e96b';
   /* 吹き出しアイコン（コメント、メッセージなど） */
 }
 .icon-bubbles:before {
-  content: "\e96c";
+  content: '\e96c';
   /* 複数の吹き出しアイコン（会話、スレッドなど） */
 }
 .icon-bubbles2:before {
-  content: "\e96d";
+  content: '\e96d';
   /* 別デザインの複数吹き出しアイコン（メッセージやチャットなど） */
 }
 .icon-user:before {
-  content: "\e971";
+  content: '\e971';
   /* ユーザーアイコン（人物、アカウントなど） */
 }
 .icon-cog:before {
-  content: "\e994";
+  content: '\e994';
   /* 歯車アイコン（設定、オプションなど） */
 }
 .icon-magic-wand:before {
-  content: "\e997";
+  content: '\e997';
   /* 魔法の杖アイコン（特別な操作、エフェクトなど） */
 }
 .icon-trophy:before {
-  content: "\e99e";
+  content: '\e99e';
   /* トロフィーのアイコン（受賞、実績、コンテストなど） */
 }
 .icon-gift:before {
-  content: "\e99f";
+  content: '\e99f';
   /* ギフトアイコン（プレゼント、特典など） */
 }
 .icon-bin:before {
-  content: "\e9ac";
+  content: '\e9ac';
   /* ゴミ箱アイコン（削除、破棄など） */
 }
 .icon-bin2:before {
-  content: "\e9ad";
+  content: '\e9ad';
   /* 別デザインのゴミ箱アイコン（削除、破棄など） */
 }
 .icon-flag:before {
-  content: "\e9cc";
+  content: '\e9cc';
   /* フラグアイコン（マーク、印など） */
 }
 .icon-star-full:before {
-  content: "\e9d9";
+  content: '\e9d9';
   /* 星のアイコン（お気に入り、評価など） */
 }
 .icon-heart:before {
-  content: "\e9da";
+  content: '\e9da';
   /* ハートアイコン（いいね、愛、好みなど） */
 }
 .icon-smile:before {
-  content: "\e9e1";
+  content: '\e9e1';
   /* 笑顔アイコン（幸せ、嬉しいなど） */
 }
 .icon-sad:before {
-  content: "\e9e5";
+  content: '\e9e5';
   /* 悲しい顔アイコン（落ち込み、悲哀など） */
 }
 .icon-confused:before {
-  content: "\e9f5";
+  content: '\e9f5';
   /* 困惑した顔アイコン（混乱、不明など） */
 }
 .icon-neutral:before {
-  content: "\e9f7";
+  content: '\e9f7';
   /* 無表情アイコン（特に感情なし、中立など） */
 }
 .icon-hipster:before {
-  content: "\e9f9";
+  content: '\e9f9';
   /* ヒップスター風アイコン（おしゃれ、個性的など） */
 }
 .icon-cross:before {
-  content: "\ea0f";
+  content: '\ea0f';
   /* バツ印のアイコン（閉じる、キャンセルなど） */
 }
 .icon-volume-high:before {
-  content: "\ea26";
+  content: '\ea26';
   /* 音量大のアイコン（最大音量、音声出力など） */
 }
 .icon-volume-mute2:before {
-  content: "\ea2a";
+  content: '\ea2a';
   /* 音量ミュートアイコン（無音、ミュートなど） */
 }
 .icon-arrow-right:before {
-  content: "\ea34";
+  content: '\ea34';
   /* 右矢印アイコン（次へ、移動など） */
 }
 .icon-arrow-left:before {
-  content: "\ea38";
+  content: '\ea38';
   /* 左矢印アイコン（戻る、移動など） */
 }
 .icon-sort-alpha-asc:before {
-  content: "\ea48";
+  content: '\ea48';
   /* アルファベット昇順ソートのアイコン（A→Zの並びなど） */
 }
 .icon-sort-alpha-desc:before {
-  content: "\ea49";
+  content: '\ea49';
   /* アルファベット降順ソートのアイコン（Z→Aの並びなど） */
 }
 .icon-sort-numeric-asc:before {
-  content: "\ea4a";
+  content: '\ea4a';
   /* 数値昇順ソートのアイコン（小さい数→大きい数など） */
 }
 .icon-sort-numberic-desc:before {
-  content: "\ea4b";
+  content: '\ea4b';
   /* 数値降順ソートのアイコン（大きい数→小さい数など） */
 }
 
 .icon-star-empty:before {
-  content: "\e9d7";
+  content: '\e9d7';
 }
 
 .icon-card-case:before {
-  content: "\e912";
+  content: '\e912';
 }
 .icon-card:before {
-  content: "\e910";
+  content: '\e910';
 }
 /* ベース */
 body {
@@ -364,7 +360,7 @@ textarea {
   margin-bottom: 10px;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   width: initial;
   margin: auto 10px auto 0;
   padding: 0;
@@ -801,12 +797,8 @@ button:hover {
 
 .bezel.rarity0 {
   background: linear-gradient(145deg, #c0c0c0, #d3d3d3, #e0e0e0, #a9a9a9);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   background-clip: padding-box, border-box;
@@ -814,12 +806,8 @@ button:hover {
 
 .bezel.rarity1 {
   background: linear-gradient(145deg, #b87333, #da8a67, #e97451, #c35817);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   background-clip: padding-box, border-box;
@@ -827,12 +815,8 @@ button:hover {
 
 .bezel.rarity2 {
   background: linear-gradient(145deg, #c0c0c0, #d3d3d3, #e0e0e0, #a9a9a9);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   background-clip: padding-box, border-box;
@@ -840,12 +824,8 @@ button:hover {
 
 .bezel.rarity3 {
   background: linear-gradient(145deg, #b69a00, #ffda64, #ffda6b, #d79000);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   background-clip: padding-box, border-box;
@@ -855,12 +835,8 @@ button:hover {
   position: absolute;
   background: linear-gradient(145deg, #d1d1d1, #aeb9ff, #c0c0c0, #ecebe8);
   background-size: 400% 400%;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   background-clip: padding-box, border-box;
@@ -870,12 +846,8 @@ button:hover {
 .bezel.rarity5 {
   background: linear-gradient(145deg, #4b0082, #0000cd, #008080, #fff);
   background-size: 150% 150%;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   background-clip: padding-box, border-box;
@@ -998,7 +970,6 @@ button:hover {
   position: relative;
   cursor: pointer;
 }
-
 
 .bg-thumb-delete {
   position: absolute;
@@ -1409,7 +1380,7 @@ button.important {
 }
 
 /* 中にあるラジオボタンを隠して行全体クリックを可能にするための工夫 */
-.wizard-party-row input[type="radio"] {
+.wizard-party-row input[type='radio'] {
   /* 完全に隠したい場合 (見た目のラジオを後述の擬似要素で作る) */
   display: none;
 }
@@ -1428,7 +1399,7 @@ button.important {
 
 /* ラジオボタンの擬似要素を表示: before を丸にしてチェック状にする */
 .wizard-party-label::before {
-  content: "";
+  content: '';
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -1437,14 +1408,12 @@ button.important {
   border-radius: 50%;
   border: 2px solid #fff;
   margin-right: 12px;
-  transition:
-    background-color 0.1s,
-    border-color 0.1s;
+  transition: background-color 0.1s, border-color 0.1s;
   box-sizing: border-box;
 }
 
 /* 選択状態: input[type="radio"]:checked + .wizard-party-label::before で円を塗りつぶす */
-.wizard-party-row input[type="radio"]:checked + .wizard-party-label::before {
+.wizard-party-row input[type='radio']:checked + .wizard-party-label::before {
   background-color: #019a39;
   /* 選択時の色 (例: 緑) */
   border-color: #00d14c;
@@ -1494,7 +1463,7 @@ button.important {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  flex:0.5;
+  flex: 0.5;
 }
 
 #avatar-form-container {
@@ -1503,7 +1472,7 @@ button.important {
   flex-direction: column;
   justify-content: left;
   align-items: flex-start;
-  flex:1;
+  flex: 1;
 }
 
 .accordion-header:hover {
@@ -1537,9 +1506,7 @@ button.important {
 /* アコーディオンコンテンツ */
 .accordion-content {
   overflow: hidden;
-  transition:
-    max-height 0.3s ease,
-    padding 0.3s ease;
+  transition: max-height 0.3s ease, padding 0.3s ease;
   max-height: 0;
   margin-bottom: 0;
 }
@@ -1964,10 +1931,6 @@ button.important {
   gap: 10px;
 }
 
-#player-input {
-  margin-bottom: 0;
-}
-
 /* オーバーレイ */
 #tutorial-overlay {
   position: fixed;
@@ -2030,7 +1993,7 @@ button.important {
   align-items: center;
 }
 
-.step-skip-container input[type="checkbox"] {
+.step-skip-container input[type='checkbox'] {
   margin: 0;
   height: 1rem;
   width: 1rem;
@@ -2231,7 +2194,7 @@ button.important {
 .save-slot-row:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
-.save-slot-row input[type="radio"] {
+.save-slot-row input[type='radio'] {
   display: none;
 }
 .save-slot-row label {
@@ -2244,7 +2207,7 @@ button.important {
   text-align: left;
 }
 .save-slot-row label::before {
-  content: "";
+  content: '';
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -2252,11 +2215,9 @@ button.important {
   border: 2px solid #bbb;
   margin-right: 10px;
   box-sizing: border-box;
-  transition:
-    background-color 0.2s,
-    border-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
 }
-.save-slot-row input[type="radio"]:checked + label::before {
+.save-slot-row input[type='radio']:checked + label::before {
   background-color: #4caf50;
   border-color: #4caf50;
 }
@@ -2267,9 +2228,11 @@ button.important {
 
 #loading-modal {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   /* 大きな値を設定 */
   z-index: 999999;
   display: none; /* 初期非表示 */
@@ -2283,124 +2246,131 @@ button.important {
 /* ================================
    Gemini モデル選択 UI 用のスタイル
    ================================ */
-   .model-selector {
-    display: flex;
-    flex-wrap: wrap; /* スマホ表示などで折り返すように */
-    align-items: center; /* 要素を縦方向に中央揃え */
-    gap: 10px; /* 要素間のスペース */
-    padding: 15px; /* 内側の余白 */
-    background-color: rgba(0, 0, 0, 0.2); /* 少し背景色をつける */
-    border-radius: 5px; /* 角を丸める */
-    margin-top: 20px; /* 上の要素とのマージン */
-    margin-bottom: 20px; /* 下の要素とのマージン */
+.model-selector {
+  display: flex;
+  flex-wrap: wrap; /* スマホ表示などで折り返すように */
+  align-items: center; /* 要素を縦方向に中央揃え */
+  gap: 10px; /* 要素間のスペース */
+  padding: 15px; /* 内側の余白 */
+  background-color: rgba(0, 0, 0, 0.2); /* 少し背景色をつける */
+  border-radius: 5px; /* 角を丸める */
+  margin-top: 20px; /* 上の要素とのマージン */
+  margin-bottom: 20px; /* 下の要素とのマージン */
 }
 
 .model-selector label {
-    margin-right: 5px; /* ラベルとセレクトボックスの間のスペース */
-    white-space: nowrap; /* ラベルが折り返さないように */
-    color: #f0f0f0; /* 文字色 */
+  margin-right: 5px; /* ラベルとセレクトボックスの間のスペース */
+  white-space: nowrap; /* ラベルが折り返さないように */
+  color: #f0f0f0; /* 文字色 */
 }
 
 .model-selector select {
-    padding: 8px; /* 内側の余白 */
-    border-radius: 4px; /* 角を丸める */
-    border: 1px solid #666; /* 枠線 */
-    background-color: #444; /* 背景色 */
-    color: #fff; /* 文字色 */
-    min-width: 200px; /* 最低限の幅 */
-    flex-grow: 1; /* 利用可能なスペースがあれば伸びる */
-    cursor: pointer; /* カーソルをポインターに */
+  padding: 8px; /* 内側の余白 */
+  border-radius: 4px; /* 角を丸める */
+  border: 1px solid #666; /* 枠線 */
+  background-color: #444; /* 背景色 */
+  color: #fff; /* 文字色 */
+  min-width: 200px; /* 最低限の幅 */
+  flex-grow: 1; /* 利用可能なスペースがあれば伸びる */
+  cursor: pointer; /* カーソルをポインターに */
 }
 
 .model-selector select:disabled {
-    opacity: 0.7; /* 無効時は少し薄く */
-    cursor: not-allowed; /* 無効時のカーソル */
+  opacity: 0.7; /* 無効時は少し薄く */
+  cursor: not-allowed; /* 無効時のカーソル */
 }
 
 .model-selector button {
-    /* 既存のボタンスタイルを継承しつつ、微調整 */
-    padding: 8px 12px; /* パディング調整 */
-    min-height: initial; /* 高さを自動調整 */
-    min-width: initial; /* 幅を自動調整 */
-    /* 既存のボタンに合わせて line-height なども調整すると良い */
+  /* 既存のボタンスタイルを継承しつつ、微調整 */
+  padding: 8px 12px; /* パディング調整 */
+  min-height: initial; /* 高さを自動調整 */
+  min-width: initial; /* 幅を自動調整 */
+  /* 既存のボタンに合わせて line-height なども調整すると良い */
 }
 
 .model-description {
-    font-size: 0.85rem; /* 文字サイズ */
-    color: #ccc; /* 文字色 */
-    margin-top: 10px; /* 上の要素とのスペース */
-    width: 100%; /* 横幅いっぱいを使う */
-    line-height: 1.4; /* 行間 */
-    flex-basis: 100%; /* 常に改行させる */
+  font-size: 0.85rem; /* 文字サイズ */
+  color: #ccc; /* 文字色 */
+  margin-top: 10px; /* 上の要素とのスペース */
+  width: 100%; /* 横幅いっぱいを使う */
+  line-height: 1.4; /* 行間 */
+  flex-basis: 100%; /* 常に改行させる */
 }
 
 .pricing-link {
-    font-size: 0.8rem; /* 文字サイズ */
-    margin-top: 5px; /* 上の要素とのスペース */
-    width: 100%; /* 横幅いっぱいを使う */
-    flex-basis: 100%; /* 常に改行させる */
-    text-align: right; /* 右寄せにする（任意） */
+  font-size: 0.8rem; /* 文字サイズ */
+  margin-top: 5px; /* 上の要素とのスペース */
+  width: 100%; /* 横幅いっぱいを使う */
+  flex-basis: 100%; /* 常に改行させる */
+  text-align: right; /* 右寄せにする（任意） */
 }
 
 .pricing-link a {
-    color: #aaa; /* リンクの色 */
-    text-decoration: none; /* 下線を消す */
+  color: #aaa; /* リンクの色 */
+  text-decoration: none; /* 下線を消す */
 }
 .pricing-link a:hover {
-    color: #fff; /* ホバー時の色 */
-    text-decoration: underline; /* ホバー時に下線を表示 */
+  color: #fff; /* ホバー時の色 */
+  text-decoration: underline; /* ホバー時に下線を表示 */
 }
 
 /* ================================
    参考 script.js のメッセージ表示用スタイル
    (既存のスタイルと競合する場合は調整してください)
    ================================ */
-.story-history { /* チャット履歴のコンテナ (もし使う場合) */
-    /* border: 1px solid #555; */
-    /* padding: 10px; */
-    /* height: 400px; */
-    /* overflow-y: auto; */
-    /* margin-bottom: 15px; */
-    /* background-color: rgba(0, 0, 0, 0.1); */
+.story-history {
+  /* チャット履歴のコンテナ (もし使う場合) */
+  /* border: 1px solid #555; */
+  /* padding: 10px; */
+  /* height: 400px; */
+  /* overflow-y: auto; */
+  /* margin-bottom: 15px; */
+  /* background-color: rgba(0, 0, 0, 0.1); */
 }
 
-.message { /* 個々のメッセージ */
-    padding: 8px;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    line-height: 1.6;
+.message {
+  /* 個々のメッセージ */
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  line-height: 1.6;
 }
 
-.message.user { /* ユーザーの発言 */
-    background-color: rgba(76, 175, 80, 0.2); /* 緑系の背景 */
-    text-align: right;
+.message.user {
+  /* ユーザーの発言 */
+  background-color: rgba(76, 175, 80, 0.2); /* 緑系の背景 */
+  text-align: right;
 }
 
-.message.model { /* モデルの応答 */
-    background-color: rgba(33, 150, 243, 0.2); /* 青系の背景 */
-    text-align: left;
+.message.model {
+  /* モデルの応答 */
+  background-color: rgba(33, 150, 243, 0.2); /* 青系の背景 */
+  text-align: left;
 }
 
-.message strong { /* 役割表示 (あなた: / 物語:) */
-    display: block;
-    margin-bottom: 4px;
-    font-size: 0.9em;
-    color: #aaa;
+.message strong {
+  /* 役割表示 (あなた: / 物語:) */
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9em;
+  color: #aaa;
 }
 
-.loading { /* 生成中表示 (もし使う場合) */
-    /* text-align: center; */
-    /* color: #888; */
-    /* margin-top: 10px; */
+.loading {
+  /* 生成中表示 (もし使う場合) */
+  /* text-align: center; */
+  /* color: #888; */
+  /* margin-top: 10px; */
 }
 
-.error-message { /* エラーメッセージ表示 (もし使う場合) */
-    /* color: #f44336; */
-    /* text-align: center; */
-    /* margin-top: 10px; */
-    /* background-color: rgba(244, 67, 54, 0.1); */
-    /* padding: 8px; */
-    /* border-radius: 4px; */
+.error-message {
+  /* エラーメッセージ表示 (もし使う場合) */
+  /* color: #f44336; */
+  /* text-align: center; */
+  /* margin-top: 10px; */
+  /* background-color: rgba(244, 67, 54, 0.1); */
+  /* padding: 8px; */
+  /* border-radius: 4px; */
 }
 /* styles.css に追加 */
 

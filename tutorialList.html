@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8"/>
+  <title>取説一覧</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <!-- 黒背景 + 白文字ベースのCSS -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- サニタイズ -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
+  <!-- zip -->
+  <script src="https://cdn.jsdelivr.net/npm/pako/dist/pako.min.js"></script>
+  <!-- 雑多 -->
+  <script type="module" src="js/common.js"></script>
+  <!-- multiModal.js -->
+  <script type="module" src="js/multiModal.js"></script>
+  <!-- 背景管理用 -->
+  <script type="module" src="js/background.js"></script>
+  <!-- 取説 -->
+  <script type="module" src="js/tutorialData.js"></script>
+  <script type="module" src="js/tutorialManager.js"></script>
+  <script type="module" src="js/universalSaveLoad.js"></script>
+
+  <!-- 本画面制御用のJS -->
+  <script type="module" src="js/tutorialList.js"></script>
+</head>
+
+<body>
+  <div class="application-bar">
+    <!-- メニューに戻るボタン -->
+    <button id="back-to-menu">
+      <div class="iconmoon icon-home3"></div>戻る
+    </button>
+    <!-- 取説一覧ページへ遷移するボタン -->
+    <button id="open-tutorial-list-button">
+      <div class="iconmoon icon-book"></div>取説
+    </button>
+    <button id="save-load-button">
+      <div class="iconmoon icon-address"></div>
+      続き
+    </button>
+    <!-- 背景を変更するボタン -->
+    <button id="change-bg-button">
+      <div class="iconmoon icon-picture"></div>背景
+    </button>
+  </div>
+
+  <div class="container">
+
+    <h2>取説一覧</h2>
+    <div id="tutorial-list-container"></div>
+
+    <!-- ▼ 確認用モーダル -->
+    <div id="tutorial-confirm-modal" class="modal">
+      <div class="modal-content" style="padding: 20px; max-width:400px;">
+        <h2>取説確認</h2>
+        <p id="tutorial-confirm-message"></p>
+        <div class="c-flexbox">
+          <button id="tutorial-confirm-ok">OK</button>
+          <button id="tutorial-confirm-cancel">キャンセル</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="js/indexedDB.js"></script>
+</body>
+</html>
