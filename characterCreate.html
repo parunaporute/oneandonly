@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>エレメント作成</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <!-- 黒背景 + 白文字ベースのCSS -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- サニタイズ -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
+  <!-- zip -->
+  <script src="https://cdn.jsdelivr.net/npm/pako/dist/pako.min.js"></script>
+  <!-- 雑多 -->
+  <script type="module" src="js/common.js"></script>
+  <!-- multiModal.js -->
+  <script type="module" src="js/multiModal.js"></script>
+  <!-- 背景管理用 -->
+  <script type="module" src="js/background.js"></script>
+  <!-- 取説 -->
+  <script type="module" src="js/tutorialData.js"></script>
+  <script type="module" src="js/tutorialManager.js"></script>
+  <script type="module" src="js/universalSaveLoad.js"></script>
+
+  <!-- IndexedDBなどの共通スクリプト -->
+  <script type="module" src="js/indexedDB.js"></script>
+  <!-- gachaCore.js -->
+  <script type="module" src="js/gachaCore.js"></script>
+  <!-- characterCreate.js（改変版） -->
+  <script type="module" src="js/characterCreate.js"></script>
+
+</head>
+
+<body>
+  <div class="application-bar">
+    <!-- メニューに戻るボタン -->
+    <button id="back-to-menu">
+      <div class="iconmoon icon-home3"></div>戻る
+    </button>
+    <!-- 取説一覧ページへ遷移するボタン -->
+    <button id="open-tutorial-list-button">
+      <div class="iconmoon icon-book"></div>取説
+    </button>
+    <button id="save-load-button">
+      <div class="iconmoon icon-address"></div>
+      続き
+    </button>
+    <!-- 背景を変更するボタン -->
+    <button id="change-bg-button">
+      <div class="iconmoon icon-picture"></div>背景
+    </button>
+  </div>
+
+  <div class="container">
+    <h1>エレメント作成</h1>
+    <!-- ガチャボタンのみ残し、ガチャ箱の移動関連ボタンは削除 -->
+    <button id="gacha-btn" style="margin:10px;">エレメントガチャ</button>
+    <!-- 「すべて見る」ボタン（最初に生成した時のみ表示する） -->
+    <button id="see-all-btn" style="margin:10px; display:none;">
+      すべて見る
+    </button>
+
+    <!-- ガチャ生成中モーダル -->
+    <div id="gacha-modal" class="modal">
+      <div class="modal-content">
+        <p>生成中...</p>
+        <button id="cancel-gacha-btn">キャンセル</button>
+      </div>
+    </div>
+
+    <!-- エレメントのジャンル設定モーダル -->
+    <div id="element-genre-modal" class="modal">
+      <div class="modal-content">
+        <h2>エレメントのジャンルを設定</h2>
+        <p style="font-size: 0.9em; margin-bottom: 10px;">
+          下記の軸を選択してください。<br>
+          一度選択すると、ストレージに保存され次回以降も復元されます。
+        </p>
+
+        <!-- 舞台（複数可） -->
+        <div style="margin-top:10px;">
+          <strong>舞台（複数選択可）</strong><br>
+          <div id="stage-chips-container" class="chips-container">
+            <!-- 例：ファンタジー, SF, 歴史・時代劇... -->
+          </div>
+        </div>
+
+        <!-- 雰囲気（単一） -->
+        <div style="margin-top:10px;">
+          <strong>雰囲気（単一選択）</strong><br>
+          <div id="mood-chips-container" class="chips-container">
+            <!-- 例：ライト/ポップ, 中間/バランス, ダーク/シリアス -->
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button id="genre-setting-ok-btn" style="margin-right:10px;">OK</button>
+          <button id="genre-setting-cancel-btn">キャンセル</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 「その他」登録用モーダル -->
+    <div id="other-input-modal" class="modal">
+      <div class="modal-content" style="max-width:400px;">
+        <h2>「その他」を追加</h2>
+        <p id="other-input-modal-category" style="font-weight:bold;"></p>
+        <textarea id="other-input-text" rows="3" placeholder="新しく追加する候補"></textarea>
+        <div style="margin-top:10px;">
+          <button id="other-generate-btn">生成</button>
+          <button id="other-ok-btn">OK</button>
+          <button id="other-cancel-btn">キャンセル</button>
+        </div>
+        <p style="font-size:0.8em; color:#666; margin-top:10px;">
+          ※「生成」ボタンを押すと、現状の候補にない新しい案をChatGPTで生成し、<br>
+          その結果を上のテキストボックスに自動入力します。
+        </p>
+      </div>
+    </div>
+
+    <!-- 「削除」確認モーダル -->
+    <div id="delete-confirm-modal" class="modal">
+      <div class="modal-content">
+        <p>この選択肢を削除しますが、よろしいですか？</p>
+        <button id="delete-confirm-ok">OK</button>
+        <button id="delete-confirm-cancel">キャンセル</button>
+      </div>
+    </div>
+
+    <!-- 選んだジャンルの出力例 -->
+    <div style="margin-top:20px;">
+      <p>
+        <strong>選んだジャンルの出力例：</strong>
+      </p>
+      <p id="genre-result-text" style="font-weight:bold; white-space:pre-wrap;"></p>
+    </div>
+
+    <!-- 画面上に表示する「最後に生成したカード一覧」 -->
+    <div id="card-container"></div>
+
+    <!-- 画像プレビュー用モーダル -->
+    <div id="card-image-preview-modal" class="modal">
+      <div class="modal-content">
+        <img id="card-preview-img" src="" alt="card image" style="max-width: 95vw;max-height: 95vh;" />
+        <button id="card-preview-close-btn" style="margin-top:10px;">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
