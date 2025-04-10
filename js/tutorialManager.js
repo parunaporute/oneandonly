@@ -1,3 +1,4 @@
+// tutorialManager.js
 (function () {
     // -------------------------------------------
     // A) スコープ内変数
@@ -54,29 +55,40 @@
         if (forcedTutorialId) {
             const target = window.tutorials.find((t) => t.id === forcedTutorialId);
             if (target) {
+                // 強制実行時は、ページマッチングは runTutorialIfMatchPage 内で行われる
                 await runTutorialIfMatchPage(target);
+            } else {
+                console.warn(`Forced tutorial with id "${forcedTutorialId}" not found.`);
             }
-            return;
+            return; // 強制実行時はここで処理終了
         }
 
-        // 通常実行: 現在ページにマッチ & 未完了のストーリーを順番に
-        const currentPage = getCurrentPageName();
-        const pageTutorials = window.tutorials.filter((story) =>
-            story.steps.some((step) => step.type === 'page' && step.match === currentPage)
-        );
+        // 通常実行: tutorialData.js の定義順に未完了のチュートリアルを探す
+        // ★★★ 修正箇所 開始 ★★★
+        // 以前のコード：現在のページにマッチするものをフィルタリングし、IDでソートしていた
+        // const currentPage = getCurrentPageName();
+        // const pageTutorials = window.tutorials.filter((story) =>
+        //     story.steps.some((step) => step.type === 'page' && step.match === currentPage)
+        // );
+        // pageTutorials.sort((a, b) => getStoryIdNumber(a.id) - getStoryIdNumber(b.id));
+        // for (const story of pageTutorials) { ... }
 
-        // ID末尾の数字が小さい順にソート
-        pageTutorials.sort((a, b) => getStoryIdNumber(a.id) - getStoryIdNumber(b.id));
-
-        for (const story of pageTutorials) {
+        // 新しいコード：window.tutorials を定義順にそのままループする
+        for (const story of window.tutorials) {
             const isCompleted = localStorage.getItem('completeStory_' + story.id) === 'true';
             if (!isCompleted) {
+                // 未完了のチュートリアルが見つかった
+                // このチュートリアルが現在のページにマッチするステップを持っているか確認し、持っていれば実行
                 await runTutorialIfMatchPage(story);
-                break; // 1つ実行したらループ抜け
+                // 1つ実行したらループを抜ける（一度に複数のチュートリアルを開始しない）
+                break;
             }
         }
+        // ★★★ 修正箇所 終了 ★★★
     }
 
+    // runTutorialIfMatchPage は、渡された story が現在のページにマッチするかどうかを
+    // チェックする役割なので、変更は不要です。
     async function runTutorialIfMatchPage(story) {
         const currentPage = getCurrentPageName();
         // このストーリーに現在ページ用の step があるか？
@@ -84,9 +96,12 @@
             (step) => step.type === 'page' && step.match === currentPage
         );
         if (hasStepForPage) {
+            // 現在のページにマッチするステップがあればチュートリアルを開始
             await startTutorialSteps(story);
         }
+        // マッチしない場合は何もしない（次のチュートリアルに進むか、ループが終了する）
     }
+
     // -------------------------------------------
     // E) チュートリアルステップ開始
     // -------------------------------------------
@@ -117,8 +132,7 @@
                 if (!isPageStepDone(story.id, prevStep)) {
                     // 前stepがまだ終わっていない → このstepは実行不可
                     console.log(
-                        `[Tutorial] The previous page-step (index:${
-                            idx - 1
+                        `[Tutorial] The previous page-step (index:${idx - 1
                         }) is not done yet. Stop here.`
                     );
                     return; // ここで終了（後続stepも実行しない）
@@ -346,7 +360,7 @@
       </div>
       <div class="step-message">${escapeHtml(message)}</div>
       <div style="display:flex; justify-content:right; gap:10px;">
-        <button id="tutorial-complete-btn" style="min-width:6rem;">完了</button>  
+        <button id="tutorial-complete-btn" style="min-width:6rem;">完了</button>
       </div>
     `;
         }
@@ -512,6 +526,9 @@
         const params = new URLSearchParams(window.location.search);
         return params.get(name);
     }
+    // この関数は runTutorials 内のソートで使われていましたが、
+    // ソート処理がなくなったため、現在は直接は呼び出されません。
+    // ただし、「既存コードのリファクタリングは絶対に禁止」指示に従い、削除はしません。
     function getStoryIdNumber(storyId) {
         const match = storyId.match(/\d+$/);
         return match ? parseInt(match[0], 10) : 999999;
