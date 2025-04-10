@@ -2,11 +2,9 @@
 // ★ APIクライアント初期化削除、localStorage参照
 // ★ チェックボックス状態保存機能を追加
 // ★ お気に入りボタン追加、トグル関数追加
-// ★ 省略なし (今度こそ！)
 
 // --- モジュールインポート ---
 import { GeminiApiClient } from './geminiApiClient.js';
-import { StabilityApiClient } from './stabilityApiClient.js';
 import {
     initIndexedDB,
     listAllScenarios,
@@ -103,9 +101,6 @@ function updateBgmButtonStatus(isStopped) {
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('[Menu] DOMContentLoaded event fired.');
     // DOM要素取得
-    modelSelectElement = document.getElementById('model-select');
-    modelDescriptionElement = document.getElementById('model-description');
-    updateModelsButton = document.getElementById('update-models-button');
     setApiKeyButton = document.getElementById('set-api-key-button');
     stopBgmButton = document.getElementById('stop-bgm-button');
     bgmAudio = document.getElementById('bgm');
@@ -169,7 +164,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.log('Initializing DB...');
         await initIndexedDB();
         console.log('DB initialized.');
-        // APIクライアント初期化は行わない
         console.log('Initializing modules...');
         if (typeof initAvatar === 'function') initAvatar();
         else console.warn('initAvatar not found');
@@ -192,13 +186,10 @@ function disableCoreFeaturesOnError() {
     );
     btns.forEach((el) => {
         const keep = ['set-api-key-button', 'open-tutorial-list-button'];
-        if (!keep.includes(el.id)) {
-            el.disabled = true;
-            el.style.opacity = '0.5';
-            el.style.cursor = 'not-allowed';
-        }
+        el.disabled = true;
+        el.style.opacity = '0.5';
+        el.style.cursor = 'not-allowed';
     });
-    if (modelSelectElement) modelSelectElement.innerHTML = '<option>初期化エラー</option>';
     console.error('Core features disabled.');
 }
 
@@ -244,14 +235,6 @@ async function initMenuPage() {
     initAccordion(); // アコーディオン初期化
     setupMenuButtons(); // ボタンイベント設定
 
-    // Geminiモデルリスト読み込み
-    const currentGeminiApiKey = localStorage.getItem(GEMINI_API_KEY_LS_KEY);
-    if (currentGeminiApiKey) {
-        await loadAvailableModels(false, currentGeminiApiKey);
-    } else {
-        /* ... キー未設定時の UI ... */
-    }
-    setupModelSelectorEvents(); // モデルセレクターイベント
     console.log('Menu page content initialized.');
 }
 
@@ -360,7 +343,7 @@ function setupMenuButtons() {
         typeof onChangeBgButtonClick === 'function' &&
         !changeBgButton.hasAttribute('data-bg-listener-added')
     ) {
-        console.log('[Menu] Skip BG listener setup here.');
+        // background.js側でリスナーが追加されることを期待
     }
 
     // 非表示チェックボックス (hasAttribute チェック復活)
@@ -398,14 +381,47 @@ function openApiKeysModal() {
     console.log('Opening API Keys modal...');
     let tempG = localStorage.getItem(GEMINI_API_KEY_LS_KEY) || '';
     let tempS = localStorage.getItem(STABILITY_API_KEY_LS_KEY) || '';
+
+    const modelSelectorHtml = `
+        <div class="model-selector" style="margin-top: 20px; margin-bottom: 20px; padding: 15px; background-color: rgba(0,0,0,0.2); border-radius: 5px; border: 1px solid #777;">
+            <label for="model-select" style="margin-right: 10px;">使用するモデル:</label>
+            <select id="model-select" disabled style="margin-right: 10px; padding: 5px; background-color: #555; color: #fff; border: 1px solid #777;">
+                <option value="">モデルを読み込み中...</option>
+            </select>
+            <button id="update-models-button" title="モデルリストを再取得します" disabled style="padding: 5px 10px;">リスト更新</button>
+            <div id="model-description" class="model-description" style="font-size: 0.8rem; margin-top: 10px; color: #ccc;"></div>
+            <div class="pricing-link" style="font-size: 0.8rem; margin-top: 5px;">
+                <a href="https://ai.google.dev/pricing" target="_blank" rel="noopener noreferrer" style="color: #aef;">料金情報はこちら (公式)</a>
+            </div>
+        </div>
+    `;
+
+    // ★変更: contentHtml にパスワード表示切替ボタンとモデルセレクターを追加
+    const apiKeyInputStyle = "width: calc(100% - 50px); padding: 8px; background-color: #555; color: #fff; border: 1px solid #777; border-radius: 3px 0 0 3px; vertical-align: middle;"; // 幅調整
+    const toggleButtonStyle = "width: 50px; padding: 8px; cursor: pointer; background-color: #666; color: #fff; border: 1px solid #777; border-left: none; border-radius: 0 3px 3px 0; user-select: none; font-size: 0.8em; line-height: 1.5; vertical-align: middle; box-sizing: border-box;"; // スタイル調整
+
     multiModalOpen({
         id: 'api-keys-modal',
         title: 'APIキー設定',
-        contentHtml: `<p style="font-size: 0.9em; margin-bottom: 15px;">各サービスのサイトで取得したAPIキーを入力・保存してください。</p><div style="margin-bottom: 20px;"><label for="temp-gemini-api-key-input" style="display: block; margin-bottom: 5px;"><b>Gemini API Key (テキスト生成用):</b></label><input type="password" id="temp-gemini-api-key-input" placeholder="Google AI Studio 等で取得 (AIza...)" style="width:100%; padding:8px; background-color: #555; color: #fff; border: 1px solid #777;" value="${DOMPurify.sanitize(
-            tempG
-        )}"/><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="font-size: 0.8em; color: #aef;">Gemini キー取得</a></div><div style="margin-bottom: 10px;"><label for="temp-stability-api-key-input" style="display: block; margin-bottom: 5px;"><b>Stability AI API Key (画像生成用):</b></label><input type="password" id="temp-stability-api-key-input" placeholder="Stability AI Platform で取得 (sk-...)" style="width:100%; padding:8px; background-color: #555; color: #fff; border: 1px solid #777;" value="${DOMPurify.sanitize(
-            tempS
-        )}"/><a href="https://platform.stability.ai/account/keys" target="_blank" rel="noopener noreferrer" style="font-size: 0.8em; color: #aef;">Stability AI キー取得</a></div>`,
+        contentHtml: `
+            <p style="font-size: 0.9em; margin-bottom: 15px;">各サービスのサイトで取得したAPIキーを入力・保存してください。</p>
+            <div style="margin-bottom: 20px;">
+                <label for="temp-gemini-api-key-input" style="display: block; margin-bottom: 5px;"><b>Gemini API Key (テキスト生成用):</b></label>
+                <div style="display: flex; align-items: center;">
+                    <input type="password" id="temp-gemini-api-key-input" placeholder="Google AI Studio 等で取得 (AIza...)" style="${apiKeyInputStyle}" value="${DOMPurify.sanitize(tempG)}"/>
+                    <button type="button" class="toggle-password" data-target="temp-gemini-api-key-input" style="${toggleButtonStyle}">表示</button>
+                </div>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="font-size: 0.8em; color: #aef;">Gemini キー取得</a>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="temp-stability-api-key-input" style="display: block; margin-bottom: 5px;"><b>Stability AI API Key (画像生成用):</b></label>
+                <div style="display: flex; align-items: center;">
+                    <input type="password" id="temp-stability-api-key-input" placeholder="Stability AI Platform で取得 (sk-...)" style="${apiKeyInputStyle}" value="${DOMPurify.sanitize(tempS)}"/>
+                     <button type="button" class="toggle-password" data-target="temp-stability-api-key-input" style="${toggleButtonStyle}">表示</button>
+                </div>
+                <a href="https://platform.stability.ai/account/keys" target="_blank" rel="noopener noreferrer" style="font-size: 0.8em; color: #aef;">Stability AI キー取得</a>
+            </div>
+            ${modelSelectorHtml} `,
         appearanceType: 'center',
         showCloseButton: true,
         closeOnOutsideClick: true,
@@ -421,11 +437,20 @@ function openApiKeysModal() {
                         onOk: () => {
                             localStorage.removeItem(GEMINI_API_KEY_LS_KEY);
                             localStorage.removeItem(STABILITY_API_KEY_LS_KEY);
+                            // ★変更: モーダル内の入力欄もクリア
+                            const gInput = document.getElementById('temp-gemini-api-key-input');
+                            const sInput = document.getElementById('temp-stability-api-key-input');
+                            if (gInput) gInput.value = '';
+                            if (sInput) sInput.value = '';
                             updateApiKeyButtonStatus();
-                            loadAvailableModels(true, null);
-                            disableChatUI(true, 'Keys cleared');
+                            // ★変更: キー削除時はモデルリスト関連UIをリセット (エラー表示は loadAvailableModels 内で行う)
+                            if (modelSelectElement) {
+                                modelSelectElement.innerHTML = '<option value="">Geminiキー未設定</option>';
+                                modelSelectElement.disabled = true;
+                            }
+                            if (updateModelsButton) updateModelsButton.disabled = true;
+                            if (modelDescriptionElement) modelDescriptionElement.textContent = 'Gemini APIキーを設定してください。';
                             showToast('両キー削除');
-                            if (modal) modal.close();
                         },
                     });
                 },
@@ -448,6 +473,7 @@ function openApiKeysModal() {
                 if (newG) localStorage.setItem(GEMINI_API_KEY_LS_KEY, newG);
                 else localStorage.removeItem(GEMINI_API_KEY_LS_KEY);
                 console.log(`Gemini Key ${newG ? 'upd' : 'clr'}.`);
+                // キー変更時にモデルリストを再読み込み
                 await loadAvailableModels(true, newG || null);
             }
             if (newS !== curS) {
@@ -459,20 +485,68 @@ function openApiKeysModal() {
             updateApiKeyButtonStatus();
             if (gCh || sCh) showToast('APIキー更新');
             else showToast('変更なし');
+            // 保存後にGeminiキーがない場合はUIをリセット
+            if (!localStorage.getItem(GEMINI_API_KEY_LS_KEY)) {
+                if (modelSelectElement) {
+                    modelSelectElement.innerHTML = '<option value="">Geminiキー未設定</option>';
+                    modelSelectElement.disabled = true;
+                }
+                if (updateModelsButton) updateModelsButton.disabled = true;
+                if (modelDescriptionElement) modelDescriptionElement.textContent = 'Gemini APIキーを設定してください。';
+            }
         },
+        // onOpenコールバックでモーダル内の要素への処理を行う
         onOpen: () => {
             console.log('API Keys modal opened.');
+            // モーダル内のモデル関連要素をグローバル変数に代入 (元の関数が参照するため)
+            modelSelectElement = document.getElementById('model-select');
+            modelDescriptionElement = document.getElementById('model-description');
+            updateModelsButton = document.getElementById('update-models-button');
+
+            // パスワード表示切り替えボタンのイベントリスナーを設定
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+            toggleButtons.forEach(button => {
+                if (!button.hasAttribute('data-pw-toggle-listener-added')) {
+                    button.addEventListener('click', (event) => {
+                        const currentButton = event.currentTarget;
+                        const targetId = currentButton.dataset.target;
+                        const passwordInput = document.getElementById(targetId);
+                        if (passwordInput) {
+                            const currentType = passwordInput.getAttribute('type');
+                            if (currentType === 'password') {
+                                passwordInput.setAttribute('type', 'text');
+                                currentButton.textContent = '非表示'; // テキスト変更
+                            } else {
+                                passwordInput.setAttribute('type', 'password');
+                                currentButton.textContent = '表示'; // テキスト変更
+                            }
+                        }
+                    });
+                    button.setAttribute('data-pw-toggle-listener-added', 'true');
+                }
+            });
+
+            // モーダル表示時にモデルセレクターのイベントを設定
+            setupModelSelectorEvents();
+            // モーダル表示時にモデルリストを読み込む
+            const currentGeminiApiKey = localStorage.getItem(GEMINI_API_KEY_LS_KEY);
+            loadAvailableModels(false, currentGeminiApiKey);
         },
     });
 }
 
 /** モデルセレクター関連イベント設定 */
 function setupModelSelectorEvents() {
+    // グローバル変数 modelSelectElement, updateModelsButton を使う
     if (modelSelectElement) {
+        // 重複リスナー防止は元のコードにあればそのまま、なければ追加しない
         modelSelectElement.addEventListener('change', updateModelDescription);
         console.log('Model select listener added.');
+    } else {
+        console.warn('modelSelectElement not found when setting up events.'); // モーダル表示前はnull
     }
     if (updateModelsButton) {
+        // 重複リスナー防止は元のコードにあればそのまま、なければ追加しない
         updateModelsButton.addEventListener('click', () => {
             const key = localStorage.getItem(GEMINI_API_KEY_LS_KEY);
             if (!key) {
@@ -487,40 +561,46 @@ function setupModelSelectorEvents() {
             }
         });
         console.log('Update models listener added.');
+    } else {
+        console.warn('updateModelsButton not found when setting up events.'); // モーダル表示前はnull
     }
 }
+
 /** 利用可能モデル取得＆表示 */
 async function loadAvailableModels(forceUpdate = false, apiKeyToUse) {
+    // グローバル変数 modelSelectElement 等を使う前提
     if (isLoadingModels) {
         console.log('Models loading.');
         return;
     }
+    // 要素の存在チェックは元のコードのまま
     if (!modelSelectElement || !updateModelsButton || !apiKeyToUse) {
         console.log(`Cannot load models: elements or API Key missing.`);
-        modelSelectElement.innerHTML = '<option>Gキー未設定</option>';
+        if (modelSelectElement) modelSelectElement.innerHTML = '<option>Geminiキー未設定</option>';
         if (updateModelsButton) updateModelsButton.disabled = true;
-        disableChatUI(true, 'Gemini Key missing');
         isLoadingModels = false;
         return;
     }
     console.log(`Loading models (Force: ${forceUpdate})...`);
     isLoadingModels = true;
-    disableChatUI(true, 'Loading models');
     modelSelectElement.innerHTML = '<option>読込中...</option>';
+    modelSelectElement.disabled = true; // 読み込み中は無効化
+    updateModelsButton.disabled = true; // 読み込み中は無効化
     if (modelDescriptionElement) modelDescriptionElement.textContent = '';
-    let models = null; /* Cache skipped */
-    if (models === null) {
-        try {
-            console.log('Fetching models...');
-            models = await GeminiApiClient.listAvailableModels(apiKeyToUse);
-            console.log(`Workspaceed ${models?.length || 0}.`);
-        } catch (e) {
-            console.error('Model fetch error:', e);
-            showToast(`モデル取得エラー: ${e.message}`);
-            models = null;
-        }
+
+    let models = null;
+    // キャッシュ処理は元のコードにあればそのまま、なければシンプルに取得
+    try {
+        console.log('Fetching models...');
+        models = await GeminiApiClient.listAvailableModels(apiKeyToUse);
+        console.log(`Workspaceed ${models?.length || 0} models.`);
+    } catch (e) {
+        console.error('Model fetch error:', e);
+        showToast(`モデル取得エラー: ${e.message}`);
+        models = null;
     }
-    modelSelectElement.innerHTML = '';
+
+    modelSelectElement.innerHTML = ''; // クリア
     if (models?.length) {
         const pref =
             localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
@@ -533,21 +613,31 @@ async function loadAvailableModels(forceUpdate = false, apiKeyToUse) {
             modelSelectElement.appendChild(opt);
         });
         updateModelDescription();
+        modelSelectElement.disabled = false; // 読み込み完了で有効化
     } else {
         modelSelectElement.innerHTML = '<option>利用不可</option>';
+        modelSelectElement.disabled = true; // 利用不可なら無効化
         if (modelDescriptionElement) modelDescriptionElement.textContent = '';
         if (!apiKeyToUse) {
-        } else if (!models) {
-        } else showToast('利用可能テキストモデルなし');
+            /* apiKeyがない場合の処理は関数の最初で行っている */
+        } else if (models === null) { // APIエラーの場合
+            showToast('モデルリストの取得に失敗しました');
+        } else { // モデルが0件の場合
+            showToast('利用可能なテキストモデルがありません');
+        }
     }
     isLoadingModels = false;
-    const enable = !!apiKeyToUse && models?.length > 0;
-    disableChatUI(!enable, enable ? 'Models loaded' : 'Failed load/No key');
-    console.log(`Model loading finished. UI Enabled: ${enable}`);
+    updateModelsButton.disabled = false; // ★追加: 更新ボタンは常に有効化
+    console.log(`Model loading finished.`);
 }
+
 /** 選択モデルの説明表示 */
 function updateModelDescription() {
-    if (!modelSelectElement || !modelDescriptionElement) return;
+    // グローバル変数 modelSelectElement, modelDescriptionElement を使う
+    if (!modelSelectElement || !modelDescriptionElement) {
+        console.warn('Model select or description element not found for update.');
+        return;
+    }
     const opt = modelSelectElement.options[modelSelectElement.selectedIndex];
     if (!opt || !opt.value) {
         modelDescriptionElement.textContent = '';
@@ -558,16 +648,7 @@ function updateModelDescription() {
     localStorage.setItem(PREFERRED_GEMINI_MODEL_LS_KEY, opt.value);
     console.log(`Desc updated: ${opt.value}`);
 }
-/** チャットUI有効/無効化 */
-function disableChatUI(disable, reason = '') {
-    if (reason) console.log(`UI ${disable ? 'disabled' : 'enabled'}: ${reason}`);
-    if (modelSelectElement) modelSelectElement.disabled = disable;
-    if (updateModelsButton) updateModelsButton.disabled = disable || isLoadingModels;
-    const textGenReqBtns = [charCreateBtn, newScenBtn, customScenBtn];
-    textGenReqBtns.forEach((b) => {
-        if (b) b.disabled = disable;
-    });
-}
+
 /** アコーディオン初期化 */
 function initAccordion() {
     accordionHeader = document.getElementById('ongoing-scenarios-header');
