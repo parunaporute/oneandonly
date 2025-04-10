@@ -1,13 +1,13 @@
 /* indexedDB.js */
 /* ★ deleteScenarioById 内のカーソル処理と非同期管理を修正 */
-/* ★ isFavorite インデックス追加済み、DBバージョン 19 */
+/* ★ isFavorite インデックス追加済み、DBバージョン 20 */
 /* ★ export を使用、省略なし */
 
 let db = null;
 
 export function initIndexedDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('trpgDB', 19); // ★ Version 19
+        const request = indexedDB.open('trpgDB', 20); // ★ Version 20
 
         request.onupgradeneeded = (event) => {
             console.log('[IndexedDB] onupgradeneeded event triggered.');
