@@ -64,16 +64,7 @@
         }
 
         // 通常実行: tutorialData.js の定義順に未完了のチュートリアルを探す
-        // ★★★ 修正箇所 開始 ★★★
-        // 以前のコード：現在のページにマッチするものをフィルタリングし、IDでソートしていた
-        // const currentPage = getCurrentPageName();
-        // const pageTutorials = window.tutorials.filter((story) =>
-        //     story.steps.some((step) => step.type === 'page' && step.match === currentPage)
-        // );
-        // pageTutorials.sort((a, b) => getStoryIdNumber(a.id) - getStoryIdNumber(b.id));
-        // for (const story of pageTutorials) { ... }
-
-        // 新しいコード：window.tutorials を定義順にそのままループする
+        // window.tutorials を定義順にそのままループする
         for (const story of window.tutorials) {
             const isCompleted = localStorage.getItem('completeStory_' + story.id) === 'true';
             if (!isCompleted) {
@@ -84,7 +75,6 @@
                 break;
             }
         }
-        // ★★★ 修正箇所 終了 ★★★
     }
 
     // runTutorialIfMatchPage は、渡された story が現在のページにマッチするかどうかを
@@ -525,13 +515,6 @@
     function getQueryParam(name) {
         const params = new URLSearchParams(window.location.search);
         return params.get(name);
-    }
-    // この関数は runTutorials 内のソートで使われていましたが、
-    // ソート処理がなくなったため、現在は直接は呼び出されません。
-    // ただし、「既存コードのリファクタリングは絶対に禁止」指示に従い、削除はしません。
-    function getStoryIdNumber(storyId) {
-        const match = storyId.match(/\d+$/);
-        return match ? parseInt(match[0], 10) : 999999;
     }
     function escapeHtml(str) {
         if (!str) return '';
