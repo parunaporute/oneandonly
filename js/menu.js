@@ -264,9 +264,8 @@ function updateApiKeyButtonStatus() {
         let txt = `<span class="iconmoon icon-key"></span> 設定済`;
         if (!stabilityKey) txt += ` (画像未)`;
         setApiKeyButton.innerHTML = txt;
-        setApiKeyButton.title = `G:${geminiKey.substring(0, 4)}...\nS:${
-            stabilityKey ? `${stabilityKey.substring(0, 4)}...` : '未設定'
-        }`;
+        setApiKeyButton.title = `G:${geminiKey.substring(0, 4)}...\nS:${stabilityKey ? `${stabilityKey.substring(0, 4)}...` : '未設定'
+            }`;
     } else {
         setApiKeyButton.textContent = 'APIキー設定';
         setApiKeyButton.title = 'APIキー設定';
@@ -673,12 +672,11 @@ function createScenarioRow(scenario) {
     let date = scenario.updatedAt;
     try {
         date = new Date(date).toLocaleString('ja-JP');
-    } catch {}
-    info.innerHTML = `<span style="color:#888; font-size:0.8em; margin-right: 5px;">ID:${
-        scenario.scenarioId
-    }</span> | ${DOMPurify.sanitize(
-        scenario.title || '(無題)'
-    )} <small style="color:#888;">(更新: ${date})</small>`;
+    } catch { }
+    info.innerHTML = `<span style="color:#888; font-size:0.8em; margin-right: 5px;">ID:${scenario.scenarioId
+        }</span> | ${DOMPurify.sanitize(
+            scenario.title || '(無題)'
+        )} <small style="color:#888;">(更新: ${date})</small>`;
     titleWrap.appendChild(info);
     div.appendChild(titleWrap);
     const btns = document.createElement('div');
