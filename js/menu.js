@@ -458,6 +458,7 @@ function openApiKeysModal() {
         ],
         cancelLabel: '閉じる',
         okLabel: '保存',
+        okButtonId: 'api-key-save-button',
         onOk: async () => {
             const gIn = document.getElementById('temp-gemini-api-key-input');
             const sIn = document.getElementById('temp-stability-api-key-input');
