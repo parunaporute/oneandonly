@@ -383,7 +383,7 @@ function openApiKeysModal() {
     let tempS = localStorage.getItem(STABILITY_API_KEY_LS_KEY) || '';
 
     const modelSelectorHtml = `
-        <div class="model-selector" style="margin-top: 20px; margin-bottom: 20px; padding: 15px; background-color: rgba(0,0,0,0.2); border-radius: 5px; border: 1px solid #777;">
+        <div class="model-selector" style="gap:0;margin-top: 20px; margin-bottom: 40px; padding: 15px; background-color: rgba(0,0,0,0.2); border-radius: 5px; border: 1px solid #777;">
             <label for="model-select" style="margin-right: 10px;">使用するモデル:</label>
             <select id="model-select" disabled style="margin-right: 10px; padding: 5px; background-color: #555; color: #fff; border: 1px solid #777;">
                 <option value="">モデルを読み込み中...</option>
@@ -412,7 +412,7 @@ function openApiKeysModal() {
                     <button type="button" class="toggle-password" data-target="temp-gemini-api-key-input" style="${toggleButtonStyle}">表示</button>
                 </div>
                 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="font-size: 0.8em; color: #aef;">Gemini キー取得</a>
-            </div>
+            </div>${modelSelectorHtml} 
             <div style="margin-bottom: 10px;">
                 <label for="temp-stability-api-key-input" style="display: block; margin-bottom: 5px;"><b>Stability AI API Key (画像生成用):</b></label>
                 <div style="display: flex; align-items: center;">
@@ -421,7 +421,7 @@ function openApiKeysModal() {
                 </div>
                 <a href="https://platform.stability.ai/account/keys" target="_blank" rel="noopener noreferrer" style="font-size: 0.8em; color: #aef;">Stability AI キー取得</a>
             </div>
-            ${modelSelectorHtml} `,
+            `,
         appearanceType: 'center',
         showCloseButton: true,
         closeOnOutsideClick: true,
