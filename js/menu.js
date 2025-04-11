@@ -397,8 +397,8 @@ function openApiKeysModal() {
     `;
 
     // ★変更: contentHtml にパスワード表示切替ボタンとモデルセレクターを追加
-    const apiKeyInputStyle = "width: calc(100% - 50px); padding: 8px; background-color: #555; color: #fff; border: 1px solid #777; border-radius: 3px 0 0 3px; vertical-align: middle;"; // 幅調整
-    const toggleButtonStyle = "width: 50px; padding: 8px; cursor: pointer; background-color: #666; color: #fff; border: 1px solid #777; border-left: none; border-radius: 0 3px 3px 0; user-select: none; font-size: 0.8em; line-height: 1.5; vertical-align: middle; box-sizing: border-box;"; // スタイル調整
+    const apiKeyInputStyle = "margin-bottom:0; margin-right:10px; width: calc(100% - 50px); padding: 8px; background-color: #555; color: #fff; border: 1px solid #777; border-radius: 3px 0 0 3px; vertical-align: middle;"; // 幅調整
+    const toggleButtonStyle = "width: 50px; padding: 8px; cursor: pointer; background-color: #666; color: #fff; border: 1px solid #777; border-radius: 0 3px 3px 0; user-select: none; font-size: 0.8em; line-height: 1.5; vertical-align: middle; box-sizing: border-box;"; // スタイル調整
 
     multiModalOpen({
         id: 'api-keys-modal',
