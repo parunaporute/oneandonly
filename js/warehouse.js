@@ -115,6 +115,7 @@ export function showWarehouseModal(mode = 'menu', partyId = null, onAddCb = null
         title: '倉庫 / ゴミ箱',
         contentHtml: buildWarehouseModalHtml(),
         showCloseButton: true,
+        closeButtonId: 'close-warehouse-btn',
         closeOnOutsideClick: true,
         appearanceType: 'top',
         onOpen: async () => {

@@ -173,6 +173,8 @@ class ModalInstance {
                 padding: '0',
                 lineHeight: '1', // 微調整
             });
+            // closeButtonId オプションが指定されていれば、その値をIDとして設定
+            if (this.options.closeButtonId) closeBtn.id = this.options.closeButtonId;
             closeBtn.addEventListener('click', this.cancel); // cancel メソッド呼び出し
             this.modalContainer.appendChild(closeBtn);
         }
