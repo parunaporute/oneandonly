@@ -7,7 +7,7 @@ let db = null;
 
 export function initIndexedDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('trpgDB', 20); // ★ Version 20
+        const request = indexedDB.open('trpgDB', 22); // ★ Version 20
 
         request.onupgradeneeded = (event) => {
             console.log('[IndexedDB] onupgradeneeded event triggered.');

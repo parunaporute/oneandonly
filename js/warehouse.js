@@ -12,8 +12,15 @@ import { showToast } from './common.js';
 import { saveCharacterDataToIndexedDB, loadCharacterDataFromIndexedDB } from './indexedDB.js';
 // DOMPurify はグローバルにある想定
 // window.geminiClient, window.stabilityClient は menu.js などで初期化されている想定
+import { StabilityApiClient } from './stabilityApiClient.js';
+import { GeminiApiClient } from './geminiApiClient.js';
+
 
 // --- モジュールスコープ変数 ---
+const PREFERRED_GEMINI_MODEL_LS_KEY = 'preferredGeminiModel';
+const gemini = new GeminiApiClient(); // new
+const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+const stability = new StabilityApiClient(); // new
 let warehouseMode = 'menu';
 let currentPartyIdForAdd = null;
 let afterAddCallback = null;
@@ -768,7 +775,7 @@ async function generateWarehouseImage(card, btn) {
     if (!card || !card.id) return;
     console.log(`[Warehouse] Generating image for card ${card.id} using Stability AI...`);
     // ★ クライアントとキーのチェック
-    if (!window.stabilityClient) {
+    if (!stability) {
         showToast('画像生成クライアント未初期化');
         return;
     }
@@ -777,11 +784,11 @@ async function generateWarehouseImage(card, btn) {
         showToast('Stability AI APIキー未設定');
         return;
     }
-    if (!window.geminiClient) {
+    if (!gemini) {
         showToast('翻訳用Geminiクライアント未初期化');
         return;
     } // 翻訳に使う
-    if (window.stabilityClient.isStubMode || window.geminiClient.isStubMode) {
+    if (stability.isStubMode || gemini.isStubMode) {
         console.warn('[Warehouse] Running generateWarehouseImage in STUB MODE.');
         // スタブ処理
         card.imageData = 'data:image/svg+xml,...'; // ダミーSVGなど
@@ -805,8 +812,7 @@ async function generateWarehouseImage(card, btn) {
 
     try {
         // --- プロンプト英語翻訳 (Gemini利用) ---
-        const translationModelId = document.getElementById('model-select')?.value;
-        if (!translationModelId) throw new Error('翻訳用Geminiモデル未選択');
+        if (!modelId) throw new Error('翻訳用Geminiモデル未選択');
         try {
             console.log('[Warehouse] Translating prompt to English...');
             // 翻訳用の指示を調整 (カードの種類に応じて)
@@ -819,10 +825,10 @@ async function generateWarehouseImage(card, btn) {
                 transContext =
                     'Translate Japanese monster description to English keywords/phrases for image prompt.';
             const translationPrompt = `${transContext}\n---\n${promptJa}\n---\nEnglish Keywords:`;
-            window.geminiClient.initializeHistory([]);
-            promptEn = await window.geminiClient.generateContent(
+            gemini.initializeHistory([]);
+            promptEn = await gemini.generateContent(
                 translationPrompt,
-                translationModelId
+                modelId
             ); // グローバル
             console.log(`[Warehouse] Translated prompt (EN): "${promptEn}"`);
             if (!promptEn?.trim()) throw new Error('翻訳結果が空');
@@ -832,30 +838,18 @@ async function generateWarehouseImage(card, btn) {
 
         // --- Stability AI 呼び出し ---
         const rarityNum = parseInt((card.rarity || '★1').replace('★', ''), 10) || 1;
-        // ★ カードタイプとレア度に応じて解像度とスタイルを設定
-        let width = 1024,
-            height = 1024,
-            stylePreset = 'anime'; // デフォルト (アイテムなど)
-        if (card.type === 'キャラクター') {
-            if (rarityNum >= 3) {
-                width = 768;
-                height = 1344;
-            } // 高レアキャラは縦長
-            else {
-                width = 1344;
-                height = 768;
-            } // 低レアキャラは横長
-        } else if (card.type === 'モンスター') {
-            width = 1344;
-            height = 768; // モンスターは横長
-            stylePreset = 'fantasy-art'; // ファンタジーアート風 (例)
-        } else if (card.type === 'アイテム') {
-            stylePreset = 'photographic'; // アイテムは写真風 (例)
-            width = 1024;
-            height = 1024; // 正方形
-        }
-        console.log(`[Warehouse] Target resolution: ${width}x${height}, Style: ${stylePreset}`);
+        const size = (rarityNum >= 3) ? "1024x1792" : "1792x1024";//縦長、横長
 
+        // ★ カードタイプとレア度に応じて解像度とスタイルを設定
+
+        
+        let width = 1792,
+            height = 1024,
+        stylePreset = 'anime'; // デフォルト (アイテムなど)
+        if (rarityNum >= 3) {
+            width = 1024;
+            height = 1792;
+        }
         const imageOptions = {
             samples: 1,
             width: width,
@@ -863,7 +857,7 @@ async function generateWarehouseImage(card, btn) {
             style_preset: stylePreset,
         };
         console.log('[Warehouse] Calling stabilityClient.generateImage:', imageOptions);
-        const imageResults = await window.stabilityClient.generateImage(
+        const imageResults = await stability.generateImage(
             promptEn,
             stabilityApiKey,
             imageOptions
@@ -959,7 +953,8 @@ function openImagePreview(card) {
         card.imageData
     )}" alt="プレビュー: ${DOMPurify.sanitize(
         card.name || card.id
-    )}" style="max-width:100%; max-height:100%; object-fit:contain; cursor:default; transition: transform 0.3s ease;" /><div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; background-color:rgba(0,0,0,0.7); padding:8px 15px; border-radius:5px; display:flex; gap:15px;"><button id="warehouse-preview-rotate-left-btn" title="左回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo2" style="transform: scaleX(-1); font-size: 1.2rem;"></span></button><button id="warehouse-preview-rotate-right-btn" title="右回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo2" style="font-size: 1.2rem;"></span></button></div></div>`;
+    )}" style="max-width:100%; max-height:100%; object-fit:contain; cursor:default; transition: transform 0.3s ease;" /><div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; background-color:rgba(0,0,0,0.7); padding:8px 15px; border-radius:5px; display:flex; gap:15px;"><button id="warehouse-preview-rotate-left-btn" title="左回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo2" style="transform: scaleX(-1); font-size: 1.2rem;"></span></button><button id="warehouse-preview-rotate-right-btn" title="右回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-redo" style="font-size: 1.2rem;"></span></button></div></div>`;
+    //  style="max-width:100%; max-height:100%; object-fit:contain; cursor:default; transition: transform 0.3s ease;" /><div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; background-color:rgba(0,0,0,0.7); padding:8px 15px; border-radius:5px; display:flex; gap:15px;"><button id="avatar-preview-rotate-left-btn" title="左回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo" style="transform: scaleX(-1); font-size: 1.2rem;"></span></button><button id="avatar-preview-rotate-right-btn" title="右回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-redo" style="font-size: 1.2rem;"></span></button></div></div>`;
     multiModalOpen({
         title: `プレビュー: ${DOMPurify.sanitize(card.name || card.id)}`,
         contentHtml: html,
@@ -1007,8 +1002,10 @@ function applyRotationToElement(element, angle) {
     if (!element) return;
     const norm = (angle || 0) % 360;
     let tf = `rotate(${norm}deg)`;
-    if (norm === 90 || norm === 270) tf += ' scale(1.3)';
+    if (norm === 90 || norm === 270) tf += ' scale(1.4)';
     element.style.transform = tf;
+    element.style.transformOrigin = "center center"
+    //transform: rotate(90deg) scale(1.4);cursor: pointer;transform-origin: center;height: 100%;width: initial;
 }
 
 // --- ソート処理 ---

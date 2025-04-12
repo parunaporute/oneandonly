@@ -11,12 +11,16 @@
 import { open as multiModalOpen } from './multiModal.js';
 import { showToast } from './common.js';
 import { saveAvatarData, loadAvatarData } from './indexedDB.js';
-// DOMPurify はグローバルにある想定
-// window.geminiClient, window.stabilityClient は menu.js などで初期化されている想定
+import { StabilityApiClient } from './stabilityApiClient.js';
+import { GeminiApiClient } from './geminiApiClient.js';
 
 // --- モジュールスコープ変数 ---
 let currentAvatarData = null;
 const AVATAR_STORE_KEY = 'myAvatar';
+const PREFERRED_GEMINI_MODEL_LS_KEY = 'preferredGeminiModel';
+const gemini = new GeminiApiClient(); // new
+const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+const stability = new StabilityApiClient(); // new
 
 /**
  * 初期化：ページ読み込み後 (通常は menu.js などから) 呼び出し
@@ -351,7 +355,7 @@ function openAvatarImagePreview(avatarData) {
     let angle = avatarData.rotationAngle || 0;
     const html = `<div style="position:relative; background-color:#111; overflow:hidden; text-align:center; width: 95vw; height: 95vh; display: flex; align-items: center; justify-content: center;"><img id="avatar-preview-image" src="${DOMPurify.sanitize(
         avatarData.imageData
-    )}" alt="プレビュー" style="max-width:100%; max-height:100%; object-fit:contain; cursor:default; transition: transform 0.3s ease;" /><div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; background-color:rgba(0,0,0,0.7); padding:8px 15px; border-radius:5px; display:flex; gap:15px;"><button id="avatar-preview-rotate-left-btn" title="左回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo2" style="transform: scaleX(-1); font-size: 1.2rem;"></span></button><button id="avatar-preview-rotate-right-btn" title="右回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo2" style="font-size: 1.2rem;"></span></button></div></div>`;
+    )}" alt="プレビュー" style="max-width:100%; max-height:100%; object-fit:contain; cursor:default; transition: transform 0.3s ease;" /><div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; background-color:rgba(0,0,0,0.7); padding:8px 15px; border-radius:5px; display:flex; gap:15px;"><button id="avatar-preview-rotate-left-btn" title="左回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-undo" style="transform: scaleX(-1); font-size: 1.2rem;"></span></button><button id="avatar-preview-rotate-right-btn" title="右回転" style="min-width: initial; padding: 5px 10px;"><span class="iconmoon icon-redo" style="font-size: 1.2rem;"></span></button></div></div>`;
     multiModalOpen({
         title: '画像プレビュー',
         contentHtml: html,
@@ -408,7 +412,7 @@ function applyRotation(imgEl, angle) {
 async function generateAvatarImage(avatar, btnElement) {
     // (中身は変更なし - 省略せず記述)
     console.log('[Avatar] Generating avatar image using Stability AI...');
-    if (!window.stabilityClient) {
+    if (!stability) {
         showToast('画像生成クライアント未初期化');
         return;
     }
@@ -417,11 +421,11 @@ async function generateAvatarImage(avatar, btnElement) {
         showToast('Stability AI APIキー未設定');
         return;
     }
-    if (!window.geminiClient) {
+    if (!gemini) {
         showToast('翻訳用Geminiクライアント未初期化');
         return;
     }
-    if (window.stabilityClient.isStubMode || window.geminiClient.isStubMode) {
+    if (stability.isStubMode || stability.isStubMode) {
         console.warn('[Avatar] Running generateAvatarImage in STUB MODE.');
         avatar.imageData = 'data:image/svg+xml,...';
         await saveAvatarData(avatar);
@@ -436,15 +440,14 @@ async function generateAvatarImage(avatar, btnElement) {
     console.log(`[Avatar] Original prompt (JA): "${promptJa}"`);
     let promptEn = '';
     try {
-        const translationModelId = document.getElementById('model-select')?.value;
-        if (!translationModelId) throw new Error('翻訳用Geminiモデル未選択');
+        if (!modelId) throw new Error('翻訳用Geminiモデル未選択');
         try {
             console.log('[Avatar] Translating prompt to English...');
             const translationPrompt = `Translate Japanese description to English keywords/phrases for image prompt:\n---\n${promptJa}\n---\nEnglish Keywords:`;
-            window.geminiClient.initializeHistory([]);
-            promptEn = await window.geminiClient.generateContent(
+            gemini.initializeHistory([]);
+            promptEn = await gemini.generateContent(
                 translationPrompt,
-                translationModelId
+                modelId
             );
             console.log(`[Avatar] Translated prompt (EN): "${promptEn}"`);
             if (!promptEn?.trim()) throw new Error('翻訳結果が空');
@@ -470,7 +473,7 @@ async function generateAvatarImage(avatar, btnElement) {
             style_preset: stylePreset,
         };
         console.log('[Avatar] Calling stabilityClient.generateImage:', imageOptions);
-        const imageResults = await window.stabilityClient.generateImage(
+        const imageResults = await stability.generateImage(
             promptEn,
             stabilityApiKey,
             imageOptions

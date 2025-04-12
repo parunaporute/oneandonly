@@ -9,9 +9,16 @@
 import { getBgImageById, getAllBgImages, addBgImage, deleteBgImage } from './indexedDB.js';
 import { open as multiModalOpen } from './multiModal.js';
 import { showToast } from './common.js';
-// import { fetchLatestScenarioPrompt } from './scenarioUtils.js'; // グローバル window.fetchLatestScenarioPrompt を使う想定
-// DOMPurify はグローバルにある想定
-// window.geminiClient, window.stabilityClient は menu.js で初期化想定
+import { StabilityApiClient } from './stabilityApiClient.js';
+import { GeminiApiClient } from './geminiApiClient.js';
+
+// --- モジュールスコープ変数 ---
+let currentAvatarData = null;
+const PREFERRED_GEMINI_MODEL_LS_KEY = 'preferredGeminiModel';
+const gemini = new GeminiApiClient(); // new
+const modelId = localStorage.getItem(PREFERRED_GEMINI_MODEL_LS_KEY) || 'gemini-1.5-flash-latest';
+const stability = new StabilityApiClient(); // new
+
 
 // --- モジュールスコープ変数 ---
 let currentPageName = 'index';
@@ -124,11 +131,11 @@ export async function generateNewBackground() {
 
     try {
         // ★ クライアントとキーのチェック
-        if (!window.stabilityClient) throw new Error('画像生成クライアント未初期化');
-        if (!window.geminiClient) throw new Error('翻訳用Geminiクライアント未初期化');
+        if (!stability) throw new Error('画像生成クライアント未初期化');
+        if (!gemini) throw new Error('翻訳用Geminiクライアント未初期化');
         const stabilityApiKey = localStorage.getItem('stabilityApiKey') || '';
         if (!stabilityApiKey) throw new Error('Stability AI APIキー未設定');
-        if (window.stabilityClient.isStubMode || window.geminiClient.isStubMode) {
+        if (stability.isStubMode || gemini.isStubMode) {
             console.warn('[Background] Running generation in STUB MODE.');
             // スタブ処理 (例: ダミー画像URLを返す)
             const dataUrl =
@@ -164,13 +171,12 @@ export async function generateNewBackground() {
         let promptEn = ''; // 英語プロンプト用
 
         // --- プロンプト英語翻訳 (Gemini利用) ---
-        const translationModelId = document.getElementById('model-select')?.value;
-        if (!translationModelId) throw new Error('翻訳用Geminiモデル未選択');
+        if (!modelId) throw new Error('翻訳用Geminiモデル未選択');
         try {
             console.log('[Background] Translating prompt to English...');
             const transPrompt = `Translate the following Japanese scene description into English suitable for an image generation prompt. Focus on visual keywords and atmosphere.\n---\n${promptJa}\n---\nEnglish Prompt:`;
-            window.geminiClient.initializeHistory([]);
-            promptEn = await window.geminiClient.generateContent(transPrompt, translationModelId);
+            gemini.initializeHistory([]);
+            promptEn = await gemini.generateContent(transPrompt, modelId);
             console.log(`[Background] Translated prompt (EN): "${promptEn}"`);
             if (!promptEn?.trim()) throw new Error('翻訳結果が空');
         } catch (translateError) {
@@ -189,7 +195,7 @@ export async function generateNewBackground() {
         };
         console.log('[Background] Calling stabilityClient.generateImage:', imageOptions);
         // ★ stabilityClient のメソッド呼び出し
-        const imageResults = await window.stabilityClient.generateImage(
+        const imageResults = await stability.generateImage(
             promptEn,
             stabilityApiKey,
             imageOptions

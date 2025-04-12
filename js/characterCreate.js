@@ -17,7 +17,7 @@ let customMoodChips = []; // カスタム「雰囲気」チップ
 let currentOtherCategory = ''; // 「その他」モーダルで編集中カテゴリ
 let deletingChipLabel = ''; // 削除確認中のチップラベル
 let deletingChipCategory = ''; // 削除確認中のチップカテゴリ
-import { runGacha} from './gachaCore.js';
+import { runGacha } from './gachaCore.js';
 import { initBackground } from './background.js';
 import { loadCharacterDataFromIndexedDB, saveCharacterDataToIndexedDB } from './indexedDB.js';
 import { GeminiApiClient } from './geminiApiClient.js';
@@ -489,7 +489,7 @@ function onGenreSettingOk() {
   const axisPrompt = buildAxisPrompt(); // 選択されたジャンルからプロンプト軸を作成
   const gachaModal = document.getElementById('gacha-modal'); // ローディングモーダル
   if (gachaModal) gachaModal.classList.add('active');
-debugger;
+  debugger;
   // ★ runGacha を呼び出し (async)
   runGacha(10, axisPrompt) // 10連ガチャ実行
     .then(() => {
@@ -848,24 +848,14 @@ async function generateCharacterImage(char, btnElement) {
     } // --- Stability AI オプション設定 (avatar.js を参考) ---
 
     const rarityNum = parseInt((char.rarity || '★1').replace('★', ''), 10) || 1;
-    let width = 1024,
-      height = 1024,
-      stylePreset = 'anime'; // デフォルト // レア度に応じて解像度変更 (キャラクターのみ縦長、他は横長)
-
-    // ★★★ 修正箇所: カードタイプに関わらず、レアリティで縦横比を決定 ★★★
+    // width:1344, height:768 nealy 16:9
+    let width = 1344,
+      height = 768,
+      stylePreset = 'anime'; // デフォルト (アイテムなど)
     if (rarityNum >= 3) {
-      // ★3以上は縦長 (avatar.js準拠)
-      width = 832;
-      height = 1216; // アスペクト比 約 0.684
-    } else {
-      // ★1-2は横長 (avatar.js準拠)
-      width = 1152; // 正方形に近い横長へ変更
-      height = 896; // アスペクト比 1.286 へ変更
-      // 元の横長サイズ (アイテム/モンスター用に使っていたもの)
-      // width = 1344;
-      // height = 768; // アスペクト比 1.75
+      width = 768;
+      height = 1344;
     }
-    // ★★★ 修正箇所ここまで ★★★
 
     const imageOptions = {
       samples: 1,
