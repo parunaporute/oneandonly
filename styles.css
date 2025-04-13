@@ -311,6 +311,9 @@
 .icon-card:before {
   content: '\e910';
 }
+.icon-star-empty:before {
+  content: "\e9d7";
+}
 /* ベース */
 body {
   font-family: Arial, sans-serif;
