@@ -47,8 +47,8 @@ window.db = null;
 
 /** DOMPurify の設定 (固定値) */
 window.DOMPURIFY_CONFIG = {
-    ALLOWED_TAGS: ['p', 'br', 'hr', 'h3', 'h4', 'h5', 'span', 'div', 'strong', 'em'],
-    ALLOWED_ATTR: ['style'],
+  ALLOWED_TAGS: ['p', 'br', 'hr', 'h3', 'h4', 'h5', 'span', 'div', 'strong', 'em'],
+  ALLOWED_ATTR: ['style'],
 };
 
 // --- グローバル変数ではないが、便宜上ここに置いている可能性のあるもの ---

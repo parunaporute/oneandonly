@@ -1,119 +1,119 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <title>one and only - シナリオ</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-        <link rel="stylesheet" href="styles.css" />
-        <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>one and only - シナリオ</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  </head>
 
-    <body>
-        <div class="application-bar">
-            <button id="back-to-menu">
-                <div class="iconmoon icon-home3"></div>
-                戻る
-            </button>
-            <button id="open-tutorial-list-button">
-                <div class="iconmoon icon-book"></div>
-                取説
-            </button>
-            <button id="save-load-button">
-                <div class="iconmoon icon-address"></div>
-                続き
-            </button>
-            <button id="change-bg-button">
-                <div class="iconmoon icon-picture"></div>
-                背景
-            </button>
+  <body>
+    <div class="application-bar">
+      <button id="back-to-menu">
+        <div class="iconmoon icon-home3"></div>
+        戻る
+      </button>
+      <button id="open-tutorial-list-button">
+        <div class="iconmoon icon-book"></div>
+        取説
+      </button>
+      <button id="save-load-button">
+        <div class="iconmoon icon-address"></div>
+        続き
+      </button>
+      <button id="change-bg-button">
+        <div class="iconmoon icon-picture"></div>
+        背景
+      </button>
+    </div>
+
+    <div class="container">
+      <div id="scene-history" class="scene-history" style="display: none">
+        <div class="loading">履歴読込中...</div>
+      </div>
+
+      <div class="game-section">
+        <div id="story" style="margin-bottom: 20px">
+          <div class="loading">シーン読込中...</div>
         </div>
+        <div id="last-scene-images" style="margin-bottom: 20px; text-align: center"></div>
+        <div id="last-scene-added" class="r-flexbox"></div>
 
-        <div class="container">
-            <div id="scene-history" class="scene-history" style="display: none">
-                <div class="loading">履歴読込中...</div>
+        <div id="player-action" style="margin-top: 20px">プレイヤーの行動を入力してください</div>
+        <div class="carousel-wrapper">
+          <div class="carousel-tabs-scrollable">
+            <div class="carousel-tabs">
+              <button class="carousel-tab active" data-carousel-target="0">通常</button>
+              <button class="carousel-tab" data-carousel-target="1">アイテム</button>
             </div>
-
-            <div class="game-section">
-                <div id="story" style="margin-bottom: 20px">
-                    <div class="loading">シーン読込中...</div>
+          </div>
+          <div class="carousel-viewport">
+            <div class="carousel-track">
+              <div class="carousel-cell" data-cell-index="0">
+                <div style="display: flex; margin-bottom: 10px; align-items: center">
+                  <label style="display: flex; align-items: center; cursor: pointer">
+                    <input type="checkbox" id="auto-generate-candidates-checkbox" style="width: 1.2em; height: 1.2em; margin: 0 10px 0 0" />
+                    <span>AIが行動選択肢を作成する</span>
+                  </label>
                 </div>
-                <div id="last-scene-images" style="margin-bottom: 20px; text-align: center"></div>
-                <div id="last-scene-added" class="r-flexbox"></div>
-
-                <div id="player-action" style="margin-top: 20px">プレイヤーの行動を入力してください</div>
-                <div class="carousel-wrapper">
-                    <div class="carousel-tabs-scrollable">
-                        <div class="carousel-tabs">
-                            <button class="carousel-tab active" data-carousel-target="0">通常</button>
-                            <button class="carousel-tab" data-carousel-target="1">アイテム</button>
-                        </div>
-                    </div>
-                    <div class="carousel-viewport">
-                        <div class="carousel-track">
-                            <div class="carousel-cell" data-cell-index="0">
-                                <div style="display: flex; margin-bottom: 10px; align-items: center">
-                                    <label style="display: flex; align-items: center; cursor: pointer">
-                                        <input type="checkbox" id="auto-generate-candidates-checkbox" style="width: 1.2em; height: 1.2em; margin: 0 10px 0 0" />
-                                        <span>AIが行動選択肢を作成する</span>
-                                    </label>
-                                </div>
-                                <div style="display: flex; flex-direction: column; gap: 10px">
-                                    <div id="action-candidates-container"></div>
-                                    <textarea id="player-input" rows="4" placeholder="プレイヤーの行動を入力..."></textarea>
-                                    <div class="c-flexbox" style="margin-bottom: 0">
-                                        <button id="next-scene" class="important">次のシーン</button>
-                                    </div>
-                                </div>
-
-                                <div class="c-flexbox" style="margin-top: 20px">
-                                    <!-- ▼ エンディング関連ボタン&モーダル（追加） -->
-                                    <button id="ending-button" style="display: none">エンディング</button>
-                                    <button id="clear-ending-button" style="display: none">クリア・エンディング</button>
-                                </div>
-                            </div>
-                            <div class="carousel-cell" data-cell-index="1">
-                                <div style="display: flex; flex-direction: column; gap: 10px">
-                                    <p style="font-size: 0.9em; color: #ccc; margin: 0">使用するアイテムを選択してください:</p>
-                                    <div id="item-chips-container" class="chips-container" style="min-height: 40px">
-                                        <span style="color: #aaa">(使用可能なアイテムはありません)</span>
-                                    </div>
-                                    <div class="c-flexbox" style="margin-bottom: 0">
-                                        <button id="use-item-button" class="important">選択したアイテムを使用</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <div id="action-candidates-container"></div>
+                  <textarea id="player-input" rows="4" placeholder="プレイヤーの行動を入力..."></textarea>
+                  <div class="c-flexbox" style="margin-bottom: 0">
+                    <button id="next-scene" class="important">次のシーン</button>
+                  </div>
                 </div>
-                <button id="get-card-button" style="display: none; margin-top: 20px">カードを取得する</button>
-                <button id="view-all-sections-button" style="margin-top: 20px">全セクションを閲覧する</button>
-            </div>
-        </div>
-        <div id="loading-modal" class="modal">
-            <div class="modal-content">
-                <p>AIが応答を生成しています...</p>
-                <div class="loading" style="width: 50px; height: 50px; border-width: 5px; margin: 10px auto"></div>
-                <button id="cancel-request-button">キャンセル(試行)</button>
-            </div>
-        </div>
 
-        <script type="module" src="js/common.js"></script>
-        <script type="module" src="js/multiModal.js"></script>
-        <script type="module" src="js/indexedDB.js"></script>
-        <script type="module" src="js/geminiApiClient.js"></script>
-        <script type="module" src="js/stabilityApiClient.js"></script>
-        <script type="module" src="js/background.js"></script>
-        <script type="module" src="js/tutorialData.js"></script>
-        <script type="module" src="js/tutorialManager.js"></script>
-        <script type="module" src="js/universalSaveLoad.js"></script>
-        <script type="module" src="js/sceneGlobals.js"></script>
-        <script type="module" src="js/carousel.js"></script>
-        <script type="module" src="js/sceneManager.js"></script>
-        <script type="module" src="js/sceneMain.js"></script>
-        <script type="module" src="js/sceneExtras.js"></script>
-        <script type="module" src="js/sceneUI.js"></script>
-    </body>
+                <div class="c-flexbox" style="margin-top: 20px">
+                  <!-- ▼ エンディング関連ボタン&モーダル（追加） -->
+                  <button id="ending-button" style="display: none">エンディング</button>
+                  <button id="clear-ending-button" style="display: none">クリア・エンディング</button>
+                </div>
+              </div>
+              <div class="carousel-cell" data-cell-index="1">
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <p style="font-size: 0.9em; color: #ccc; margin: 0">使用するアイテムを選択してください:</p>
+                  <div id="item-chips-container" class="chips-container" style="min-height: 40px">
+                    <span style="color: #aaa">(使用可能なアイテムはありません)</span>
+                  </div>
+                  <div class="c-flexbox" style="margin-bottom: 0">
+                    <button id="use-item-button" class="important">選択したアイテムを使用</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button id="get-card-button" style="display: none; margin-top: 20px">カードを取得する</button>
+        <button id="view-all-sections-button" style="margin-top: 20px">全セクションを閲覧する</button>
+      </div>
+    </div>
+    <div id="loading-modal" class="modal">
+      <div class="modal-content">
+        <p>AIが応答を生成しています...</p>
+        <div class="loading" style="width: 50px; height: 50px; border-width: 5px; margin: 10px auto"></div>
+        <button id="cancel-request-button">キャンセル(試行)</button>
+      </div>
+    </div>
+
+    <script type="module" src="js/common.js"></script>
+    <script type="module" src="js/multiModal.js"></script>
+    <script type="module" src="js/indexedDB.js"></script>
+    <script type="module" src="js/geminiApiClient.js"></script>
+    <script type="module" src="js/stabilityApiClient.js"></script>
+    <script type="module" src="js/background.js"></script>
+    <script type="module" src="js/tutorialData.js"></script>
+    <script type="module" src="js/tutorialManager.js"></script>
+    <script type="module" src="js/universalSaveLoad.js"></script>
+    <script type="module" src="js/sceneGlobals.js"></script>
+    <script type="module" src="js/carousel.js"></script>
+    <script type="module" src="js/sceneManager.js"></script>
+    <script type="module" src="js/sceneMain.js"></script>
+    <script type="module" src="js/sceneExtras.js"></script>
+    <script type="module" src="js/sceneUI.js"></script>
+  </body>
 </html>
