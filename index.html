@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>one and only</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -10,99 +9,101 @@
     <script src="https://cdn.jsdelivr.net/npm/pako/dist/pako.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="application-bar">
-        <button id="open-tutorial-list-button">
-            <div class="iconmoon icon-book"></div>取説
-        </button>
-        <button id="save-load-button">
-            <div class="iconmoon icon-address"></div>
-            続き
-        </button>
-        <button id="change-bg-button">
-            <div class="iconmoon icon-picture"></div>背景
-        </button>
+      <button id="open-tutorial-list-button">
+        <div class="iconmoon icon-book"></div>
+        取説
+      </button>
+      <button id="save-load-button">
+        <div class="iconmoon icon-address"></div>
+        続き
+      </button>
+      <button id="change-bg-button">
+        <div class="iconmoon icon-picture"></div>
+        背景
+      </button>
     </div>
 
     <div class="container">
-        <h1 style="font-size:3rem;letter-spacing:-0.03rem;margin-bottom: 70px;margin-top: 80px;">one and only
-            <div style="font-size: 0.8rem;font-family: serif;">
-                <span style="letter-spacing:0.75rem;white-space: nowrap;">ー 選択の先に ー</span>
-            </div>
-        </h1>
+      <h1 style="font-size: 3rem; letter-spacing: -0.03rem; margin-bottom: 70px; margin-top: 80px">
+        one and only
+        <div style="font-size: 0.8rem; font-family: serif">
+          <span style="letter-spacing: 0.75rem; white-space: nowrap">ー 選択の先に ー</span>
+        </div>
+      </h1>
 
-        <div class="api-key-section" style="margin-top:20px;">
-            <button id="stop-bgm-button"></button>
-            <button id="set-api-key-button" style="margin-bottom: 0;">
-                APIキー設定
-            </button>
-        </div>
+      <div class="api-key-section" style="margin-top: 20px">
+        <button id="stop-bgm-button"></button>
+        <button id="set-api-key-button" style="margin-bottom: 0">APIキー設定</button>
+      </div>
 
-        <div class="element-section">
-             <button id="you-avatar-btn">
-                 <div class="iconmoon icon-profile-male"></div>あなたの分身
-             </button>
-        </div>
-        <div class="element-section">
-            <button id="character-create">
-                <div class="iconmoon icon-card"></div>生成
-            </button>
-            <button id="party-list">
-                <div class="iconmoon icon-strategy"></div>パーティ
-            </button>
-            <button id="clear-character-btn" style="background-color:#f44336;display: none;">全エレメントをクリア</button>
-            <button id="show-warehouse-btn"><div class="iconmoon icon-card-case"></div>倉庫</button>
-        </div>
+      <div class="element-section">
+        <button id="you-avatar-btn">
+          <div class="iconmoon icon-profile-male"></div>
+          あなたの分身
+        </button>
+      </div>
+      <div class="element-section">
+        <button id="character-create">
+          <div class="iconmoon icon-card"></div>
+          生成
+        </button>
+        <button id="party-list">
+          <div class="iconmoon icon-strategy"></div>
+          パーティ
+        </button>
+        <button id="clear-character-btn" style="background-color: #f44336; display: none">全エレメントをクリア</button>
+        <button id="show-warehouse-btn">
+          <div class="iconmoon icon-card-case"></div>
+          倉庫
+        </button>
+      </div>
 
-        <div class="scenario-wizard-section">
-            <button id="start-new-scenario-button" class="important">
-                新しいシナリオを始める
-            </button>
-        </div>
-        <div class="scenario-wizard-section">
-            <button id="start-custom-scenario-button">
-                <div class="iconmoon icon-edit"></div>
-                執筆
-            </button>
-        </div>
-        <div class="element-section">
-            <button id="show-bookshelf-btn">
-                <div class="iconmoon icon-books"></div>
-                本棚
-            </button>
-        </div>
+      <div class="scenario-wizard-section">
+        <button id="start-new-scenario-button" class="important">新しいシナリオを始める</button>
+      </div>
+      <div class="scenario-wizard-section">
+        <button id="start-custom-scenario-button">
+          <div class="iconmoon icon-edit"></div>
+          執筆
+        </button>
+      </div>
+      <div class="element-section">
+        <button id="show-bookshelf-btn">
+          <div class="iconmoon icon-books"></div>
+          本棚
+        </button>
+      </div>
 
-        <div class="accordion">
-            <div class="accordion-header" id="ongoing-scenarios-header">
-                <div>進行中のシナリオ一覧</div>
-                <div style="position: absolute; height: 100%; right: 0; top: 0; box-sizing: border-box;">
-                    <label for="show-hidden-scenarios" style="display: flex; align-items: center; justify-content: left;height: 100%; padding-right: 20px;">
-                        <input type="checkbox" id="show-hidden-scenarios" />
-                        非表示シナリオ
-                    </label>
-                </div>
-            </div>
-            <div class="accordion-content" id="ongoing-scenarios-content">
-                <div id="scenario-list-container"></div>
-                <div id="no-scenarios-message" style="display:none;">
-                    進行中のシナリオはありません。
-                </div>
-            </div>
+      <div class="accordion">
+        <div class="accordion-header" id="ongoing-scenarios-header">
+          <div>進行中のシナリオ一覧</div>
+          <div style="position: absolute; height: 100%; right: 0; top: 0; box-sizing: border-box">
+            <label for="show-hidden-scenarios" style="display: flex; align-items: center; justify-content: left; height: 100%; padding-right: 20px">
+              <input type="checkbox" id="show-hidden-scenarios" />
+              非表示シナリオ
+            </label>
+          </div>
         </div>
+        <div class="accordion-content" id="ongoing-scenarios-content">
+          <div id="scenario-list-container"></div>
+          <div id="no-scenarios-message" style="display: none">進行中のシナリオはありません。</div>
+        </div>
+      </div>
     </div>
 
     <div class="c-flexbox">
-        <button id="export-metadata-button">メタデータZIPエクスポート</button>
-        <button id="export-images-button" style="margin-left:30px;">画像ZIPエクスポート</button>
+      <button id="export-metadata-button">メタデータZIPエクスポート</button>
+      <button id="export-images-button" style="margin-left: 30px">画像ZIPエクスポート</button>
     </div>
     <div class="c-flexbox">
-        <button id="import-metadata-button">メタデータZIPインポート</button>
-        <input type="file" id="import-metadata-file" accept=".zip" style="display:none;" />
-        <button id="import-images-button" style="margin-left:30px;">画像ZIPインポート</button>
-        <input type="file" id="import-images-file" accept=".zip" style="display:none;" />
+      <button id="import-metadata-button">メタデータZIPインポート</button>
+      <input type="file" id="import-metadata-file" accept=".zip" style="display: none" />
+      <button id="import-images-button" style="margin-left: 30px">画像ZIPインポート</button>
+      <input type="file" id="import-images-file" accept=".zip" style="display: none" />
     </div>
 
     <audio id="bgm" src="main-back.mp3" loop></audio>
@@ -110,7 +111,8 @@
     <script type="module" src="js/indexedDB.js"></script>
     <script type="module" src="js/common.js"></script>
     <script type="module" src="js/multiModal.js"></script>
-    <script type="module" src="js/geminiApiClient.js"></script> <script type="module" src="js/background.js"></script>
+    <script type="module" src="js/geminiApiClient.js"></script>
+    <script type="module" src="js/background.js"></script>
     <script type="module" src="js/stabilityApiClient.js"></script>
     <script type="module" src="js/avatar.js"></script>
     <script type="module" src="js/warehouse.js"></script>
@@ -119,5 +121,5 @@
     <script type="module" src="js/universalSaveLoad.js"></script>
     <script type="module" src="js/exportImportMulti.js"></script>
     <script type="module" src="js/menu.js"></script>
-</body>
+  </body>
 </html>
