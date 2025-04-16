@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8"/>
+  <title>取説一覧</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+{% include "partials/inits.njk" %}
+  <!-- 本画面制御用のJS -->
+  <script type="module" src="js/tutorialList.js"></script>
+</head>
+
+<body>
+{% include "partials/top.njk"%}
+  <div class="container">
+
+    <h2>取説一覧</h2>
+    <div id="tutorial-list-container"></div>
+
+    <!-- ▼ 確認用モーダル -->
+    <div id="tutorial-confirm-modal" class="modal">
+      <div class="modal-content" style="padding: 20px; max-width:400px;">
+        <h2>取説確認</h2>
+        <p id="tutorial-confirm-message"></p>
+        <div class="c-flexbox">
+          <button id="tutorial-confirm-ok">OK</button>
+          <button id="tutorial-confirm-cancel">キャンセル</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% include "partials/bottom.njk"%}
+</body>
+</html>

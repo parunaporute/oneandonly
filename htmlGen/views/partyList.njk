@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>パーティ一覧</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+{% include "partials/inits.njk" %}
+  <script type="module" src="js/partyList.js"></script>
+</head>
+
+<body>
+{% include "partials/top.njk"%}
+  <div class="container">
+    <h1>パーティ一覧</h1>
+    <p style="margin-bottom:20px;">
+      パーティは「シナリオウィザード」や「カスタムシナリオ」の画面で使われます。
+    </p>
+
+    <div style="margin-bottom:20px;">
+      <label for="new-party-name">新しいパーティ名:</label>
+      <input type="text" id="new-party-name" placeholder="パーティ名..." />
+      <button id="create-party-button">作成</button>
+    </div>
+
+    <div id="party-list-container" style="margin-bottom:30px;text-align: right;"></div>
+  </div>
+{% include "partials/bottom.njk"%}
+</body>
+</html>

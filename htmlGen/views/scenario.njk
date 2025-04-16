@@ -4,60 +4,11 @@
     <meta charset="UTF-8" />
     <title>one and only - シナリオ</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <!-- 黒背景 + 白文字ベースのCSS -->
-    <link rel="stylesheet" href="styles.css" />
-    <!-- サニタイズ -->
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@2/dist/purify.min.js"></script>
-    <!-- zip -->
-    <script src="https://cdn.jsdelivr.net/npm/pako/dist/pako.min.js"></script>
-    <!-- 背景管理用 -->
-    <script type="module" src="js/background.js"></script>
-    <!-- 取説 -->
-    <script type="module" src="js/common.js"></script>
-    <script type="module" src="js/indexedDB.js"></script>
-    <script type="module" src="js/multiModal.js"></script>
-    <script type="module" src="js/geminiApiClient.js"></script>
-    <script type="module" src="js/background.js"></script>
-    <script type="module" src="js/stabilityApiClient.js"></script>
-    <script type="module" src="js/avatar.js"></script>
-    <script type="module" src="js/warehouse.js"></script>
-    <script type="module" src="js/tutorialData.js"></script>
-    <script type="module" src="js/tutorialManager.js"></script>
-    <script type="module" src="js/universalSaveLoad.js"></script>
-    <script type="module" src="js/exportImportMulti.js"></script>
+{% include "partials/inits.njk" %}
   </head>
 
   <body>
-    <div class="application-bar">
-    <!-- メニューに戻るボタン -->
-      <button id="back-to-menu">
-        <div class="iconmoon icon-home3"></div>
-        戻る
-      </button>
-  
-      <button id="open-tutorial-list-button">
-        <div class="iconmoon icon-book"></div>
-        取説
-      </button>
-      <button id="save-load-button">
-        <div class="iconmoon icon-address"></div>
-        続き
-      </button>
-      <button id="change-bg-button">
-        <div class="iconmoon icon-picture"></div>
-        背景
-      </button>
-      <button id="hamburger-button" class="hamburger-button" aria-label="メニューを開く" aria-expanded="false">
-        <span class="hamburger-icon"></span>
-        <span class="hamburger-icon"></span>
-        <span class="hamburger-icon"></span>
-      </button>
-      <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
-        <div id="hamburger-dynamic-buttons"></div>
-        <div id="hamburger-static-buttons"></div>
-      </div>
-    </div>
-
+{% include "partials/top.njk"%}
     <div class="container">
       <div id="scene-history" class="scene-history" style="display: none">
         <div class="loading">履歴読込中...</div>
@@ -136,7 +87,6 @@
     <script type="module" src="js/sceneExtras.js"></script>
     <script type="module" src="js/sceneUI.js"></script>
     <script type="module" src="js/hamburgerMenu.js"></script>
-  <script type="module" src="js/hamburgerMenu.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+{% include "partials/bottom.njk"%}
   </body>
 </html>
