@@ -29,6 +29,15 @@
         <div class="iconmoon icon-picture"></div>
         背景
       </button>
+      <button id="hamburger-button" class="hamburger-button" aria-label="メニューを開く" aria-expanded="false">
+        <span class="hamburger-icon"></span>
+        <span class="hamburger-icon"></span>
+        <span class="hamburger-icon"></span>
+      </button>
+      <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
+        <div id="hamburger-dynamic-buttons"></div>
+        <div id="hamburger-static-buttons"></div>
+      </div>
     </div>
 
     <div class="container">
@@ -115,5 +124,6 @@
     <script type="module" src="js/sceneMain.js"></script>
     <script type="module" src="js/sceneExtras.js"></script>
     <script type="module" src="js/sceneUI.js"></script>
+    <script type="module" src="js/hamburgerMenu.js"></script>
   </body>
 </html>

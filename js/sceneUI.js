@@ -76,50 +76,70 @@ export function intUI() {
 
   // アプリケーションバーへのボタン動的追加 (sceneMain.js で行うべきか要検討)
   const applicationBar = document.querySelector('.application-bar');
-  const baseButton = document.getElementById('save-load-button'); // 基準ボタン
+  const baseButton = document.getElementById('save-load-button'); // 挿入位置の基準
+
+  let historyBtn, partyBtn, infoBtn, spoilerBtn; // イベントで渡すために変数宣言
+
   if (applicationBar && baseButton) {
-    console.log('[SceneUI] Adding buttons to application bar...');
+    console.log('[SceneUI] Adding buttons to application bar dynamically...');
     // 履歴ボタン
     if (!document.getElementById('toggle-history-button') && typeof toggleHistory === 'function') {
-      const historyBtn = document.createElement('button');
+      historyBtn = document.createElement('button'); // 変数に代入
       historyBtn.id = 'toggle-history-button';
       historyBtn.innerHTML = '<div class="iconmoon icon-newspaper"></div>履歴';
       historyBtn.title = '履歴表示切替';
       applicationBar.insertBefore(historyBtn, baseButton);
-      historyBtn.addEventListener('click', toggleHistory); // このファイル内で定義
+      historyBtn.addEventListener('click', toggleHistory); // toggleHistory はこのファイル内で定義想定
+      console.log('[SceneUI] History button added.');
     }
     // PTボタン
     if (!document.getElementById('show-party-button') && typeof showPartyModal === 'function') {
-      // import
-      const partyBtn = document.createElement('button');
+      partyBtn = document.createElement('button'); // 変数に代入
       partyBtn.id = 'show-party-button';
       partyBtn.innerHTML = '<div class="iconmoon icon-strategy"></div>PT';
       partyBtn.title = 'パーティ情報';
       applicationBar.insertBefore(partyBtn, baseButton);
-      partyBtn.addEventListener('click', showPartyModal);
+      partyBtn.addEventListener('click', showPartyModal); // showPartyModal は sceneExtras.js から import 想定
+      console.log('[SceneUI] Party button added.');
     }
     // 情報ボタン
     if (!document.getElementById('info-button') && typeof openEntitiesModal === 'function') {
-      // import
-      const infoBtn = document.createElement('button');
+      infoBtn = document.createElement('button'); // 変数に代入
       infoBtn.id = 'info-button';
       infoBtn.innerHTML = '<div class="iconmoon icon-info"></div>情報';
       infoBtn.title = 'エンティティ情報';
       applicationBar.insertBefore(infoBtn, baseButton);
-      infoBtn.addEventListener('click', openEntitiesModal);
+      infoBtn.addEventListener('click', openEntitiesModal); // openEntitiesModal は sceneExtras.js から import 想定
+      console.log('[SceneUI] Info button added.');
     }
     // ネタバレ(目標)ボタン
     if (!document.getElementById('spoiler-button')) {
-      const spoilerBtn = document.createElement('button');
+      spoilerBtn = document.createElement('button'); // 変数に代入
       spoilerBtn.id = 'spoiler-button';
       spoilerBtn.innerHTML = '<div class="iconmoon icon-flag"></div>目標';
       spoilerBtn.title = '現在の目標';
-      spoilerBtn.style.display = 'none';
+      // 初期表示は scenario.html 側で制御されるのでここでは非表示にしない
+      // spoilerBtn.style.display = 'none';
       applicationBar.insertBefore(spoilerBtn, baseButton);
-      spoilerBtn.addEventListener('click', openSpoilerModal); // このファイル内で定義
+      spoilerBtn.addEventListener('click', openSpoilerModal); // openSpoilerModal はこのファイル内で定義想定
+      console.log('[SceneUI] Spoiler button added.');
     }
+
+    // 全てのボタンがDOMに追加された後でイベントを発火
+    setTimeout(() => {
+      const event = new CustomEvent('dynamicButtonsReady', {
+        detail: {
+          historyButton: document.getElementById('toggle-history-button'), // 再度取得する方が確実かも
+          partyButton: document.getElementById('show-party-button'),
+          infoButton: document.getElementById('info-button'),
+          spoilerButton: document.getElementById('spoiler-button'),
+        },
+      });
+      document.dispatchEvent(event);
+      console.log('[SceneUI] Dispatched dynamicButtonsReady event.');
+    }, 0); // setTimeout 0 で非同期に実行
   } else {
-    console.warn('Application bar or base button not found for adding buttons.');
+    console.warn('[SceneUI] Application bar or base button not found for adding dynamic buttons.');
   }
 
   const endBtn = document.getElementById('ending-button');

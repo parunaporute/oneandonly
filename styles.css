@@ -2417,3 +2417,205 @@ button.important {
   vertical-align: middle;
 }
 /* .icon-star-full:before { content: "\e9d9"; } */ /* icomoonの定義を確認 */
+/* styles.css に追加 (前回のハンバーガーCSSは削除) */
+
+/* --- ハンバーガーメニュー (新デザイン) --- */
+
+/* オーバーレイ */
+#hamburger-overlay {
+  position: fixed;
+  top: 0; /* ヘッダーも含めて覆う */
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99; /* メニューより下 */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#hamburger-overlay.open {
+  opacity: 1;
+  pointer-events: auto; /* クリックでメニューを閉じられるように */
+}
+
+
+/* ハンバーガーボタン (右上に配置) */
+.hamburger-button {
+  display: none; /* PCでは非表示 */
+  background: none !important;
+  border: none !important;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  min-width: initial !important;
+  min-height: initial !important;
+  box-shadow: none !important;
+  background-image: none !important;
+  position: relative; /* アイコンの位置基準 */
+  z-index: 101; /* メニューより手前 */
+}
+
+.hamburger-icon {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background-color: #fff;
+  position: absolute; /* 中央に配置 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.1s 0.2s ease; /* 遅延させて消す */
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 3px;
+  background-color: #fff;
+  position: absolute;
+  left: 0;
+  transition: transform 0.3s ease, top 0.3s ease;
+}
+
+.hamburger-icon::before {
+  top: -8px; /* 上の線 */
+}
+
+.hamburger-icon::after {
+  top: 8px; /* 下の線 */
+}
+
+/* ハンバーガーボタン active (開いた状態) のスタイル */
+.hamburger-button[aria-expanded="true"] .hamburger-icon {
+  background-color: transparent; /* 真ん中の線を消す */
+  transition-delay: 0s; /* 消すのは即時 */
+}
+
+.hamburger-button[aria-expanded="true"] .hamburger-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.hamburger-button[aria-expanded="true"] .hamburger-icon::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+/* ハンバーガーメニュー コンテンツ */
+.hamburger-menu {
+  position: fixed;
+  top: 0; /* 画面上端から */
+  right: 0;
+  width: 280px; /* メニュー幅 */
+  max-width: 80%; /* 画面幅の80%を上限 */
+  height: 100vh; /* 画面全体の高さ */
+  background-color: rgba(30, 30, 30, 0.97); /* 暗めの背景 */
+  box-shadow: -3px 0 8px rgba(0, 0, 0, 0.4);
+  transform: translateX(100%); /* 初期状態は画面右外 */
+  transition: transform 0.3s ease;
+  z-index: 100; /* オーバーレイより上、ボタンより下 */
+  overflow-y: auto; /* ボタンが多い場合にスクロール */
+  padding: 70px 20px 20px 20px; /* 上部に余裕を持たせる */
+  box-sizing: border-box;
+  display: flex; /* flexを維持 */
+  flex-direction: column;
+  gap: 5px; /* ボタン間のスペースを狭める */
+}
+
+.hamburger-menu.active {
+  transform: translateX(0); /* 画面内に表示 */
+}
+
+/* ハンバーガーメニュー内のボタン */
+.hamburger-menu button {
+  /* 既存ボタンのデザインを流用しつつ調整 */
+  display: flex; /* アイコンとテキストを横並び */
+  align-items: center;
+  gap: 12px; /* アイコンとテキストの間隔 */
+  width: 100%; /* 横幅いっぱい */
+  text-align: left;
+  padding: 12px 15px;
+  background-color: transparent !important; /* 背景は基本透明 */
+  color: #e0e0e0 !important; /* 明るめの文字色 */
+  border: none !important;
+  border-bottom: 1px solid #444 !important; /* 細い区切り線 */
+  box-shadow: none !important;
+  background-image: none !important;
+  border-radius: 0 !important; /* 角丸なし */
+  cursor: pointer;
+  font-size: 1rem; /* 少し大きめ */
+  min-height: initial !important;
+  min-width: initial !important;
+  transition: background-color 0.2s ease;
+}
+
+.hamburger-menu button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important; /* ホバーで少し明るく */
+  border-color: #555 !important;
+}
+
+.hamburger-menu button:last-of-type {
+  border-bottom: none !important; /* 最後のボタンの下線は消す */
+}
+
+.hamburger-menu button .iconmoon {
+  font-size: 1.1rem; /* アイコンサイズ調整 */
+  width: 20px; /* アイコン幅を固定 */
+  text-align: center;
+  color: #aaa; /* アイコンの色を少し暗めに */
+}
+
+/* --- スマホ表示時の表示切り替え --- */
+@media (max-width: 768px) {
+  .application-bar {
+    justify-content: flex-end; /* 右寄せ */
+  }
+
+  .hamburger-button {
+    display: flex; /* スマホでは表示 */
+  }
+
+  /* スマホ表示時に隠すPC用ボタン */
+  .application-bar #toggle-history-button,
+  .application-bar #show-party-button,
+  .application-bar #info-button,
+  .application-bar #save-load-button,
+  .application-bar #change-bg-button,
+  .application-bar #spoiler-button {
+    display: none !important;
+  }
+
+  /* スマホでも常に見せるボタン（戻る、取説） */
+  .application-bar #back-to-menu,
+  .application-bar #open-tutorial-list-button {
+    display: flex !important;
+  }
+
+   /* メインコンテンツエリアの開始位置をスマホヘッダーの下にする */
+   .container {
+      margin-top: 70px; /* application-bar の高さ + 少し余裕 */
+   }
+}
+
+/* --- PC表示時の非表示設定 --- */
+@media (min-width: 769px) {
+  .hamburger-button,
+  .hamburger-menu,
+  #hamburger-overlay {
+    display: none !important; /* PCではハンバーガー関連を非表示 */
+  }
+  /* container のマージンを元に戻す */
+   .container {
+       margin-top: 80px; /* styles.css のデフォルト値に戻す */
+   }
+}
+
+#hamburger-dynamic-buttons + #hamburger-static-buttons{
+  margin-top: 0px;
+  border-top: 1px solid rgb(85, 85, 85);
+ }
